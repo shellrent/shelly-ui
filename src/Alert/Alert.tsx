@@ -1,12 +1,12 @@
-import React, { HTMLAttributes, PropsWithChildren, useState } from "react";
+import React, { HTMLAttributes, PropsWithChildren, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import {faCheck, faCircleXmark, faTimes, faTriangleExclamation} from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck, faCircleInfo, faCircleXmark, faTimes, faTriangleExclamation} from "@fortawesome/free-solid-svg-icons";
 import Button from "../Button";
 
-type AlertType = 'success' | 'warning' | 'error';
+export type AlertType = 'success' | 'warning' | 'error' | 'info';
 
 type AlertProps = {
     type?: AlertType | undefined
@@ -22,7 +22,7 @@ type AlertConfiguration = {
 const alertConfiguration: { [key in AlertType]: AlertConfiguration } = {
 	success: {
 		class: 'alert-success',
-		icon: faCheck
+		icon: faCircleCheck
 	},
 	error: {
 		class: 'alert-error',
@@ -31,6 +31,10 @@ const alertConfiguration: { [key in AlertType]: AlertConfiguration } = {
 	warning: {
 		class: 'alert-warning',
 		icon: faTriangleExclamation
+	},
+	info: {
+		class: 'alert-info',
+		icon: faCircleInfo
 	}
 };
 
@@ -40,10 +44,15 @@ const Alert: React.FC<AlertProps> = ( {children, className, icon, type, showClos
 	if ( !icon && type ) {
 		icon = alertConfiguration[type].icon;
 	}
+
+	useEffect( () => {
+		setShow(true);
+	}, [children]);
     
 	const classNames = twMerge(
 		className,
 		'alert',
+		'shadow',
 		clsx(
 			type && alertConfiguration[type].class,
 		),

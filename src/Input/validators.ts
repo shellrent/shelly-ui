@@ -1,0 +1,1 @@
+export type InputValidatorHandler = <T = any>(value: T | null) => string | null;

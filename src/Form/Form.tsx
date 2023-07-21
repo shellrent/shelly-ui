@@ -1,45 +1,118 @@
-import React, { FormEvent, PropsWithChildren, useState } from "react";
-import { FormHandler } from "./useForm";
+import React, { FormEvent, PropsWithChildren } from "react";
 import Alert from "../Alert/Alert";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
-import { switchClassName } from "../utils";
+import { swtc } from "../utils";
+import { FormHandler } from "./useForm";
 
 type FormProps<T extends object = any> = {
-	saveForm: ( data: T ) => void
+	saveForm: ( data: T ) => Promise<any> | boolean
+	onSuccess?: () => void
 	form: FormHandler
 } & PropsWithChildren; 
 
-
-const Form: React.FC<FormProps> = < T extends object  >( {form, children, saveForm}: FormProps<T> ) => {
-	const [formHandler, setForm] = useState( form ); 
+const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, form, onSuccess}: FormProps<T> ) => {	
 	const onSubmit = ( event: FormEvent<HTMLFormElement> ) => {
+		form.resetErrors();
 		event.preventDefault();
-    
+		
 		const formData = new FormData( event.currentTarget );
-		let data = {} as T;
+		const data: { [key: string]: any } = {} as T;
 
-		formData.forEach( ( value, key ) =>  {
-			data = Object.assign( data, {
-				[key]: value
+		for (const pair of formData.entries()) {
+			const key = pair[0];
+			const value = pair[1];
+
+			if ( !value ) {
+				continue;
+			}
+
+			if (key.includes('[') && key.includes(']')) {
+				const fieldName = key.substring(0, key.indexOf('['));
+				const matches = key.match(/\[(.*?)\]/);
+				const index = matches ? matches[1] : 0;
+
+				if (!Object.prototype.hasOwnProperty.call(data, fieldName)) {
+					data[fieldName] = [];
+				}
+
+				data[fieldName][index] = value;
+			} else if (key.includes('{') && key.includes('}')) {
+				const objFieldName = key.substring(0, key.indexOf('{'));
+				const matches = key.match(/\[(.*?)\]/);
+				const objKey = matches ? matches[1] : 0;
+
+				if (!Object.prototype.hasOwnProperty.call(data, objFieldName)) {
+					data[objFieldName] = {};
+				}
+
+				data[objFieldName][objKey] = value;
+			} else {
+				data[key] = value;
+			}
+		}
+
+		let errors: string[] = [];
+
+		Object.entries( form.state.inputs ).map( ( [key, input] ) => {
+			const inputValue = formData.get( input.name )?.toString() as string;
+
+			input.validators.every( validator => {
+				if ( !validator ) {
+					return true;
+				}
+
+				const err = validator( inputValue );
+				if ( err ) {
+					form.triggerInputError( key );
+
+					errors = [
+						...errors,
+						err
+					];
+
+					return false;
+				}
+
+				return true;
 			} );
 		} );
 
-		saveForm( data );	
+		if ( errors.length > 0 ) {
+			form.handleFormError( errors );
+			return;
+		}
+		
+		const res = saveForm( data as T );
+
+		form.resetErrors();
+
+		if ( form.onSuccess ) {
+			if ( res instanceof Promise ) {
+				res.then( () => {
+					form.onSuccess();
+				} );
+			} else {
+				if ( res ) {
+					form.onSuccess();
+				}
+			}
+		}
 	};
 
 	return <form 
+		ref={form.ref}
 		onSubmit={onSubmit}
 	>	
-		{formHandler.hasErrors() &&
-		<Alert type="error" className="mb-4">
+		{form.state.formErrors.hasErrors() &&
+		<Alert type="error" className="mb-4" showCloseButton={true}>
 			<div>
 				<Alert.Title>
 					Error
 				</Alert.Title>
 				<ul>
 					{
-						formHandler.getErrors().map( ( error, key ) => {
+						form.state.formErrors.getErrors().map( ( error, key ) => {
 							return <li key={key}> {error} </li>;
 						})
 					}
@@ -70,9 +143,11 @@ const FormButtons: React.FC<FormButtonsProps> = ({children, align}) => {
 	}
 
 	const classNames = twMerge(
-		'my-4',
+		'ml-auto',
+		'max-w-fit',
+		'grid grid-flow-col gap-2',
 		clsx(
-			align && switchClassName( align, {
+			align && swtc( align, {
 				left: 'text-left',
 				center: 'text-center',
 				right: 'text-right',

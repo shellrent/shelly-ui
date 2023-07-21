@@ -1,36 +1,62 @@
-import React, { ChangeEvent, HTMLAttributes, InputHTMLAttributes, LabelHTMLAttributes, PropsWithChildren, useState } from "react";
+import React, { ChangeEvent, HTMLAttributes, InputHTMLAttributes, LabelHTMLAttributes, PropsWithChildren, forwardRef, useEffect, useState } from "react";
 import {twMerge} from 'tailwind-merge';
 import clsx from "clsx";
 import { InputValidatorHandler } from ".";
+import { swtc } from "../utils";
+import { InputProps } from "../Form";
 
-type InputProps = {
+
+type InputComponentProps = {
     bordered?: boolean,
-	validators?: InputValidatorHandler[]
-} & InputHTMLAttributes<HTMLInputElement>
+} & InputProps & InputHTMLAttributes<HTMLInputElement>
 
-const Input: React.FC<InputProps> = ( {className, validators, bordered, ...props}: InputProps ) => {
-	const [error, setError] = useState<string | null>( null );
+const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {className, validators, bordered, inputSize, error, onValueChange, ...props}: InputComponentProps, ref ) => {	
+	const [err, setError] = useState<string | boolean>( false );
 
+	useEffect( () => {
+		if ( typeof error == 'string' ) {
+			setError( error );
+		}
+
+		if ( error ) {
+			setError( true );
+		}
+	} , [error]);
+	
 	const classNames = twMerge(
 		'input',
-		'input-bordered',
 		className,
 		clsx( 
-			error && 'input-error'  
+			err && 'input-error',
+			(bordered === false) || 'input-bordered',
+			inputSize && swtc( inputSize, {
+				xs: 'input-xs',
+				sm: 'input-sm',
+				md: 'input-md',
+				lg: 'input-lg',
+			} )
 		)
 	);
     
-	const validateInput = ( event: ChangeEvent<HTMLInputElement>  ) => {
+	const onChange = ( event: ChangeEvent<HTMLInputElement>  ) => {
 		const value = event.target.value;
+
+		if ( onValueChange ) {
+			onValueChange( value );
+		}
 
 		if ( !validators?.length ) {
 			return;
 		} 
 
 		validators.every( (validator: InputValidatorHandler) => {
+			if ( !validator ) {
+				return true;
+			}
+			
 			const validationError = validator( value );
 
-			setError( validationError );
+			setError( validationError ?? false );
 
 			if ( validationError ) {
 				return false;
@@ -43,13 +69,15 @@ const Input: React.FC<InputProps> = ( {className, validators, bordered, ...props
 	return <>
 		<input 
 			className={classNames}
-			onChange={validateInput}
-			onFocus={validateInput}
-			{...props} 
+			onChange={onChange}
+			{...props}
+			ref={ref}
 		/>
-		{error && <Label className="label-text-alt text-error"> {error} </Label>}
+		{typeof err == 'string'  && <Label className="label-text-alt text-error"> {err} </Label>}
 	</>;
-};
+});
+
+Input.displayName = 'Input';
 
 type FormControlProps = HTMLAttributes<HTMLElement> & PropsWithChildren
 
