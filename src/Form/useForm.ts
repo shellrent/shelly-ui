@@ -106,7 +106,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 	const [formErrors, setFormErrors] = useState<string[]>([]);
 	const [state, setForm] = useState<FormState>({ inputs: {}, formValues: new FormValues( props?.values ), formErrors: new FormErrors(formErrors) });
 	const [formValues, setValues] = useState(props?.values ?? {});
-	const [inputs, setInputs] = useState<{[key:string] : InputDefinition}>({});
+	const inputRef = useRef<{[key:string] : InputDefinition}>( {} );
 	const [submitting, setSubmitting] = useState(false);
 	
 	const ref = useRef<HTMLFormElement>(null);
@@ -114,7 +114,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 	const setState = () => {
 		setForm({
 			...state,
-			inputs: inputs,
+			inputs: inputRef.current,
 			formErrors: state.formErrors ? state.formErrors.setFormErrors( formErrors ) : new FormErrors(formErrors),
 			formValues: state.formValues ? state.formValues.setFormValues( formValues ) : new FormValues(formValues)
 		});
@@ -122,7 +122,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 
 	useEffect(() => {
 		setState();
-	}, [formErrors, inputs, formValues]);
+	}, [inputRef.current]);
 
 	const handleFormError = (error: string | string[]) => {
 		if (!(error instanceof Array)) {
@@ -145,18 +145,18 @@ const useForm = (props?: UseFormProps): FormHandler => {
 	};
 
 	const resetInputs = (): void => {
-		let inps = inputs;
-		for( const name of Object.keys( inputs ) ) {
+		let inps = inputRef.current;
+		for( const name of Object.keys( inputRef.current ) ) {
 			inps = {
 				...inps,
 				[name]: {
-					...inputs[name],
+					...inputRef.current[name],
 					error: false
 				}
 			};
 		}
 
-		setInputs( inps );
+		inputRef.current = inps;
 	};
 
 	const submitForm = (): void => {
@@ -166,18 +166,20 @@ const useForm = (props?: UseFormProps): FormHandler => {
 	};
 
 	const triggerInputError = ( name: string ): void => {
-		if ( !inputs[name] ) {
+		if ( !inputRef.current[name] ) {
 			return;
 		}
 
-		setInputs( {
-			...inputs,
+		inputRef.current = {
+			...inputRef.current ?? {},
 			[name]: {
-				name: inputs[name].name,
-				validators: inputs[name].validators,
+				name: inputRef.current[name].name,
+				validators: inputRef.current[name].validators,
 				error: true
 			}
-		} );
+		};
+
+		return;
 	};
 
 	const registerOnSuccessCallback = ( callback: () => void ) =>  {
@@ -192,10 +194,12 @@ const useForm = (props?: UseFormProps): FormHandler => {
 
 	const registerInput = ({name, validators, disable}: RegisterHandlerProps): InputProps => {
 		if ( disable ) {
-			if ( inputs[name] ) {
-				delete inputs[name];
+			if ( inputRef.current[name] ) {
+				const inps = inputRef.current;
 
-				setInputs( inputs );
+				delete inps[name];
+
+				inputRef.current = inps;
 			}
 
 			return {
@@ -207,17 +211,15 @@ const useForm = (props?: UseFormProps): FormHandler => {
 			};
 		}
 
-		if ( !inputs[name] ) {
-			setInputs( {
-				...inputs ?? {},
+		if ( !inputRef.current[name] ) {
+			inputRef.current = {
+				...inputRef.current ?? {},
 				[name]: {	
 					name: name,
 					validators: validators ?? [],
 					error: false
 				}
-			} );
-
-			setState();
+			};
 		}
 
 		const onFieldChangeValue = (value: string | null) => {
@@ -233,7 +235,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 			onValueChange: onFieldChangeValue,
 			validators: validators,
 			inputSize: ( props?.type == 'filter' ) ? 'sm' : undefined,
-			error: inputs[name]?.error
+			error: inputRef.current[name]?.error
 		};
 	};
 
