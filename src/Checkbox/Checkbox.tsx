@@ -2,7 +2,6 @@ import React, { ChangeEvent, InputHTMLAttributes, PropsWithChildren, useState } 
 import { twMerge } from "tailwind-merge";
 import { swtc } from "../utils";
 import { InputProps } from "../Form";
-import { InputValidatorHandler } from "../Input";
 
 type CheckboxProps = {
     checkboxType?: 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | undefined
@@ -38,7 +37,7 @@ const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, childr
 			return;
 		} 
 
-		validators.every( (validator: InputValidatorHandler) => {
+		validators.every( (validator) => {
 			if ( !validator ) {
 				return true;
 			}

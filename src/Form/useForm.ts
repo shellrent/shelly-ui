@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { InputValidationHandler } from "..";
 import { InputProps } from "./form-input";
 
@@ -64,22 +64,24 @@ type FormState<T extends { [key: string]: any } = any > = {
 
 type Validator = InputValidationHandler | undefined
 
-type RegisterHandler = {
+type RegisterHandlerProps = {
 	name: string,
-	validators?: Validator[],
+	validators?: Validator[] | undefined,
 	disable?: boolean
 }
 
 export type FormHandler<T = any> = {
 	state: FormState,
-	ref: MutableRefObject<HTMLFormElement | undefined>,
+	ref: RefObject<HTMLFormElement>,
+	submitting: boolean
+	setSubmitting: (value: boolean) => void
 	submitForm: () => void
 	setFormValues: (values: T) => void
 	handleFormError: (error: string | string[]) => void
 	resetErrors: () => void
 	resetFormValues: () => void
 	resetInputs: () => void
-	registerInput: (props: RegisterHandler) => InputProps
+	registerInput: (props: RegisterHandlerProps) => InputProps
 	triggerInputError: ( name: string ) => void,
 	onSuccess?: () => void,
 	registerOnSuccessCallback: ( callback: () => void ) => void
@@ -104,18 +106,23 @@ const useForm = (props?: UseFormProps): FormHandler => {
 	const [formErrors, setFormErrors] = useState<string[]>([]);
 	const [state, setForm] = useState<FormState>({ inputs: {}, formValues: new FormValues( props?.values ), formErrors: new FormErrors(formErrors) });
 	const [formValues, setValues] = useState(props?.values ?? {});
-	const inputRef = useRef<{[key:string] : InputDefinition}>({});	
-	const ref = useRef<HTMLFormElement>();
+	const [inputs, setInputs] = useState<{[key:string] : InputDefinition}>({});
+	const [submitting, setSubmitting] = useState(false);
+	
+	const ref = useRef<HTMLFormElement>(null);
 
-	useEffect(() => {
+	const setState = () => {
 		setForm({
 			...state,
-			inputs: inputRef.current,
+			inputs: inputs,
 			formErrors: state.formErrors ? state.formErrors.setFormErrors( formErrors ) : new FormErrors(formErrors),
 			formValues: state.formValues ? state.formValues.setFormValues( formValues ) : new FormValues(formValues)
 		});
-	}, [formErrors, inputRef.current, formValues]);
+	};
 
+	useEffect(() => {
+		setState();
+	}, [formErrors, inputs, formValues]);
 
 	const handleFormError = (error: string | string[]) => {
 		if (!(error instanceof Array)) {
@@ -138,17 +145,18 @@ const useForm = (props?: UseFormProps): FormHandler => {
 	};
 
 	const resetInputs = (): void => {
-		for( const name of Object.keys( inputRef.current ) ) {
-			const temp = inputRef.current[name];
-			
-			temp.error = false;
-		
-			inputRef.current = {
-				...inputRef.current,
-				[name]: temp
+		let inps = inputs;
+		for( const name of Object.keys( inputs ) ) {
+			inps = {
+				...inps,
+				[name]: {
+					...inputs[name],
+					error: false
+				}
 			};
 		}
 
+		setInputs( inps );
 	};
 
 	const submitForm = (): void => {
@@ -158,18 +166,18 @@ const useForm = (props?: UseFormProps): FormHandler => {
 	};
 
 	const triggerInputError = ( name: string ): void => {
-		if ( !inputRef.current[name] ) {
+		if ( !inputs[name] ) {
 			return;
 		}
 
-		inputRef.current = {
-			...inputRef.current,
+		setInputs( {
+			...inputs,
 			[name]: {
-				name: inputRef.current[name].name,
-				validators: inputRef.current[name].validators,
+				name: inputs[name].name,
+				validators: inputs[name].validators,
 				error: true
 			}
-		};
+		} );
 	};
 
 	const registerOnSuccessCallback = ( callback: () => void ) =>  {
@@ -182,10 +190,12 @@ const useForm = (props?: UseFormProps): FormHandler => {
 		};
 	};
 
-	const registerInput = ({name, validators, disable}: RegisterHandler): InputProps => {
+	const registerInput = ({name, validators, disable}: RegisterHandlerProps): InputProps => {
 		if ( disable ) {
-			if ( inputRef.current[name] ) {
-				delete inputRef.current[name];
+			if ( inputs[name] ) {
+				delete inputs[name];
+
+				setInputs( inputs );
 			}
 
 			return {
@@ -197,15 +207,17 @@ const useForm = (props?: UseFormProps): FormHandler => {
 			};
 		}
 
-		if ( !inputRef.current[name] ) {
-			inputRef.current = {
-				...inputRef.current,
+		if ( !inputs[name] ) {
+			setInputs( {
+				...inputs ?? {},
 				[name]: {	
 					name: name,
 					validators: validators ?? [],
 					error: false
-				} 
-			};
+				}
+			} );
+
+			setState();
 		}
 
 		const onFieldChangeValue = (value: string | null) => {
@@ -221,7 +233,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 			onValueChange: onFieldChangeValue,
 			validators: validators,
 			inputSize: ( props?.type == 'filter' ) ? 'sm' : undefined,
-			error: inputRef.current[name]?.error
+			error: inputs[name]?.error
 		};
 	};
 
@@ -237,7 +249,9 @@ const useForm = (props?: UseFormProps): FormHandler => {
 		triggerInputError,
 		registerOnSuccessCallback,
 		onSuccess: onSuccess.current,
-		resetInputs
+		resetInputs,
+		submitting,
+		setSubmitting
 	};
 };
 

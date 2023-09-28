@@ -45,6 +45,29 @@ export {Modal, useModal};
 import Layout from './Layout';
 export {Layout};
 
+import DescriptionList from './DescriptionList';
+export {DescriptionList};
+
+import Collapse from './Collapse';
+export {Collapse};
+
+import Textarea from './Textarea/Textarea';
+export {Textarea};
+
+import Toggle from './Toggle/Toggle';
+export {Toggle};
+
+import Tabs from './Tabs';
+export {Tabs};
+import { TabConfig as Tc } from './Tabs/Tabs';
+export type TabConfig = Tc;
+
+import Swap from './Swap';
+export {Swap};
+
+import Tooltip from './Tooltip';
+export {Tooltip};
+
 // utilities
 export { swtc } from './utils';
 import { ResetInputProps as Reset } from './utils';

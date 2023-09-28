@@ -1,9 +1,11 @@
-import React, { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import PaginateTable, { PaginateTableProps } from "./PaginateTable";
 import Form from '../Form';
 import Button from "../Button";
 import Input from "../Input";
 import { FormHandler } from "../Form/useForm";
+import _ from "lodash";
+import { useSearchParams } from "react-router-dom";
 
 type FilteredTableProps =  PaginateTableProps & PropsWithChildren
 
@@ -22,13 +24,52 @@ type FilterFormProps<T = any> = {
 
 const FilterForm: React.FC<FilterFormProps> = ( {children, id, form, updateAsyncFilters} ) => {
 	const [loading, setIsLoading] = useState(false);
+	const [queryParameters, setQueryParams] = useSearchParams();
 
-	const saveForm = ( formData ) => {
+	useEffect( () => {
+		let formValues = {};
+
+		if ( !queryParameters ) {
+			return;
+		}
+
+		queryParameters.forEach( ( val, key ) => {
+			formValues = {
+				...formValues,
+				[key]: val
+			};	
+		} );
+
+		if ( formValues == form.state.formValues ) {
+			return;
+		}
+
+		form.setFormValues( formValues );
+
+		if ( !_.isEmpty( formValues ) ) {
+			saveForm( formValues );
+		}
+	}, [] );
+	
+	
+	const saveForm = ( formData: any ) => {
+		for( const key of queryParameters.keys() ) {
+			queryParameters.delete( key );
+		}
+
+		Object.entries( formData ).map( ([key, value]) => {
+			queryParameters.set(key, value as string);
+		} );
+	
+		setQueryParams( queryParameters );
+
 		if ( updateAsyncFilters ) {
 			setIsLoading( true );
 			return updateAsyncFilters( formData )
 				.finally( () => setIsLoading(false) );
 		}
+
+		return true;
 	};
 
 	return <div className="relative">

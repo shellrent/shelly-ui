@@ -10,7 +10,7 @@ type BadgeProps = {
 
 const Badge: React.FC<BadgeProps> = ( {children, className, badgeType, color, outline, ...props} ) =>{
 	const classNames = clsx(
-		'badge',
+		'badge whitespace-nowrap',
 		badgeType && swtc( badgeType, {
 			neutral: 'badge-neutral',
 			primary: 'badge-primary',
@@ -18,11 +18,11 @@ const Badge: React.FC<BadgeProps> = ( {children, className, badgeType, color, ou
 			accent: 'badge-accent',
 			ghost: 'badge-ghost',
 		} ),
-		outline && 'badge-outline',
+		outline && 'badge-outline  text-neutral',
 		className,
 	);
 
-	return <div className={classNames} style={{backgroundColor: (!outline) ? color : undefined , borderColor: color}} {...props}>
+	return <div className={classNames} style={{backgroundColor: (!outline) ? color : undefined , borderColor: color, color: (outline ? color : undefined)}} {...props}>
 		{children}
 	</div>;
 };

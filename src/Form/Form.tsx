@@ -1,4 +1,4 @@
-import React, { FormEvent, PropsWithChildren } from "react";
+import React, { FormEvent, PropsWithChildren, useEffect } from "react";
 import Alert from "../Alert/Alert";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
@@ -11,7 +11,13 @@ type FormProps<T extends object = any> = {
 	form: FormHandler
 } & PropsWithChildren; 
 
-const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, form, onSuccess}: FormProps<T> ) => {	
+const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, form}: FormProps<T> ) => {	
+	useEffect( () => {
+		form.resetErrors();
+		form.resetInputs();
+		form.resetFormValues();
+	}, [] );
+	
 	const onSubmit = ( event: FormEvent<HTMLFormElement> ) => {
 		form.resetErrors();
 		event.preventDefault();
@@ -21,9 +27,9 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 
 		for (const pair of formData.entries()) {
 			const key = pair[0];
-			const value = pair[1];
+			const value = pair[1] as string | string[];
 
-			if ( !value ) {
+			if ( !value || !value.length ) {
 				continue;
 			}
 
@@ -63,6 +69,7 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 				}
 
 				const err = validator( inputValue );
+
 				if ( err ) {
 					form.triggerInputError( key );
 
@@ -85,17 +92,9 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 		
 		const res = saveForm( data as T );
 
-		form.resetErrors();
-
-		if ( form.onSuccess ) {
-			if ( res instanceof Promise ) {
-				res.then( () => {
-					form.onSuccess();
-				} );
-			} else {
-				if ( res ) {
-					form.onSuccess();
-				}
+		if ( !( res instanceof Promise ) ) {
+			if ( res ) {
+				form.onSuccess && form?.onSuccess();
 			}
 		}
 	};
@@ -103,6 +102,7 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 	return <form 
 		ref={form.ref}
 		onSubmit={onSubmit}
+		className="flex flex-col gap-4"
 	>	
 		{form.state.formErrors.hasErrors() &&
 		<Alert type="error" className="mb-4" showCloseButton={true}>
@@ -127,7 +127,7 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 type GridLayoutProps = PropsWithChildren; 
 
 const GridLayout: React.FC<GridLayoutProps> = ({children}) => {
-	return <div className="grid grid-cols-12 my-4 gap-4">{children}</div>;
+	return <div className="grid grid-cols-4 lg:grid-cols-12 my-4 gap-4">{children}</div>;
 };
 
 

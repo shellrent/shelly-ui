@@ -44,7 +44,6 @@ const Pagination: React.FC<PaginationProps> = ( {table} ) => {
 			<FontAwesomeIcon size="sm" icon={faChevronLeft}/>
 		</Button>
 		<Input 
-			name="page_index"
 			ref={ref} 
 			className="join-item w-20 text-center focus:outline-none" 
 			defaultValue={table.getState().pagination.pageIndex + 1} 

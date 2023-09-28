@@ -16,8 +16,13 @@ const Menu: React.FC<MenuProps> = ( {children, className, ...props} ) => {
 
 type ItemProps = LiHTMLAttributes<HTMLLIElement> & PropsWithChildren
 
-const Item: React.FC<ItemProps> = ( {children, ...props} ) => {
-	return <li {...props}>
+const Item: React.FC<ItemProps> = ( {children, className, ...props} ) => {
+	const classNames = twMerge(
+		'mt-1',
+		className
+	);
+
+	return <li className={classNames} {...props}>
 		{children}
 	</li>;
 };

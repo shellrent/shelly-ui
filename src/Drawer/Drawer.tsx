@@ -7,7 +7,7 @@ type DrawerProps = {
 const Drawer: React.FC<DrawerProps> = ( {className, children, responsive, ...props} ) => {
 	const classNames = clsx(
 		'drawer',
-		responsive && 'lg:drawer-open',
+		responsive && 'xl:drawer-open',
 		className
 	);
 
@@ -34,6 +34,7 @@ type ContentProps = PropsWithChildren & HTMLAttributes<HTMLDivElement>
 const Content: React.FC<ContentProps> = ( {className, children, ...props} ) => {
 	const classNames = clsx(
 		'drawer-content',
+		'overflow-auto',
 		className
 	);
 
@@ -45,7 +46,7 @@ const Content: React.FC<ContentProps> = ( {className, children, ...props} ) => {
 type SideProps = PropsWithChildren
 
 const Side: React.FC<SideProps> = ( {children, ...props} ) => {
-	return <div className="drawer-side">
+	return <div className="drawer-side z-30">
 		<label htmlFor="drawer" className="drawer-overlay"></label> 
 		{children}
 	</div>;

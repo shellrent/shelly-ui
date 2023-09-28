@@ -4,6 +4,7 @@ import { SelectOption } from "./Select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { swtc } from "../utils";
+import _ from "lodash";
 import clsx from "clsx";
 
 export type MultiSelectProps<T = any> = {
@@ -34,7 +35,17 @@ const MultiSelect: React.FC<MultiSelectProps> = ( {displayFn, options, defaultOp
 	};
 
 	useEffect( () => {
-		setSelectedValues( props?.value || [] );
+		let val: string | undefined | string[] = props?.value;
+		
+		if ( props?.value == undefined ) {
+			val = [];
+		}
+
+		if ( !_.isArray( val )  ) {
+			val = props?.value?.split( ',' ).filter( v => !_.isEmpty( v ) );
+		}
+
+		setSelectedValues( val );
 	}, [props.value] );
 
 	useEffect( () => {

@@ -1,7 +1,6 @@
 import React, { ChangeEvent, HTMLAttributes, InputHTMLAttributes, LabelHTMLAttributes, PropsWithChildren, forwardRef, useEffect, useState } from "react";
 import {twMerge} from 'tailwind-merge';
 import clsx from "clsx";
-import { InputValidatorHandler } from ".";
 import { swtc } from "../utils";
 import { InputProps } from "../Form";
 
@@ -18,9 +17,7 @@ const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {className, v
 			setError( error );
 		}
 
-		if ( error ) {
-			setError( true );
-		}
+		setError( Boolean( error ) );
 	} , [error]);
 	
 	const classNames = twMerge(
@@ -49,7 +46,7 @@ const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {className, v
 			return;
 		} 
 
-		validators.every( (validator: InputValidatorHandler) => {
+		validators.every( (validator) => {
 			if ( !validator ) {
 				return true;
 			}
@@ -70,8 +67,8 @@ const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {className, v
 		<input 
 			className={classNames}
 			onChange={onChange}
-			{...props}
 			ref={ref}
+			{...props}
 		/>
 		{typeof err == 'string'  && <Label className="label-text-alt text-error"> {err} </Label>}
 	</>;

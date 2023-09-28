@@ -5,7 +5,6 @@ import clsx from "clsx";
 import React, { Fragment, ReactNode, useEffect, useState } from "react";
 import { swtc } from "../utils";
 import { InputProps } from "../Form";
-import { InputValidatorHandler } from "../Input";
 
 export type SelectOption<T = any> = {
     title: string
@@ -55,12 +54,12 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 	} , [error]);
 
 	useEffect( () => {
-		setSelectedValue( value );
-	}, [value] );
+		if ( value === "" ) {
+			return;
+		}
 
-	useEffect( () => {
 		if ( validators && validators.length ) {
-			validators.every( (validator: InputValidatorHandler) => {
+			validators.every( (validator) => {
 				if ( !validator ) {
 					return true;
 				}
@@ -77,11 +76,14 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 			} );
 		}
 
+		setSelectedValue( value );
+	}, [value] );
+
+	useEffect( () => {	
 		const option = options.find( opt => opt.value == selectedValue );  
 		setSelectedOption( option );
 
-	} , [selectedValue, options]);
-
+	} , [selectedValue]);
 
 	const onSelectChange = ( value: any ) => {
 		setSelectedValue( value );
@@ -110,9 +112,9 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 	return  <Listbox value={selectedValue} onChange={onSelectChange} name={name} {...props}>
 		<div className="relative">    
 			<Listbox.Button className={classNames}>
-				<span className="h-full flex items-center overflow-hidden">
+				<span className="h-full flex items-center truncate overflow-hidden">
 					{
-						(placeholder && !selectedOption) && <span className="text-sm text-gray-400 font-normal h-full flex items-center">{placeholder}</span>
+						(placeholder && !selectedOption) && <span className="text-sm text-gray-400 font-normal h-full flex items-center truncate">{placeholder}</span>
 					}
 					{       
 						<span className="mx-1">{ (displayFn && selectedOption) ? displayFn( selectedOption ) : selectedOption?.title } </span>
@@ -136,7 +138,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 							key={key}
 							className={({ active }) =>
 								`relative cursor-default select-none py-2 list-none ${
-									active ? 'bg-base-200' : 'text-gray-900'
+									active ? 'bg-base-200' : 'text-neutral'
 								}`
 							}
 							value={option.value}
