@@ -18,7 +18,7 @@ const Tabs: React.FC<TabProps> = ( {tabs} ) => {
 					tabs.map( (tab, key) => <Tab key={key} as={Fragment}>
 						{
 							({ selected }) => 
-								<li className={`tab !outline-none text-neutral-600 rounded-t-lg hover:border-primary ${selected && 'border-b-2 border-primary font-semibold'}`}>
+								<li key={key} className={`tab !outline-none text-neutral-600 rounded-t-lg hover:border-primary ${selected && 'border-b-2 border-primary font-semibold'}`}>
 									{tab.title}
 								</li>
 						}

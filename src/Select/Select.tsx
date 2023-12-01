@@ -54,9 +54,11 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 	} , [error]);
 
 	useEffect( () => {
-		if ( value === "" ) {
-			return;
-		}
+		// console.log( value );
+
+		// if ( value === "" ) {
+		// 	return;
+		// }
 
 		if ( validators && validators.length ) {
 			validators.every( (validator) => {
@@ -83,7 +85,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 		const option = options.find( opt => opt.value == selectedValue );  
 		setSelectedOption( option );
 
-	} , [selectedValue]);
+	} , [selectedValue, props.options]);
 
 	const onSelectChange = ( value: any ) => {
 		setSelectedValue( value );

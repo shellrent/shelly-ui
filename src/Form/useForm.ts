@@ -122,7 +122,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 
 	useEffect(() => {
 		setState();
-	}, [inputRef.current]);
+	}, [inputRef.current, formValues, formErrors ]);
 
 	const handleFormError = (error: string | string[]) => {
 		if (!(error instanceof Array)) {

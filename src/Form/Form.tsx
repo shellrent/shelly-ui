@@ -27,11 +27,15 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 
 		for (const pair of formData.entries()) {
 			const key = pair[0];
-			const value = pair[1] as string | string[];
+			const value = pair[1];
 
-			if ( !value || !value.length ) {
+			if ( !value ) {
 				continue;
 			}
+
+			if (  typeof value == 'string'  && !value.length ) {
+				continue;
+			} 
 
 			if (key.includes('[') && key.includes(']')) {
 				const fieldName = key.substring(0, key.indexOf('['));

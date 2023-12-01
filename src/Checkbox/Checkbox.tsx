@@ -1,12 +1,11 @@
-import React, { ChangeEvent, InputHTMLAttributes, PropsWithChildren, useState } from "react";
+import React, { ChangeEvent, InputHTMLAttributes, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { swtc } from "../utils";
 import { InputProps } from "../Form";
 
 type CheckboxProps = {
     checkboxType?: 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | undefined
-	value?: boolean
-} & PropsWithChildren & Omit<InputProps, "value"> & Omit<InputHTMLAttributes<HTMLInputElement>, "value">
+} & InputProps & Omit<InputHTMLAttributes<HTMLInputElement>, "value">
 
 const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, children, className, error, validators, value,  ...props} ) => {
 	const [err, setError] = useState<string | boolean | undefined>(false);
@@ -56,7 +55,7 @@ const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, childr
 
 
 	return <>
-		<input type="checkbox" onChange={ onChange } className={classNames} {...props} checked={value}>
+		<input type="checkbox" onChange={ onChange } className={classNames} {...props} checked={Boolean( value )}>
 			{children}
 		</input>
 		{
