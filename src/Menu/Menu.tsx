@@ -34,9 +34,9 @@ type CollapsibleItemProps = {
 
 const CollapsibleItem: React.FC<CollapsibleItemProps> = ( {children, title, open} ) => {
 	return <Item>
-		<details open={open} className="active:!bg-transparent active:!text-content">
+		<details open={open} className="active:!bg-transparent active:!text-content transition">
 			<summary>{title}</summary>
-			<ul>
+			<ul className="transition">
 				{children}
 			</ul>
 		</details>

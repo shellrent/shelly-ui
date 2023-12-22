@@ -1,10 +1,9 @@
-import i18n from "../../../i18n";
 export type InputValidatorHandler<T = any> = (value: T | null | undefined) => string | null ; 
 
-export const isRequired = (errMessage: string | null = null): InputValidatorHandler => {
+export const isRequired = (errMessage: string): InputValidatorHandler => {
 	const validator: InputValidatorHandler<string> = ( value ) => {
 		if (!value || !value.length ) {
-			return errMessage ? errMessage : i18n.t( 'validators.field_is_required' );
+			return errMessage;
 		}
 
 		return null;
@@ -27,7 +26,7 @@ export const isEmail = (errMessage: string): InputValidatorHandler => {
 export const minCharacters = ( min: number,  errMessage: string ): InputValidatorHandler => {
 	return ( value ) => {
 		if ( !value ) {
-			return errMessage;
+			return null;
 		}
 
 		if ( value.length < min ) {
@@ -53,7 +52,7 @@ export const maxCharacters = ( max: number,  errMessage: string ): InputValidato
 	};
 };
 
-export const isUrl = ( errorMessage?: string | undefined ): InputValidatorHandler<string> => {
+export const isUrl = ( errorMessage: string ): InputValidatorHandler<string> => {
 	return ( value ) => {
 		if ( !value ) {
 			return null;
@@ -61,7 +60,7 @@ export const isUrl = ( errorMessage?: string | undefined ): InputValidatorHandle
 
 		const urlRegex = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/;
 		if ( !urlRegex.test( value ) ) {
-			return errorMessage ?? i18n.t( 'Il campo deve contenere un url valido' );
+			return errorMessage;
 		}
 
 		return null;

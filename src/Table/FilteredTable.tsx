@@ -78,7 +78,11 @@ const FilterForm: React.FC<FilterFormProps> = ( {children, id, form, updateAsync
 				{children}
 			</Form.GridLayout>
 			<Form.FormButtons>
-				<Button size="sm" buttonType="ghost" type="button" onClick={ () => {form.resetFormValues();} } outline>
+				<Button size="sm" buttonType="ghost" type="button" outline onClick={ () => {
+					form.resetFormValues(); 
+					saveForm( {} );
+				} } 
+				>
 					Reset
 				</Button>
 				<Button size="sm" buttonType="primary" type="submit" loading={loading}>

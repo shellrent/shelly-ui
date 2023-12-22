@@ -1,3 +1,9 @@
+import ShellyProvider from './Provider';
+export {ShellyProvider};
+
+import { ShellyConfig as Config } from './Provider';
+export type ShellyConfig = Config;
+
 import { InputValidatorHandler as Validator } from './Input';
 import Input from './Input';
 export { Input };
@@ -67,6 +73,9 @@ export type TabConfig = Tc;
 
 import Swap from './Swap';
 export {Swap};
+
+import Spinner from './Spinner';
+export {Spinner};
 
 import Tooltip from './Tooltip';
 export {Tooltip};

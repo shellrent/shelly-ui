@@ -5,11 +5,12 @@ import { InputProps } from "../Form";
 
 type CheckboxProps = {
     checkboxType?: 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | undefined
-} & InputProps & Omit<InputHTMLAttributes<HTMLInputElement>, "value">
+	value: boolean,
+} & Omit<InputProps, "value"> & Omit<InputHTMLAttributes<HTMLInputElement>, "value">
 
-const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, children, className, error, validators, value,  ...props} ) => {
+const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, children, className, error, validators, value, inputSize,  ...props} ) => {
 	const [err, setError] = useState<string | boolean | undefined>(false);
-    
+
 	const classNames = twMerge( 
 		'checkbox',
 		checkboxType && swtc( checkboxType, {
@@ -21,6 +22,12 @@ const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, childr
 			warning: 'checkbox-warning',
 			error: 'checkbox-error',
 		}),
+		inputSize && swtc( inputSize, {
+			xs: 'checkbox-xs',
+			sm: 'checkbox-sm',
+			md: 'checkbox-md',
+			lg: 'checkbox-lg',
+		} ),
 		err && 'checkbox-error',
 		className,
 	);

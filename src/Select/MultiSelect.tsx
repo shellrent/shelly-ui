@@ -6,20 +6,17 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { swtc } from "../utils";
 import _ from "lodash";
 import clsx from "clsx";
+import { InputProps } from "../Form";
 
 export type MultiSelectProps<T = any> = {
     displayFn?: ( option: T ) => ReactNode
     options: SelectOption<T>[]
     defaultOption?: SelectOption<T>
-    name?: string
-	value?: string
 	placeholder?: string
-	onValueChange?: ( value: any ) => void
     onChange?: ( value: T ) => void 
-	inputSize?: 'xs' | 'sm' | 'md' | 'lg' | undefined
-}
+} & InputProps
 
-const MultiSelect: React.FC<MultiSelectProps> = ( {displayFn, options, defaultOption,  name, onChange, onValueChange, placeholder, inputSize, ...props} ) => {
+const MultiSelect: React.FC<MultiSelectProps> = ( {displayFn, options, defaultOption,  name, onChange, onValueChange, placeholder, inputSize, error, ...props} ) => {
 	const [selectedValues, setSelectedValues] = useState<any | undefined>( props.value || [] );
 	const [selectedOptions, setSelectedOptions] = useState<SelectOption[] | undefined>( defaultOption && [defaultOption] );
 
@@ -80,7 +77,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ( {displayFn, options, defaultOp
 	return <Listbox value={selectedValues} onChange={onSelectChange} name={name} multiple>
 		<div className="relative">
 			<Listbox.Button className={classNames}>
-				<span className="overflow-hidden inline-block h-full flex items-center">
+				<span className="overflow-hidden h-full flex items-center">
 					{
 						(placeholder && !selectedOptions?.length) && <span className="text-sm text-gray-400 font-normal">{placeholder}</span>
 					}

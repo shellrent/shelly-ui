@@ -10,7 +10,7 @@ type ModalProps = {
 const Modal = memo<ModalProps>( ( {modal, children} ) => {
 	return <Transition appear show={modal.isOpen} as={Fragment}>
 		<Dialog as="dialog" className="modal modal-open text-neutral" onClose={() => modal.close()}>
-			<div className="modal-box w-5/6 max-w-2xl overflow-y-visible relative">
+			<div className="modal-box w-5/6 max-w-2xl overflow-y-scroll relative">
 				<Transition.Child
 					enter="ease-out duration-100"
 					enterFrom="opacity-0 scale-95"

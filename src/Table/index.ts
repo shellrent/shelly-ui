@@ -4,7 +4,7 @@ import PaginateTable from "./PaginateTable";
 import FilteredTable from "./FilteredTable";
 import TableButtons from "./TableButtons";
 export type { PaginationChangeHandler } from "./useTable";
-
+export type { TableObject } from "./useTable";
 export {
 	useTable,
 	TableButtons,

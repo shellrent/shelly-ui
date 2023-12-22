@@ -1,9 +1,11 @@
-import React, { ChangeEvent, HTMLAttributes, InputHTMLAttributes, LabelHTMLAttributes, PropsWithChildren, forwardRef, useEffect, useState } from "react";
+import React, { ChangeEvent, HTMLAttributes, InputHTMLAttributes, PropsWithChildren, forwardRef, useEffect, useState } from "react";
 import {twMerge} from 'tailwind-merge';
 import clsx from "clsx";
 import { swtc } from "../utils";
 import { InputProps } from "../Form";
-
+import Label from "../Common/FieldLabel";
+import FieldError from "../Common/FieldError";
+import config from 'shelly.config.js';
 
 type InputComponentProps = {
     bordered?: boolean,
@@ -70,7 +72,7 @@ const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {className, v
 			ref={ref}
 			{...props}
 		/>
-		{typeof err == 'string'  && <Label className="label-text-alt text-error"> {err} </Label>}
+		<FieldError error={err}></FieldError>
 	</>;
 });
 
@@ -91,23 +93,8 @@ const FormControl: React.FC<FormControlProps> = ( { className, children, ...prop
 	</div>;
 };
 
-type LabelProps = LabelHTMLAttributes<HTMLLabelElement> & PropsWithChildren
-
-const Label: React.FC<LabelProps> = ( {children, className, ...props}: LabelProps ) => {
-	const classNames = twMerge(
-		'label',
-		className
-	);
-
-	return <label
-		className={classNames}
-		{...props}
-	>
-		{ children }
-	</label>;
-};
 
 export default Object.assign( Input, {
-	Label,
+	Label: Label,
 	FormControl
 } );

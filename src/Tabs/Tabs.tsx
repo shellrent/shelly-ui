@@ -1,9 +1,12 @@
-import { Tab } from "@headlessui/react";
-import React, { Fragment, ReactNode } from "react";
+
+import _ from "lodash";
+import React, { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
+import './style.scss';
 
 export type TabConfig = {
     title: ReactNode,
     content: ReactNode,
+	id?: string
 }
 
 type TabProps = {
@@ -11,28 +14,37 @@ type TabProps = {
 }
 
 const Tabs: React.FC<TabProps> = ( {tabs} ) => {
-	return <Tab.Group >
-		<div className="my-2 border-b border-base-300">
-			<Tab.List as="ul" className="tabs text-center">
+	const [ computedTabs, setComputedTabs ] = useState<TabConfig[]>([]);
+	const [currentKey, setCurrentKey] = useState<string | undefined>(  );
+
+	useEffect( () => {
+		setComputedTabs(  tabs.map( t => ({
+			...t,
+			id: String((new Date).getTime()) + '_' + _.uniqueId()
+		})));
+	},[tabs] );
+
+	useEffect( () => {
+		setCurrentKey( computedTabs[0]?.id ?? undefined );
+	}, [computedTabs] );
+
+	const isActive = useCallback( ( tabId: string | undefined ) => currentKey === tabId, [currentKey] );
+
+	return <>
+		<div className="my-2 mb-8 bg-base-100 rounded-box shadow p-2 ">
+			<ul className="tabs tabs-boxed text-center">
 				{
-					tabs.map( (tab, key) => <Tab key={key} as={Fragment}>
-						{
-							({ selected }) => 
-								<li key={key} className={`tab !outline-none text-neutral-600 rounded-t-lg hover:border-primary ${selected && 'border-b-2 border-primary font-semibold'}`}>
-									{tab.title}
-								</li>
-						}
-					</Tab> )
+					computedTabs.map( (tab, key) => <button key={key} onClick={ () => setCurrentKey( tab.id ) } className={`tab ${ isActive( tab.id ) ? 'tab-active font-semibold transition' : '' }`}>
+						{tab.title}
+					</button>
+					)
 				}
-			
-			</Tab.List>
+			</ul>
 		</div>
-		<Tab.Panels>
-			{
-				tabs.map( (tab, key) => <Tab.Panel key={key}>{tab.content}</Tab.Panel> )
-			}
-		</Tab.Panels>
-	</Tab.Group>;
+		<div>
+			{computedTabs.find( t => currentKey === t?.id )?.content}
+		</div>
+	</>; 
 };
 
 export default Tabs;

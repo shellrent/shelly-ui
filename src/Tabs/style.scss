@@ -1,0 +1,6 @@
+.tabs-boxed {
+    background-color: transparent !important;
+    .tab {
+        border-radius: var( --rounded-box );
+    }
+}

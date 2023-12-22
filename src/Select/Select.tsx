@@ -5,6 +5,8 @@ import clsx from "clsx";
 import React, { Fragment, ReactNode, useEffect, useState } from "react";
 import { swtc } from "../utils";
 import { InputProps } from "../Form";
+import FieldError from "../Common/FieldError";
+
 
 export type SelectOption<T = any> = {
     title: string
@@ -26,8 +28,9 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 	const [selectedValue, setSelectedValue] = useState<any | undefined>( value );
 	const [options, setOptions] = useState<SelectOption[]>( props.options );
 	const [err, setError] = useState<string | boolean>(false);
+	const [validate, setValidate] = useState( false );
 
-	useEffect(  () => {
+	useEffect( () => {
 		if ( showEmptyOption ) {
 			setOptions( [
 				{
@@ -54,12 +57,10 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 	} , [error]);
 
 	useEffect( () => {
-		// console.log( value );
-
-		// if ( value === "" ) {
-		// 	return;
-		// }
-
+		if ( value === '' && !validate ) {
+			return () => setValidate(true);
+		}
+		
 		if ( validators && validators.length ) {
 			validators.every( (validator) => {
 				if ( !validator ) {
@@ -67,22 +68,26 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 				}
 				
 				const validationError = validator( value );
-	
+				
 				setError( validationError ?? false );
-	
+				
 				if ( validationError ) {
 					return false;
 				}
-	
+				
 				return true;
 			} );
 		}
 
-		setSelectedValue( value );
+
+		setSelectedValue( value  );
+
+		return () => (!validate && setValidate(true));
 	}, [value] );
 
 	useEffect( () => {	
 		const option = options.find( opt => opt.value == selectedValue );  
+
 		setSelectedOption( option );
 
 	} , [selectedValue, props.options]);
@@ -119,15 +124,11 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 						(placeholder && !selectedOption) && <span className="text-sm text-gray-400 font-normal h-full flex items-center truncate">{placeholder}</span>
 					}
 					{       
-						<span className="mx-1">{ (displayFn && selectedOption) ? displayFn( selectedOption ) : selectedOption?.title } </span>
+						<span className={ ((showEmptyOption && selectedOption?.value == null) ? 'text-gray-400' : '') + ' mx-1'}>{ (displayFn && selectedOption) ? displayFn( selectedOption ) : selectedOption?.title } </span>
 					} 
 				</span>
 			</Listbox.Button>
-			{
-				err && <label className="label">
-					{ typeof err == 'string' && <span className="label-text-alt text-error">{err}</span> }
-				</label>
-			}
+			<FieldError error={err}></FieldError>
 			<Transition
 				as={Fragment}
 				leave="transition ease-in duration-100"

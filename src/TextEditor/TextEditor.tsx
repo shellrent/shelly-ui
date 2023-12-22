@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { InputProps } from '../Form';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import FieldError from '../Common/FieldError';
 
 type TextEditorProps = InputProps
 
@@ -56,11 +57,7 @@ const TextEditor: React.FC<TextEditorProps> = ( { value, onValueChange, error, v
 	return <div>
 		<input type='hidden' value={value} {...props}/> 
 		<ReactQuill className='!border-0 !rounded-box' theme="snow" value={htmlValue} onChange={onEditorChange} />
-		{
-			err && <label className="label">
-				<span className="label-text-alt text-error">{err}</span>
-			</label>
-		}
+		<FieldError error={err}></FieldError>
 	</div>;
 };
 
