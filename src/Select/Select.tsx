@@ -2,7 +2,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox, Transition } from "@headlessui/react";
 import clsx from "clsx";
-import React, { Fragment, ReactNode, useEffect, useState } from "react";
+import React, { Fragment, ReactNode, useEffect, useRef, useState } from "react";
 import { swtc } from "../utils";
 import { InputProps } from "../Form";
 import FieldError from "../Common/FieldError";
@@ -28,7 +28,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 	const [selectedValue, setSelectedValue] = useState<any | undefined>( value );
 	const [options, setOptions] = useState<SelectOption[]>( props.options );
 	const [err, setError] = useState<string | boolean>(false);
-	const [validate, setValidate] = useState( false );
+	const prevValue = useRef( value );
 
 	useEffect( () => {
 		if ( showEmptyOption ) {
@@ -57,9 +57,11 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 	} , [error]);
 
 	useEffect( () => {
-		if ( value === '' && !validate ) {
-			return () => setValidate(true);
+		if ( prevValue.current === value ) {
+			return;
 		}
+
+		prevValue.current = value;
 		
 		if ( validators && validators.length ) {
 			validators.every( (validator) => {
@@ -79,18 +81,11 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 			} );
 		}
 
-
 		setSelectedValue( value  );
-
-		return () => (!validate && setValidate(true));
-	}, [value] );
-
-	useEffect( () => {	
-		const option = options.find( opt => opt.value == selectedValue );  
-
+	
+		const option = options.find( opt => opt.value == value );  
 		setSelectedOption( option );
-
-	} , [selectedValue, props.options]);
+	}, [value, options] );
 
 	const onSelectChange = ( value: any ) => {
 		setSelectedValue( value );

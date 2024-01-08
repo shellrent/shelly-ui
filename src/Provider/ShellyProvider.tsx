@@ -1,8 +1,9 @@
-import { PropsWithChildren, ReactNode, createContext, useEffect, useState } from "react";
+import { ReactElement } from "react";
+import { PropsWithChildren, createContext, useEffect, useState } from "react";
 import React from "react";
 
 export type ShellyConfig = {
-    spinnerElement?: ReactNode
+    spinnerElement?: ReactElement
 }
 
 type ShellyProviderProps = {

@@ -5,7 +5,6 @@ import { swtc } from "../utils";
 import { InputProps } from "../Form";
 import Label from "../Common/FieldLabel";
 import FieldError from "../Common/FieldError";
-import config from 'shelly.config.js';
 
 type InputComponentProps = {
     bordered?: boolean,

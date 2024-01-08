@@ -29,10 +29,10 @@
     "prepack": "json -f package.json -I -e \"delete this.devDependencies; delete this.dependencies\""
   },
   "peerDependencies": {
-    "daisyui": "^3.1.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "tailwindcss": "^3.3.2"
+    "daisyui": "^3.x",
+    "react": "^18.x",
+    "react-dom": "^18.x",
+    "tailwindcss": "^3.x"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.15",

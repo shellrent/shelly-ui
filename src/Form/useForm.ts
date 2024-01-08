@@ -66,7 +66,7 @@ class FormValues<T extends { [key: string]: any } = any> {
 		return this;
 	}
 
-	public getFormValue(name: string): unknown | undefined {
+	public getFormValue(name: string): unknown | undefined {	
 		return this.formValues[name];
 	}
 
