@@ -60,8 +60,8 @@ export {Collapse};
 import Textarea from './Textarea/Textarea';
 export {Textarea};
 
-// // import TextEditor from './TextEditor/TextEditor';
-// export {TextEditor};
+import TextEditor from './TextEditor/TextEditor';
+export {TextEditor};
 
 import Toggle from './Toggle/Toggle';
 export {Toggle};

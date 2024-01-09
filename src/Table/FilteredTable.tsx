@@ -6,13 +6,14 @@ import Input from "../Input";
 import { FormHandler } from "../Form/useForm";
 import _ from "lodash";
 import { useSearchParams } from "react-router-dom";
+import { RowData } from "@tanstack/react-table";
 
-type FilteredTableProps =  PaginateTableProps & PropsWithChildren
+type FilteredTableProps<T extends RowData = any> = PaginateTableProps<T> & PropsWithChildren
 
-const FilteredTable: React.FC<FilteredTableProps> = ( {children, ...props}) => {
+const FilteredTable: React.FC<any> = <T,>( {children, table, ...props}: FilteredTableProps<T>) => {
 	return <div>
 		{children}
-		<PaginateTable {...props}/>
+		<PaginateTable table={table} {...props}/>
 	</div>;
 };
 

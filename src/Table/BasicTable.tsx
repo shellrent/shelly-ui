@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
-import { flexRender } from "@tanstack/react-table";
+import { RowData, flexRender } from "@tanstack/react-table";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { TableObject } from "./useTable";
 
-type BasicTableProps<T = any> = {
+type BasicTableProps<T extends RowData = any> = {
     table: TableObject<T>
 	zebra?: boolean
 }

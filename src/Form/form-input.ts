@@ -2,9 +2,9 @@ import { InputValidationHandler } from "..";
 
 export type InputSize = 'xs' | 'sm' | 'lg' | 'md';
 
-export type InputProps = { 
+export type InputProps<TValue = string> = { 
 	name?: string, 
-	value?: string | undefined, 
+	value?: TValue, 
 	onValueChange?: ( value: any ) => void, 
 	disabled?: boolean,
 	error?: string | boolean | undefined | null,

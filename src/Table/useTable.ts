@@ -1,4 +1,4 @@
-import { ColumnDef, PaginationState, Table, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, PaginationState, RowData, Table, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export type PaginationChangeHandler = (pageIndex: number, pageCount: number) => Promise<any>
@@ -14,7 +14,7 @@ type UseTableProps<T = any> = {
 
 export type TableObject<T = any> = Table<T> & { loading: boolean }
 
-const useTable = <T = any>({ data, columns, onPaginationChange, pageSize, pageCount, currentPage }: UseTableProps<T>): { table: TableObject<T> } => {
+const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, pageSize, pageCount, currentPage }: UseTableProps<T>): { table: TableObject<T> } => {
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: (currentPage || 1) - 1,
 		pageSize: pageSize || 10,
@@ -53,7 +53,7 @@ const useTable = <T = any>({ data, columns, onPaginationChange, pageSize, pageCo
 		manualFiltering: true
 	});
 
-	return { table: Object.assign(table, { loading: loading }) };
+	return { table: Object.assign(table, { loading: loading }) } as { table: TableObject<T> };
 };
 
 

@@ -5,14 +5,13 @@ import { swtc } from "../utils";
 import clsx from "clsx";
 import { TableObject } from "./useTable";
 import Spinner from "../Spinner/Spinner";
-// import Spinner from "../../Spinner";
-
-export type PaginateTableProps<T = any> = {
-    table: TableObject
+import { RowData } from "@tanstack/react-table";
+export type PaginateTableProps<T extends RowData = any> = {
+    table: TableObject<T>
     paginatePosition?: "center" | "left" | "right" | undefined
 }
 
-const PaginateTable: React.FC<PaginateTableProps> = ( {table, paginatePosition} ) => {
+const PaginateTable: React.FC<any> = <T,>( {table, paginatePosition}: PaginateTableProps<T> ) => {
 	const paginateClassNames = clsx( 
 		paginatePosition && swtc( paginatePosition, {
 			center: "justify-center",
@@ -21,7 +20,7 @@ const PaginateTable: React.FC<PaginateTableProps> = ( {table, paginatePosition} 
 		} ),
 		paginatePosition || "justify-center",
 		"mt-4 flex"
-	);
+	); 
 
 	return <div className="relative">
 		{ table.loading && <Spinner/>  }

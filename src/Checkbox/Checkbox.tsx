@@ -5,7 +5,7 @@ import { InputProps } from "../Form";
 
 type CheckboxProps = {
     checkboxType?: 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | undefined
-	value: boolean,
+	value?: boolean,
 } & Omit<InputProps, "value"> & Omit<InputHTMLAttributes<HTMLInputElement>, "value">
 
 const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, children, className, error, validators, value, inputSize,  ...props} ) => {

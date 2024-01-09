@@ -66,7 +66,7 @@ class FormValues<T extends { [key: string]: any } = any> {
 		return this;
 	}
 
-	public getFormValue(name: string): unknown | undefined {	
+	public getFormValue(name: string): unknown | undefined {
 		return this.formValues[name];
 	}
 
@@ -102,7 +102,7 @@ export type FormHandler<T = any> = {
 	resetErrors: () => void
 	resetFormValues: () => void
 	resetInputs: () => void
-	registerInput: (props: RegisterHandlerProps) => InputProps
+	registerInput: <TValue = string>(props: RegisterHandlerProps) => InputProps<TValue>
 	triggerInputError: (name: string) => void,
 	onSuccess?: () => void,
 	registerOnSuccessCallback: (callback: () => void) => void
@@ -225,7 +225,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 		};
 	};
 
-	const registerInput = ({ name, validators, disable }: RegisterHandlerProps): InputProps => {
+	const registerInput = <TValue = string>({ name, validators, disable }: RegisterHandlerProps): InputProps<TValue> => {
 		const onFieldChangeValue = (value: string | null) => {
 			if (formValues[name] !== value) {
 				setValues({

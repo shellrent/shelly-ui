@@ -57,30 +57,27 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 	} , [error]);
 
 	useEffect( () => {
-		if ( prevValue.current === value ) {
-			return;
+		if ( prevValue.current !== value ) {
+			if ( validators && validators.length ) {
+				validators.every( (validator) => {
+					if ( !validator ) {
+						return true;
+					}
+					
+					const validationError = validator( value );
+					
+					setError( validationError ?? false );
+					
+					if ( validationError ) {
+						return false;
+					}
+					
+					return true;
+				} );
+			}
 		}
 
 		prevValue.current = value;
-		
-		if ( validators && validators.length ) {
-			validators.every( (validator) => {
-				if ( !validator ) {
-					return true;
-				}
-				
-				const validationError = validator( value );
-				
-				setError( validationError ?? false );
-				
-				if ( validationError ) {
-					return false;
-				}
-				
-				return true;
-			} );
-		}
-
 		setSelectedValue( value  );
 	
 		const option = options.find( opt => opt.value == value );  
@@ -104,11 +101,12 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 		'select select-bordered relative w-full cursor-default text-left',
 		err && 'select-error',
 		inputSize && swtc( inputSize, {
-			xs: 'select-xs',
-			sm: 'select-sm',
-			md: 'select-md',
-			lg: 'select-lg'
-		} )
+			xs: 'select-xs !text-xs',
+			sm: 'select-sm !text-sm',
+			md: 'select-md !text-base',
+			lg: 'select-lg !text-lg'
+		} ),
+		inputSize || 'text-base'
 	);
 
 	return  <Listbox value={selectedValue} onChange={onSelectChange} name={name} {...props}>
@@ -116,7 +114,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 			<Listbox.Button className={classNames}>
 				<span className="h-full flex items-center truncate overflow-hidden">
 					{
-						(placeholder && !selectedOption) && <span className="text-sm text-gray-400 font-normal h-full flex items-center truncate">{placeholder}</span>
+						(placeholder && !selectedOption) && <span className="text-gray-400 font-normal h-full flex items-center truncate">{placeholder}</span>
 					}
 					{       
 						<span className={ ((showEmptyOption && selectedOption?.value == null) ? 'text-gray-400' : '') + ' mx-1'}>{ (displayFn && selectedOption) ? displayFn( selectedOption ) : selectedOption?.title } </span>
