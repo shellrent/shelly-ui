@@ -5,7 +5,6 @@ import Button from "../Button";
 import Input from "../Input";
 import { FormHandler } from "../Form/useForm";
 import _ from "lodash";
-import { useSearchParams } from "react-router-dom";
 import { RowData } from "@tanstack/react-table";
 
 type FilteredTableProps<T extends RowData = any> = PaginateTableProps<T> & PropsWithChildren
@@ -25,45 +24,9 @@ type FilterFormProps<T = any> = {
 
 const FilterForm: React.FC<FilterFormProps> = ( {children, id, form, updateAsyncFilters} ) => {
 	const [loading, setIsLoading] = useState(false);
-	const [queryParameters, setQueryParams] = useSearchParams();
-
-	useEffect( () => {
-		let formValues = {};
-
-		if ( !queryParameters ) {
-			return;
-		}
-
-		queryParameters.forEach( ( val, key ) => {
-			formValues = {
-				...formValues,
-				[key]: val
-			};	
-		} );
-
-		if ( formValues == form.state.formValues ) {
-			return;
-		}
-
-		form.setFormValues( formValues );
-
-		if ( !_.isEmpty( formValues ) ) {
-			saveForm( formValues );
-		}
-	}, [] );
 	
 	
 	const saveForm = ( formData: any ) => {
-		for( const key of queryParameters.keys() ) {
-			queryParameters.delete( key );
-		}
-
-		Object.entries( formData ).map( ([key, value]) => {
-			queryParameters.set(key, value as string);
-		} );
-	
-		setQueryParams( queryParameters );
-
 		if ( updateAsyncFilters ) {
 			setIsLoading( true );
 			return updateAsyncFilters( formData )
