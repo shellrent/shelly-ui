@@ -29,7 +29,7 @@ const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, 
 			(prevPagination.current.pageIndex !== pagination.pageIndex || prevPagination.current.pageSize !== pagination.pageSize)) {
 			setLoading(true);
 			onPaginationChange(pagination.pageIndex + 1, pagination.pageSize)
-				.finally(() => console.log('finally'); setLoading(false));
+				.finally(() => setLoading(false));
 		}
 
 		prevPagination.current = pagination;
