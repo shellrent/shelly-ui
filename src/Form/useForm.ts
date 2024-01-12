@@ -71,9 +71,23 @@ class FormValues<T extends { [key: string]: any } = any> {
 	}
 
 	public isEqual(values: T): boolean {
-		const exists = Object.entries( values ).find( ([key, value]) => this.formValues[ key ] !== value );
+		if ( !values ) {
+			return false;
+		}
 
-		return Boolean( !exists ); 
+		if ( Object.entries( values ).length !== Object.entries( this.formValues ).length ) {
+			return false;
+		}
+
+		let isEqual = true;
+
+		Object.entries( values ).forEach( ( [key, value] ) => {
+			if ( this.formValues[ key ] !== value ) {
+				isEqual = false;
+			}
+		});
+
+		return isEqual; 
 	}
 }
 
@@ -170,7 +184,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 	};
 
 	const resetFormValues = () => {
-		setValues({});
+		setValues({...{}});
 	};
 
 	const resetErrors = (): void => {

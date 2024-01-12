@@ -3,8 +3,8 @@ import Button from "../Button";
 import { ButtonProps } from "../Button/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassPlus, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 import Tooltip from "../Tooltip";
+import { useNavigate } from "../hooks/useNavigate";
 
 type TableButtonsProps = PropsWithChildren
 
