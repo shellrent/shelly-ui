@@ -3,8 +3,8 @@ import Button from "../Button";
 import { ButtonProps } from "../Button/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassPlus, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 import Tooltip from "../Tooltip";
+import { useNavigate } from "../hooks/useNavigate";
 
 type TableButtonsProps = PropsWithChildren
 
@@ -23,13 +23,13 @@ type TableButtonProps = {
 } & Omit<ButtonProps, "buttonType" | "outline" | "size">
 
 const ButtonProvider: React.FC<TableButtonProviderProps> = ( {children, onClick, to, ...props}: TableButtonProviderProps ) => {
-  // const navigate = useNavigate();
+  	const navigate = useNavigate();
 
 	return <Button {...props} onClick={  (e) =>{
-		// if ( to ) {
-		// 	navigate( to );
-		// 	return;
-		// }
+		 if ( to ) {
+		 	navigate( to );
+		 	return;
+		}
 
 		if ( onClick ) {
 			onClick(e);

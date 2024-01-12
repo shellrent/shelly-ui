@@ -3,6 +3,7 @@ import React from "react";
 
 export type ShellyConfig = {
     spinnerElement?: ReactElement
+	navigateCallback?: () => ( path: string ) => void
 }
 
 type ShellyProviderProps = {

@@ -6,6 +6,7 @@ import Input from "../Input";
 import { FormHandler } from "../Form/useForm";
 import _ from "lodash";
 import { RowData } from "@tanstack/react-table";
+import { useQueryParams } from "../hooks/useQueryParams";
 
 type FilteredTableProps<T extends RowData = any> = PaginateTableProps<T> & PropsWithChildren
 
@@ -24,9 +25,43 @@ type FilterFormProps<T = any> = {
 
 const FilterForm: React.FC<FilterFormProps> = ( {children, id, form, updateAsyncFilters} ) => {
 	const [loading, setIsLoading] = useState(false);
+	const [queryParameters, setQueryParams] = useQueryParams();
+
+	useEffect( () => {
+		if ( !queryParameters ) {
+			return;
+		}
+		
+		let formValues = {};
+		queryParameters.forEach( ( val, key ) => {
+			formValues = {
+				...formValues,
+				[key]: val
+			};	
+		} );
+
+
+		if ( formValues == form.state.formValues ) {
+			return;
+		}
+
+		form.setFormValues( formValues );
+
+		if ( !_.isEmpty( formValues ) ) {
+			saveForm( formValues );
+		}
+	}, [queryParameters] );
 	
 	
 	const saveForm = ( formData: any ) => {
+		const qp = new URLSearchParams;
+		
+		if ( formData.length !== 0 ) {	
+			Object.entries( formData ).map( ([k, v]) => {
+				qp.set(k, v as string);
+			} );
+		}		
+		setQueryParams( qp );
 		if ( updateAsyncFilters ) {
 			setIsLoading( true );
 			return updateAsyncFilters( formData )
