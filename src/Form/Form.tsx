@@ -88,7 +88,6 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 				return true;
 			} );
 		} );
-
 		if ( errors.length > 0 ) {
 			form.handleFormError( errors );
 			return;
@@ -96,11 +95,7 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 		
 		const res = saveForm( data as T );
 
-		if ( !( res instanceof Promise ) ) {
-			if ( res ) {
-				form.onSuccess && form?.onSuccess();
-			}
-		}
+		form.handleOnSubmitted( res );
 	};
 
 	return <form 

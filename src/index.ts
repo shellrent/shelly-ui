@@ -6,13 +6,15 @@ export type ShellyConfig = Config;
 
 import { InputValidatorHandler as Validator } from './Input';
 import Input from './Input';
-export * as validators from './Input'
+export * as validators from './Input';
 export { Input };
 export type InputValidationHandler = Validator;
 
-import Form from './Form';
+import Form, {UseFormProps as UFP } from './Form';
 export { useForm } from './Form';
 export { Form };
+
+export type  UseFormProps<R extends boolean | Promise<any>, T = any> = UFP<R, T>
 
 import Button from './Button';
 export { Button };
@@ -88,6 +90,6 @@ export type ResetInputProps = Reset
 
 
 //types
-import { ColumnDef as CF, CellContext as CC, RowData } from '@tanstack/react-table';
+import { CellContext as CC, ColumnDef as CF, RowData } from '@tanstack/react-table';
 export type ColumnDef<TData extends unknown, TValue = unknown> = CF<TData, TValue>;
 export type CellContext<TData extends RowData, TValue> = CC<TData, TValue>;

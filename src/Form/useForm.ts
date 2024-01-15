@@ -71,23 +71,23 @@ class FormValues<T extends { [key: string]: any } = any> {
 	}
 
 	public isEqual(values: T): boolean {
-		if ( !values ) {
+		if (!values) {
 			return false;
 		}
 
-		if ( Object.entries( values ).length !== Object.entries( this.formValues ).length ) {
+		if (Object.entries(values).length !== Object.entries(this.formValues).length) {
 			return false;
 		}
 
 		let isEqual = true;
 
-		Object.entries( values ).forEach( ( [key, value] ) => {
-			if ( this.formValues[ key ] !== value ) {
+		Object.entries(values).forEach(([key, value]) => {
+			if (this.formValues[key] !== value) {
 				isEqual = false;
 			}
 		});
 
-		return isEqual; 
+		return isEqual;
 	}
 }
 
@@ -105,7 +105,7 @@ type RegisterHandlerProps = {
 	disable?: boolean
 }
 
-export type FormHandler<T = any> = {
+export type FormHandler<T = any, R = any> = {
 	state: FormState,
 	ref: RefObject<HTMLFormElement>,
 	submitting: boolean
@@ -120,13 +120,15 @@ export type FormHandler<T = any> = {
 	triggerInputError: (name: string) => void,
 	onSuccess?: () => void,
 	registerOnSuccessCallback: (callback: () => void) => void
+	handleOnSubmitted: (res: R) => void
 }
 
 
-type UseFormProps<T = any> = {
+export type UseFormProps<R extends Promise<any> | boolean, T = any> = {
 	values?: T
 	type?: 'data' | 'filter'
 	onSuccess?: () => void
+	onSubmitted?: (res: R, success: () => void, error: (error: string | string[]) => void) => void;
 }
 
 type InputDefinition = {
@@ -137,7 +139,7 @@ type InputDefinition = {
 }
 
 
-const useForm = (props?: UseFormProps): FormHandler => {
+const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): FormHandler => {
 	const [formErrors, setFormErrors] = useState<string[]>([]);
 	const [state, setForm] = useState<FormState>({ inputs: {}, formValues: new FormValues(props?.values), formErrors: new FormErrors(formErrors) });
 	const [formValues, setValues] = useState(props?.values ?? {});
@@ -169,7 +171,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 
 	useEffect(() => {
 		setState();
-	}, [setState]);
+	}, []);
 
 	const handleFormError = (error: string | string[]) => {
 		if (!(error instanceof Array)) {
@@ -184,7 +186,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 	};
 
 	const resetFormValues = () => {
-		setValues({...{}});
+		setValues({ ...{} });
 	};
 
 	const resetErrors = (): void => {
@@ -303,6 +305,24 @@ const useForm = (props?: UseFormProps): FormHandler => {
 		};
 	};
 
+	const handleOnSubmitted = <R extends Promise<any> | boolean>(res: R) => {
+		if ( !props.onSubmitted && res instanceof Promise ) {
+			res
+				.then( () => props.onSuccess && props.onSuccess() )
+				.catch( (err) => handleFormError( err.message() ) );
+
+			return;
+		} 
+
+		if ( !props.onSubmitted ) {
+			res ? props.onSuccess() : handleFormError( 'errror' );
+		}
+
+		if ( props.onSubmitted ){
+			props.onSubmitted( res, props.onSuccess, handleFormError );
+		}
+	};
+
 	return {
 		state,
 		submitForm,
@@ -317,7 +337,8 @@ const useForm = (props?: UseFormProps): FormHandler => {
 		onSuccess: onSuccess.current,
 		resetInputs,
 		submitting,
-		setSubmitting
+		setSubmitting,
+		handleOnSubmitted,
 	};
 };
 
