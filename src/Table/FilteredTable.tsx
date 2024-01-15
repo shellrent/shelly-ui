@@ -62,7 +62,6 @@ const FilterForm: React.FC<FilterFormProps> = ( {children, id, form, updateAsync
 			} );
 		}		
 		setQueryParams( qp );
-
 		if ( updateAsyncFilters ) {
 			setIsLoading( true );
 			return updateAsyncFilters( formData )
