@@ -1,9 +1,18 @@
 import { PropsWithChildren, ReactElement, createContext, useEffect, useState } from "react";
 import React from "react";
+import { TableButtonsOrientation } from "../Table";
 
 export type ShellyConfig = {
+	// spinner element used on loading of various component
     spinnerElement?: ReactElement
+
+	// callback used to navigate between pages
 	navigateCallback?: () => ( path: string ) => void
+	
+	
+	tables?: {
+		buttonsOrientation?: TableButtonsOrientation
+	} 
 }
 
 type ShellyProviderProps = {
