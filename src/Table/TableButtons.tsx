@@ -6,6 +6,8 @@ import { faMagnifyingGlassPlus, faPencil, faTimes } from "@fortawesome/free-soli
 import Tooltip from "../Tooltip";
 import { useNavigate } from "../hooks/useNavigate";
 import clsx from 'clsx';
+import { useShellyContext } from "../Provider";
+import { twMerge } from "tailwind-merge";
 
 export type TableButtonsOrientation = 'left' | 'right' | undefined
 
@@ -87,11 +89,3 @@ export default Object.assign( TableButtons,  {
 	Delete,
 	Info
 } );
-
-function twMerge(arg0: string, arg1: any) {
-	throw new Error("Function not implemented.");
-}
-function useShellyContext() {
-	throw new Error("Function not implemented.");
-}
-
