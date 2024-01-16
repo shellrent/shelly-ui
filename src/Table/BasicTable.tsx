@@ -69,7 +69,7 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProp
 		</tbody>
 	</table>, [table.getRowModel(), table.getAllColumns(), table.loading] );
 	
-	return <div className="overflow-x-auto">
+	return <div className="">
 		<div className="inline-block min-w-full ">
 			{tb}
 		</div>

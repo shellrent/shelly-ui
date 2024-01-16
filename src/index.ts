@@ -6,6 +6,7 @@ export type ShellyConfig = Config;
 
 import { InputValidatorHandler as Validator } from './Input';
 import Input from './Input';
+export * as validators from './Input'
 export { Input };
 export type InputValidationHandler = Validator;
 
@@ -84,3 +85,9 @@ export {Tooltip};
 export { swtc } from './utils';
 import { ResetInputProps as Reset } from './utils';
 export type ResetInputProps = Reset
+
+
+//types
+import { ColumnDef as CF, CellContext as CC, RowData } from '@tanstack/react-table';
+export type ColumnDef<TData extends unknown, TValue = unknown> = CF<TData, TValue>;
+export type CellContext<TData extends RowData, TValue> = CC<TData, TValue>;
