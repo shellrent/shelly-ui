@@ -105,7 +105,7 @@ type RegisterHandlerProps = {
 	disable?: boolean
 }
 
-export type FormHandler<T = any, R = any> = {
+export type FormHandler<R = Promise<any> | boolean, T = any> = {
 	state: FormState,
 	ref: RefObject<HTMLFormElement>,
 	submitting: boolean
@@ -171,7 +171,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 
 	useEffect(() => {
 		setState();
-	}, []);
+	}, [setState]);
 
 	const handleFormError = (error: string | string[]) => {
 		if (!(error instanceof Array)) {
@@ -305,7 +305,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 		};
 	};
 
-	const handleOnSubmitted = <R extends Promise<any> | boolean>(res: R) => {
+	const handleOnSubmitted = (res: R) => {
 		if ( !props.onSubmitted && res instanceof Promise ) {
 			res
 				.then( () => props.onSuccess && props.onSuccess() )
@@ -315,7 +315,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 		} 
 
 		if ( !props.onSubmitted ) {
-			res ? props.onSuccess() : handleFormError( 'errror' );
+			res ? props.onSuccess() : handleFormError( 'error' );
 		}
 
 		if ( props.onSubmitted ){
