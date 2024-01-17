@@ -1,5 +1,6 @@
 import Modal from './Modal';
-import { useModal } from './useModal';
+import { ModalHandler as MH, useModal } from './useModal';
 
 export default Modal;
 export {useModal};
+export type ModalHandler = MH;

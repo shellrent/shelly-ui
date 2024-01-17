@@ -10,7 +10,7 @@ export * as validators from './Input';
 export { Input };
 export type InputValidationHandler = Validator;
 
-import Form,  { FormHandler as FH, UseFormProps as UFP } from './Form';
+import Form, { FormHandler as FH, UseFormProps as UFP } from './Form';
 export { useForm } from './Form';
 export { Form };
 
@@ -49,8 +49,9 @@ import Checkbox from './Checkbox';
 export {Checkbox};
 
 import Modal from './Modal';
-import { useModal } from './Modal';
+import { ModalHandler as MH, useModal } from './Modal';
 export {Modal, useModal};
+export type ModalHandler = MH;
 
 import Layout from './Layout';
 export {Layout};
