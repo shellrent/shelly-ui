@@ -10,10 +10,11 @@ export * as validators from './Input';
 export { Input };
 export type InputValidationHandler = Validator;
 
-import Form, {UseFormProps as UFP } from './Form';
+import Form,  { FormHandler as FH, UseFormProps as UFP } from './Form';
 export { useForm } from './Form';
 export { Form };
 
+export type FormHandler = FH;
 export type  UseFormProps<R extends boolean | Promise<any>, T = any> = UFP<R, T>
 
 import Button from './Button';

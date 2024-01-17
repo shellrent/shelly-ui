@@ -14,10 +14,10 @@ type FormProps<T extends object = any> = {
 const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, form}: FormProps<T> ) => {	
 	useEffect( () => {
 		form.resetErrors();
-		form.resetInputs();
 		form.resetFormValues();
+		form.resetInputs();
 	}, [] );
-	
+
 	const onSubmit = ( event: FormEvent<HTMLFormElement> ) => {
 		form.resetErrors();
 		event.preventDefault();
@@ -64,7 +64,7 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 
 		let errors: string[] = [];
 
-		Object.entries( form.state.inputs ).map( ( [key, input] ) => {
+		Object.entries( form.state.inputs.current ).map( ( [key, input] ) => {
 			const inputValue = formData.get( input.name )?.toString() as string;
 
 			input.validators.every( validator => {
