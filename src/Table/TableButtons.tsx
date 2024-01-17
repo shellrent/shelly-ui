@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react";
 import Button from "../Button";
 import { ButtonProps } from "../Button/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlassPlus, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faLock, faMagnifyingGlassPlus, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../Tooltip";
 import { useNavigate } from "../hooks/useNavigate";
 
@@ -63,8 +63,17 @@ const Info: React.FC<TableButtonProps> = ( {...props} ) => {
 	</Tooltip>;
 };
 
+const EditPassword: React.FC<TableButtonProps> = ( {...props} ) => {
+	return <Tooltip title="Modifica Password">
+		<ButtonProvider {...props} buttonType="warning" size="sm" outline>
+			<FontAwesomeIcon icon={faLock}/>
+		</ButtonProvider>
+	</Tooltip>;
+};
+
 export default Object.assign( TableButtons,  {
 	Edit,
 	Delete,
-	Info
+	Info,
+	EditPassword
 } );
