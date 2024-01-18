@@ -3,14 +3,14 @@ import React, { Fragment, PropsWithChildren, memo } from 'react';
 import { ModalHandler } from './useModal';
 
 type ModalProps = {
-    modal: ModalHandler
+	modal: ModalHandler
 
 } & PropsWithChildren
 
-const Modal = memo<ModalProps>( ( {modal, children} ) => {
+const Modal = memo<ModalProps>(({ modal, children }) => {
 	return <Transition appear show={modal.isOpen} as={Fragment}>
-		<Dialog as="dialog" className="modal modal-open text-base-content" onClose={() => modal.close()}>
-			<div className="modal-box w-5/6 max-w-2xl overflow-y-scroll relative">
+		<Dialog as="dialog" className="modal modal-open text-neutral  overflow-y-scroll" onClose={() => modal.close()}>
+			<div className="modal-box w-5/6 max-w-2xl !max-h-none overflow-y-visible">
 				<Transition.Child
 					enter="ease-out duration-100"
 					enterFrom="opacity-0 scale-95"
@@ -24,13 +24,13 @@ const Modal = memo<ModalProps>( ( {modal, children} ) => {
 			</div>
 		</Dialog>
 	</Transition>;
-} );
+});
 
 Modal.displayName = 'Modal';
 
 type TitleProps = PropsWithChildren;
 
-const Title: React.FC<TitleProps>= ( {children} ) => {
+const Title: React.FC<TitleProps> = ({ children }) => {
 	return <Dialog.Title className="text-xl font-semibold mb-2">
 		{children}
 	</Dialog.Title>;
@@ -38,13 +38,13 @@ const Title: React.FC<TitleProps>= ( {children} ) => {
 
 type ActionsProps = PropsWithChildren;
 
-const Actions: React.FC<ActionsProps>= ( {children} ) => {
+const Actions: React.FC<ActionsProps> = ({ children }) => {
 	return <div className="modal-action">
 		{children}
 	</div>;
 };
 
-export default Object.assign( Modal, {
+export default Object.assign(Modal, {
 	Title,
 	Actions
 });
