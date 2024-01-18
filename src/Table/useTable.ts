@@ -50,7 +50,12 @@ const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, 
 			pagination: pagination
 		},
 		manualPagination: true,
-		manualFiltering: true
+		manualFiltering: true,
+		defaultColumn: {
+			size: 200,
+			minSize: 0,
+			maxSize: 500,
+		},
 	});
 
 	return { table: Object.assign(table, { loading: loading }) } as { table: TableObject<T> };

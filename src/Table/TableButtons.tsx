@@ -5,11 +5,32 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faMagnifyingGlassPlus, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../Tooltip";
 import { useNavigate } from "../hooks/useNavigate";
+import clsx from 'clsx';
+import { useShellyContext } from "../Provider";
+import { twMerge } from "tailwind-merge";
 
-type TableButtonsProps = PropsWithChildren
+export type TableButtonsOrientation = 'left' | 'right' | undefined
 
-const TableButtons: React.FC<TableButtonsProps> = ({children}) => {
-	return <div className="w-full flex justify-end gap-2">
+type TableButtonsProps = {
+	orientation?: TableButtonsOrientation
+} & PropsWithChildren
+
+const TableButtons: React.FC<TableButtonsProps> = ({children, orientation}) => {
+	const config = useShellyContext();
+	
+	if ( orientation === undefined ) {
+		orientation = config?.tables?.buttonsOrientation;
+	}
+
+	const classNames = twMerge(
+		'w-full flex gap-2',
+		clsx(
+			orientation == 'left' && 'justify-start',
+			orientation == 'right' && 'justify-end',
+		)
+	);
+
+	return <div className={classNames}>
 		{children}
 	</div>;
 };
