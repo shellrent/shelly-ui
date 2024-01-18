@@ -1,4 +1,4 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from "react";
+import { MutableRefObject, RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { InputValidationHandler } from "..";
 import { InputProps } from "./form-input";
 import _ from "lodash";
@@ -71,28 +71,28 @@ class FormValues<T extends { [key: string]: any } = any> {
 	}
 
 	public isEqual(values: T): boolean {
-		if ( !values ) {
+		if (!values) {
 			return false;
 		}
 
-		if ( Object.entries( values ).length !== Object.entries( this.formValues ).length ) {
+		if (Object.entries(values).length !== Object.entries(this.formValues).length) {
 			return false;
 		}
 
 		let isEqual = true;
 
-		Object.entries( values ).forEach( ( [key, value] ) => {
-			if ( this.formValues[ key ] !== value ) {
+		Object.entries(values).forEach(([key, value]) => {
+			if (this.formValues[key] !== value) {
 				isEqual = false;
 			}
 		});
 
-		return isEqual; 
+		return isEqual;
 	}
 }
 
 type FormState<T extends { [key: string]: any } = any> = {
-	inputs: { [key: string]: InputDefinition }
+	inputs: MutableRefObject<{ [key: string]: InputDefinition }>
 	formValues: FormValues<T>
 	formErrors: FormErrors
 }
@@ -105,11 +105,10 @@ type RegisterHandlerProps = {
 	disable?: boolean
 }
 
-export type FormHandler<T = any> = {
+export type FormHandler<R = Promise<any> | boolean, T = any> = {
 	state: FormState,
 	ref: RefObject<HTMLFormElement>,
 	submitting: boolean
-	setSubmitting: (value: boolean) => void
 	submitForm: () => void
 	setFormValues: (values: T) => void
 	handleFormError: (error: string | string[]) => void
@@ -118,15 +117,16 @@ export type FormHandler<T = any> = {
 	resetInputs: () => void
 	registerInput: <TValue = string>(props: RegisterHandlerProps) => InputProps<TValue>
 	triggerInputError: (name: string) => void,
-	onSuccess?: () => void,
 	registerOnSuccessCallback: (callback: () => void) => void
+	handleOnSubmitted: (res: R) => void
 }
 
 
-type UseFormProps<T = any> = {
+export type UseFormProps<R extends Promise<any> | boolean, T = any> = {
 	values?: T
 	type?: 'data' | 'filter'
 	onSuccess?: () => void
+	onSubmitted?: (res: R, success: () => void, error: (error: string | string[]) => void, setSubmitting: (value: boolean) => void) => void;
 }
 
 type InputDefinition = {
@@ -137,14 +137,15 @@ type InputDefinition = {
 }
 
 
-const useForm = (props?: UseFormProps): FormHandler => {
+const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): FormHandler => {
 	const [formErrors, setFormErrors] = useState<string[]>([]);
-	const [state, setForm] = useState<FormState>({ inputs: {}, formValues: new FormValues(props?.values), formErrors: new FormErrors(formErrors) });
+	const inputRef = useRef<{ [key: string]: InputDefinition }>({});
+
+	const [state, setForm] = useState<FormState>({ inputs: inputRef, formValues: new FormValues(props?.values), formErrors: new FormErrors(formErrors) });
 	const [formValues, setValues] = useState(props?.values ?? {});
 	const [submitting, setSubmitting] = useState(false);
 
-	const onSuccess = useRef(props?.onSuccess);
-	const inputRef = useRef<{ [key: string]: InputDefinition }>({});
+	const successCallbacks = useRef([props?.onSuccess]);
 
 	const ref = useRef<HTMLFormElement>(null);
 
@@ -152,7 +153,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 		setForm((prev) => {
 			return ({
 				...prev,
-				inputs: inputRef.current,
+				inputs: inputRef,
 				formErrors:
 					(prev.formErrors?.formErrors && prev.formErrors.isEqual(formErrors))
 						? prev.formErrors
@@ -184,7 +185,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 	};
 
 	const resetFormValues = () => {
-		setValues({...{}});
+		setValues({ ...{} });
 	};
 
 	const resetErrors = (): void => {
@@ -192,18 +193,7 @@ const useForm = (props?: UseFormProps): FormHandler => {
 	};
 
 	const resetInputs = (): void => {
-		let inps = inputRef.current;
-		for (const name of Object.keys(inputRef.current)) {
-			inps = {
-				...inps,
-				[name]: {
-					...inputRef.current[name],
-					error: false
-				}
-			};
-		}
-
-		inputRef.current = inps;
+		inputRef.current = {};
 	};
 
 	const submitForm = (): void => {
@@ -229,14 +219,17 @@ const useForm = (props?: UseFormProps): FormHandler => {
 		return;
 	};
 
-	const registerOnSuccessCallback = (callback: () => void) => {
-		onSuccess.current = () => {
-			if (props?.onSuccess) {
-				props.onSuccess();
-			}
-
+	const handleOnSuccess = () => {
+		for( const callback of successCallbacks.current ) {
 			callback();
-		};
+		}
+	};
+ 
+	const registerOnSuccessCallback = (callback: () => void) => {
+		successCallbacks.current = [
+			...successCallbacks.current,
+			callback,
+		];
 	};
 
 	const registerInput = <TValue = string>({ name, validators, disable }: RegisterHandlerProps): InputProps<TValue> => {
@@ -303,6 +296,24 @@ const useForm = (props?: UseFormProps): FormHandler => {
 		};
 	};
 
+	const handleOnSubmitted = (res: R) => {
+		if (!props.onSubmitted && res instanceof Promise) {
+			res
+				.then(() => handleOnSuccess)
+				.catch((err) => handleFormError(err.message()));
+
+			return;
+		}
+
+		if (!props.onSubmitted) {
+			res ? handleOnSuccess() : handleFormError('error');
+		}
+
+		if (props.onSubmitted) {
+			props.onSubmitted(res, handleOnSuccess, handleFormError, setSubmitting);
+		}
+	};
+
 	return {
 		state,
 		submitForm,
@@ -314,10 +325,9 @@ const useForm = (props?: UseFormProps): FormHandler => {
 		registerInput,
 		triggerInputError,
 		registerOnSuccessCallback,
-		onSuccess: onSuccess.current,
 		resetInputs,
 		submitting,
-		setSubmitting
+		handleOnSubmitted,
 	};
 };
 
