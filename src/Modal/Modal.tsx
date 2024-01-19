@@ -1,6 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react';
-import React, { Fragment, PropsWithChildren, memo } from 'react';
+import React, { Fragment, HTMLAttributes, PropsWithChildren, memo } from 'react';
 import { ModalHandler } from './useModal';
+import { twMerge } from 'tailwind-merge';
 
 type ModalProps = {
 	modal: ModalHandler
@@ -28,10 +29,14 @@ const Modal = memo<ModalProps>(({ modal, children }) => {
 
 Modal.displayName = 'Modal';
 
-type TitleProps = PropsWithChildren;
+type TitleProps = PropsWithChildren & HTMLAttributes<HTMLDivElement>;
 
-const Title: React.FC<TitleProps> = ({ children }) => {
-	return <Dialog.Title className="text-xl font-semibold mb-2 text-base-content">
+const Title: React.FC<TitleProps> = ({ children, className }) => {
+	const classNames = twMerge(
+		'text-xl font-semibold mb-2',
+		className
+	);
+	return <Dialog.Title className={classNames}>
 		{children}
 	</Dialog.Title>;
 };
