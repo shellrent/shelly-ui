@@ -104,7 +104,7 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 		className="flex flex-col gap-4"
 	>	
 		{form.state.formErrors.hasErrors() &&
-		<Alert type="error" className="mb-4" showCloseButton={true}>
+		<Alert type="error" className="" showCloseButton={true}>
 			<div>
 				<Alert.Title>
 					Error
