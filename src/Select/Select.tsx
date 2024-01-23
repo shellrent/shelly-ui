@@ -134,7 +134,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 							key={key}
 							className={({ active }) =>
 								`relative cursor-default select-none py-2 list-none ${
-									active ? 'bg-base-200' : 'text-neutral'
+									active ? 'bg-base-200' : 'text-base-content'
 								}`
 							}
 							value={option.value}
@@ -144,7 +144,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 									<span
 										className={`block truncate ${
 											selected ? 'ml-8 font-medium' : 'ml-2 font-normal'
-										} ${ option.value === null && 'text-neutral-400' }`}
+										} ${ option.value === null && 'text-base-content-400' }`}
 									>
 										{displayFn ? displayFn( option ) : option?.title}
 									</span>

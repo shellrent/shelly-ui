@@ -67,6 +67,10 @@ class FormValues<T extends { [key: string]: any } = any> {
 	}
 
 	public getFormValue(name: string): unknown | undefined {
+		if ( !this.formValues ) {
+			return;
+		}
+
 		return this.formValues[name];
 	}
 
@@ -220,7 +224,15 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 	};
 
 	const handleOnSuccess = () => {
+		if ( !successCallbacks.current.length ) {
+			return;
+		}
+
 		for( const callback of successCallbacks.current ) {
+			if ( !callback ) {
+				continue;
+			}
+
 			callback();
 		}
 	};
