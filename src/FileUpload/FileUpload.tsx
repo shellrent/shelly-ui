@@ -8,7 +8,7 @@ import { swtc } from "../utils";
 type FileUploadProps = {
     bordered?: boolean,
     className?: string
-} & InputProps<File, File> & InputHTMLAttributes<HTMLInputElement>
+} & InputProps<File | File[], File> & InputHTMLAttributes<HTMLInputElement>
 
 const FileUpload: React.FC<FileUploadProps> = ( { className, value, validators, bordered, inputSize, error, onValueChange, ...prop } ) => {
 	const [ err, setError ] = useState<string | boolean>( null );
@@ -42,6 +42,35 @@ const FileUpload: React.FC<FileUploadProps> = ( { className, value, validators, 
 		if ( onValueChange ) {
 			onValueChange( files );
 		}
+
+		if ( !validators?.length ) {
+			return;
+		} 
+
+		validators.every( (validator) => {
+			if ( !validator ) {
+				return true;
+			}
+
+			let files = [];
+			
+			if ( !(value instanceof Array)) {
+				files = [value];
+			} else {
+				files = value;
+			}
+
+			files.forEach(file => {
+				const validationError = validator( file );
+				setError( validationError ?? false );
+	
+				if ( validationError ) {
+					return false;
+				}
+			});
+
+			return true;
+		} );
 	};
 
 	return <>
