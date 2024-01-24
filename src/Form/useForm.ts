@@ -101,11 +101,9 @@ type FormState<T extends { [key: string]: any } = any> = {
 	formErrors: FormErrors
 }
 
-type Validator = InputValidationHandler | undefined
-
-type RegisterHandlerProps = {
+type RegisterHandlerProps<V = unknown> = {
 	name: string,
-	validators?: Validator[] | undefined,
+	validators?: InputValidationHandler<V>[] | undefined,
 	disable?: boolean
 }
 
@@ -119,7 +117,7 @@ export type FormHandler<R = Promise<any> | boolean, T = any> = {
 	resetErrors: () => void
 	resetFormValues: () => void
 	resetInputs: () => void
-	registerInput: <TValue = string>(props: RegisterHandlerProps) => InputProps<TValue>
+	registerInput: <TValue = string, V = unknown>(props: RegisterHandlerProps<V>) => InputProps<TValue, V>
 	triggerInputError: (name: string) => void,
 	registerOnSuccessCallback: (callback: () => void) => void
 	handleOnSubmitted: (res: R) => void
@@ -133,11 +131,11 @@ export type UseFormProps<R extends Promise<any> | boolean, T = any> = {
 	onSubmitted?: (res: R, success: () => void, error: (error: string | string[]) => void, setSubmitting: (value: boolean) => void) => void;
 }
 
-type InputDefinition = {
+type InputDefinition<V = unknown> = {
 	name: string
 	error?: boolean
 	disable?: boolean
-	validators: Validator[]
+	validators: InputValidationHandler<V>[]
 }
 
 
