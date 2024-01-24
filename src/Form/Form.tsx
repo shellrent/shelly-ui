@@ -58,7 +58,21 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 
 				data[objFieldName][objKey] = value;
 			} else {
-				data[key] = value;
+				if ( data[key] ) {
+					if ( data[key] instanceof Array ) {
+						data[key] = [
+							...data[key],
+							value
+						];
+					} else {
+						data[key] = [
+							data[key],
+							value
+						];
+					}
+				} else {
+					data[key] = value;
+				}
 			}
 		}
 
