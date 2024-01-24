@@ -53,22 +53,22 @@ const FileUpload: React.FC<FileUploadProps> = ( { className, value, validators, 
 			}
 
 			let files = [];
-			
+
 			if ( !(value instanceof Array)) {
 				files = [value];
 			} else {
 				files = value;
 			}
 
-			files.forEach(file => {
+			for(const file of files) {
 				const validationError = validator( file );
 				setError( validationError ?? false );
-	
+				
 				if ( validationError ) {
 					return false;
 				}
-			});
-
+			}
+			
 			return true;
 		} );
 	};
