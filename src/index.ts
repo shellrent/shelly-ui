@@ -8,7 +8,7 @@ import { InputValidatorHandler as Validator } from './Input';
 import Input from './Input';
 export * as validators from './Input';
 export { Input };
-export type InputValidationHandler = Validator;
+export type InputValidationHandler<V = unknown> = Validator<V>;
 
 import Form, { FormHandler as FH, UseFormProps as UFP } from './Form';
 export { useForm } from './Form';
@@ -61,6 +61,9 @@ export {DescriptionList};
 
 import Collapse from './Collapse';
 export {Collapse};
+
+import FileUpload from './FileUpload';
+export {FileUpload};
 
 import Textarea from './Textarea/Textarea';
 export {Textarea};
