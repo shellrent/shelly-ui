@@ -37,10 +37,19 @@ const FileUpload: React.FC<FileUploadProps> = ( { className, value, validators, 
 	
 
 	const onChange = ( event: ChangeEvent<HTMLInputElement> ) => {
-		const files = event.target.files;
+		const fs = event.target.files;
+		const files = new Array<File>();
+
+		for( let i = 0; i < fs.length; i++ ) {
+			if ( fs.item( i )?.size === 0 ) {
+				continue;
+			}
+
+			files.push( fs.item( i ) );
+		}
 
 		if ( onValueChange ) {
-			onValueChange( files );
+			onValueChange( files.length ? files : null );
 		}
 
 		if ( !validators?.length ) {
