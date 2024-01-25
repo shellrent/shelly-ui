@@ -3,6 +3,7 @@ import { RowData, flexRender } from "@tanstack/react-table";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { TableObject } from "./useTable";
+import { useShellyContext } from "../Provider";
 
 type BasicTableProps<T extends RowData = any> = {
     table: TableObject<T>
@@ -10,6 +11,8 @@ type BasicTableProps<T extends RowData = any> = {
 }
 
 const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProps<T> ) => {
+	const config = useShellyContext();
+
 	const classNames = twMerge( 
 		'table',
 		clsx(
@@ -26,6 +29,11 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProp
 							<th 
 								key={header.id} 
 								colSpan={header.colSpan}
+								className={
+									header.isPlaceholder ? 
+										config.tables?.headerGroups?.additionalClasses : 
+										config.tables?.headers?.additionalClasses 
+								}
 								style={{
 									width: header.getSize()
 								}}
@@ -55,6 +63,7 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProp
 									style={{
 										width: cell.column.getSize()
 									}}
+									className={config.tables?.cells?.additionalClasses}
 								>
 									{flexRender(
 										cell.column.columnDef.cell,

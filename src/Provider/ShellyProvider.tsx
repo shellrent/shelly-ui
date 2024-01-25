@@ -11,6 +11,18 @@ export type ShellyConfig = {
 	
 	
 	tables?: {
+		headerGroups: {
+			additionalClasses?: string
+		}
+
+		headers: {
+			additionalClasses?: string
+		}
+
+		cells: {
+			additionalClasses?: string
+		}
+
 		buttonsOrientation?: TableButtonsOrientation
 	} 
 }
