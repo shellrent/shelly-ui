@@ -23,16 +23,17 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProp
 	const tb = useMemo( () => <table className={classNames}>
 		<thead>
 			{table.getHeaderGroups().map(headerGroup => (
-				<tr key={headerGroup.id}>
+				<tr 
+					key={headerGroup.id}>
 					{headerGroup.headers.map(header => {
 						return (
 							<th 
 								key={header.id} 
 								colSpan={header.colSpan}
-								className={
-									header.isPlaceholder ? 
-										config.tables?.headerGroups?.additionalClasses : 
-										config.tables?.headers?.additionalClasses 
+								className={ 
+									header.getLeafHeaders().length > 1 ? 
+									config.tables?.headerGroups?.additionalClasses :
+									config.tables?.headers?.additionalClasses 
 								}
 								style={{
 									width: header.getSize()
@@ -40,6 +41,7 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProp
 							>
 								{header.isPlaceholder ? null : (
 									<div>
+
 										{flexRender(
 											header.column.columnDef.header,
 											header.getContext()

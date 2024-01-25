@@ -1,31 +1,47 @@
 import React, { ButtonHTMLAttributes, PropsWithChildren } from 'react';
-import {twMerge} from 'tailwind-merge';
-import {clsx} from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { clsx } from 'clsx';
 import { swtc } from '../utils';
 
 
-type ButtonType = 'neutral' |'primary' |'secondary' |'accent' |'info' |'success' |'warning' |'error' |'ghost' |'link' |'outline' |'active' |'disabled' ;
+export const buttonTypes = [
+	'neutral',
+	'primary',
+	'secondary',
+	'accent',
+	'info',
+	'success',
+	'warning',
+	'error',
+	'ghost',
+	'link',
+	'outline',
+	'active',
+	'disabled',
+] as const 
+
+type ButtonType = typeof buttonTypes[number];
 
 export type ButtonProps = {
-    buttonType?: ButtonType | undefined
-    outline?: boolean
-    size?: 'sm' | 'lg' | 'xs'
+	buttonType?: ButtonType | undefined
+	outline?: boolean
+	size?: 'sm' | 'lg' | 'xs'
 	wide?: boolean
 	loading?: boolean | undefined
 } & ButtonHTMLAttributes<HTMLButtonElement> & PropsWithChildren
 
-const Button: React.FC<ButtonProps> = ( {children, buttonType, wide, outline, size, className, loading, ...props}: ButtonProps ) => {
+const Button: React.FC<ButtonProps> = ({ children, buttonType, wide, outline, size, className, loading, ...props }: ButtonProps) => {
 	const classNames = twMerge(
 		'btn',
 		clsx(
 			outline && 'btn-outline',
 			wide && 'btn-wide',
-			size && swtc( size, {
+			size && swtc(size, {
 				sm: 'btn-sm',
 				lg: 'btn-lg',
 				xs: 'btn-xs',
-			} ),
-			buttonType && swtc( buttonType, {
+			}),
+			buttonType && swtc(buttonType, {
 				neutral: 'btn-neutral',
 				primary: 'btn-primary',
 				secondary: 'btn-secondary',
@@ -39,16 +55,16 @@ const Button: React.FC<ButtonProps> = ( {children, buttonType, wide, outline, si
 				outline: 'btn-outline',
 				active: 'btn-active',
 				disabled: 'btn-disabled',
-			} ),
+			}),
 		),
 		className,
 	);
 
-	return <button 
+	return <button
 		className={classNames}
-		{...props} 
+		{...props}
 	>
-		{loading && <span className="loading loading-spinner"/>}
+		{loading && <span className="loading loading-spinner" />}
 		{children}
 	</button>;
 };
