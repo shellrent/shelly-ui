@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import { useShellyContext } from "../Provider";
 import { twMerge } from "tailwind-merge";
 
-export type TableButtonsOrientation = 'left' | 'right' | undefined
+export type TableButtonsOrientation = 'left' | 'right' | 'center' | undefined
 
 type TableButtonsProps = {
 	orientation?: TableButtonsOrientation
@@ -27,6 +27,7 @@ const TableButtons: React.FC<TableButtonsProps> = ({children, orientation}) => {
 		clsx(
 			orientation == 'left' && 'justify-start',
 			orientation == 'right' && 'justify-end',
+			orientation == 'center' && 'justify-center'
 		)
 	);
 

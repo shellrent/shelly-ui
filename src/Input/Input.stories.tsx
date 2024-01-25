@@ -10,6 +10,9 @@ const meta: Meta<typeof Input> = {
         },
         onValueChange: {
             type: 'function'
+        },
+        error: {
+            type: 'string'
         }
     },
     component: Input,

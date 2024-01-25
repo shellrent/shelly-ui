@@ -21,7 +21,8 @@ const FileUpload: React.FC<FileUploadProps> = ( { className, value, validators, 
 				sm: 'file-input-sm',
 				md: 'file-input-md',
 				lg: 'file-input-lg',
-			} )
+			} ),
+			err && 'file-input-error'
 		),
 		className,
 		'file-input'
