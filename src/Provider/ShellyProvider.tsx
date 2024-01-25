@@ -11,15 +11,15 @@ export type ShellyConfig = {
 	
 	
 	tables?: {
-		headerGroups: {
+		headerGroups?: {
 			additionalClasses?: string
 		}
 
-		headers: {
+		headers?: {
 			additionalClasses?: string
 		}
 
-		cells: {
+		cells?: {	
 			additionalClasses?: string
 		}
 
