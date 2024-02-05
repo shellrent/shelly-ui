@@ -24,7 +24,7 @@ export type  UseFormProps<R extends boolean | Promise<any>, T = any> = UFP<R, T>
 import Button from './Button';
 export { Button };
 
-import Alert,{AlertType as AT} from './Alert';
+import Alert, {AlertType as AT} from './Alert';
 export type AlertType = AT;
 export { Alert };
 
