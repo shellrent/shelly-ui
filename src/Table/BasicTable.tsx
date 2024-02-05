@@ -32,8 +32,8 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProp
 								colSpan={header.colSpan}
 								className={ 
 									header.getLeafHeaders().length > 1 ? 
-									config.tables?.headerGroups?.additionalClasses :
-									config.tables?.headers?.additionalClasses 
+										config.tables?.headerGroups?.additionalClasses :
+										config.tables?.headers?.additionalClasses 
 								}
 								style={{
 									width: header.getSize()

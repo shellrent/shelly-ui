@@ -57,6 +57,10 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 	} , [error]);
 
 	useEffect( () => {
+		if ( !options.length ) {
+			return;
+		}
+
 		if ( prevValue.current !== value ) {
 			if ( validators && validators.length ) {
 				validators.every( (validator) => {
@@ -128,7 +132,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 				leaveFrom="opacity-100"
 				leaveTo="opacity-0"
 			>
-				<Listbox.Options className="absolute z-30 mt-1 pl-0 max-h-60 w-full overflow-auto rounded-md bg-base-100 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+				<Listbox.Options className="absolute z-30 mt-1 pl-0 max-h-60 w-full overflow-auto rounded-box bg-base-100 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
 					{options.map((option, key) => (
 						<Listbox.Option
 							key={key}

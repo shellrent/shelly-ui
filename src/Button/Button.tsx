@@ -62,6 +62,7 @@ const Button: React.FC<ButtonProps> = ({ children, buttonType, wide, outline, si
 
 	return <button
 		className={classNames}
+		disabled={loading}
 		{...props}
 	>
 		{loading && <span className="loading loading-spinner" />}

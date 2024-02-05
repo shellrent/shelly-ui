@@ -71,7 +71,7 @@ const FilterForm: React.FC<FilterFormProps> = ( {children, id, form, updateAsync
 		return true;
 	};
 
-	return <div className="relative">
+	return <div className="relative py-4">
 		<Form form={form} saveForm={ saveForm }>
 			<Form.GridLayout>
 				{children}
