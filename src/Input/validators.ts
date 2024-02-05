@@ -1,6 +1,6 @@
 export type InputValidatorHandler<T = any> = (value: T | null | undefined) => string | null ; 
 
-export const isRequired = (errMessage: string): InputValidatorHandler => {
+export const isRequired = (errMessage: string): InputValidatorHandler<string> => {
 	const validator: InputValidatorHandler<string> = ( value ) => {
 		if (!value || !value.length ) {
 			return errMessage;
@@ -12,7 +12,7 @@ export const isRequired = (errMessage: string): InputValidatorHandler => {
 	return validator;
 };
 
-export const isEmail = (errMessage: string): InputValidatorHandler => {
+export const isEmail = (errMessage: string): InputValidatorHandler<string>=> {
 	return (value) => {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(value as string)) {
@@ -23,7 +23,7 @@ export const isEmail = (errMessage: string): InputValidatorHandler => {
 	};
 };
 
-export const minCharacters = ( min: number,  errMessage: string ): InputValidatorHandler => {
+export const minCharacters = ( min: number,  errMessage: string ): InputValidatorHandler<string> => {
 	return ( value ) => {
 		if ( !value ) {
 			return null;
