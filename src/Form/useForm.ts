@@ -242,7 +242,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 		];
 	};
 
-	const registerInput = <TValue = string>({ name, validators, disable }: RegisterHandlerProps): InputProps<TValue> => {
+	const registerInput = <TValue = string, V = unknown>({ name, validators, disable }: RegisterHandlerProps<V>): InputProps<TValue, V> => {
 		const onFieldChangeValue = (value: string | null) => {
 			if (formValues[name] !== value) {
 				setValues({

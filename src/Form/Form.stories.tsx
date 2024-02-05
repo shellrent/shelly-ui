@@ -14,14 +14,14 @@ export default meta;
 type Story = StoryObj<typeof Form>;
 
 export const Default: Story = {
-	render: (args) => {
+	render: () => {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const form = useForm();
 
 		return <Form form={form} saveForm={() => true}>
 			<Input.FormControl>
 				<Input.Label>Test</Input.Label>
-				<Input {...form.registerInput( {name: 'test', disable: false, validators: [validators.isUrl( 'required' )]} )} />
+				<Input {...form.registerInput( {name: 'test', validators: [validators.isUrl( 'required' )]} )} />
 			</Input.FormControl>
 			<Button type="submit">
 				Save
