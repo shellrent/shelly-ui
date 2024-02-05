@@ -21,7 +21,7 @@ type SelectProps<T = any> = {
 	placeholder?: string
     onChange?: ( value: T ) => void 
 	showEmptyOption?: boolean
-} & InputProps
+} & InputProps<string, string>
 
 const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChange, onValueChange, name, placeholder, inputSize, error, validators, showEmptyOption, ...props} ) => {
 	const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>( defaultOption );

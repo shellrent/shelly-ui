@@ -8,7 +8,7 @@ import FieldError from "../Common/FieldError";
 
 type InputComponentProps = {
     bordered?: boolean,
-} & InputProps<string> & InputHTMLAttributes<HTMLInputElement>
+} & InputProps<string, string> & InputHTMLAttributes<HTMLInputElement>
 
 const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {className, validators, bordered, inputSize, error, onValueChange, ...props}: InputComponentProps, ref ) => {	
 	const [err, setError] = useState<string | boolean>( false );

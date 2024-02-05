@@ -14,7 +14,7 @@ export type MultiSelectProps<T = any> = {
     defaultOption?: SelectOption<T>
 	placeholder?: string
     onChange?: ( value: T ) => void 
-} & InputProps
+} & InputProps<string, string>
 
 const MultiSelect: React.FC<MultiSelectProps> = ( {displayFn, options, defaultOption,  name, onChange, onValueChange, placeholder, inputSize, error, ...props} ) => {
 	const [selectedValues, setSelectedValues] = useState<any | undefined>( props.value || [] );
