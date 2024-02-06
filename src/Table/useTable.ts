@@ -54,9 +54,9 @@ const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, 
 		manualPagination: true,
 		manualFiltering: true,
 		defaultColumn: {
-			size: config?.tables?.defaultColumn?.size ?? 200,
-			minSize: config?.tables?.defaultColumn?.minSize ?? 200,
-			maxSize: config?.tables?.defaultColumn?.size ?? 500,
+			size: config?.tables?.defaultColumn ? config.tables.defaultColumn.size : 200,
+			minSize: config?.tables?.defaultColumn ? config.tables.defaultColumn.minSize : 200,
+			maxSize: config?.tables?.defaultColumn ? config.tables.defaultColumn.size : 500,
 		},
 	});
 
