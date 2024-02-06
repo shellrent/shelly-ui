@@ -1,5 +1,6 @@
 import { ColumnDef, PaginationState, RowData, Table, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useShellyContext } from "../Provider";
 
 export type PaginationChangeHandler = (pageIndex: number, pageCount: number) => Promise<any>
 
@@ -15,6 +16,7 @@ type UseTableProps<T = any> = {
 export type TableObject<T = any> = Table<T> & { loading: boolean }
 
 const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, pageSize, pageCount, currentPage }: UseTableProps<T>): { table: TableObject<T> } => {
+	const config = useShellyContext();
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: (currentPage || 1) - 1,
 		pageSize: pageSize || 10,
@@ -52,9 +54,9 @@ const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, 
 		manualPagination: true,
 		manualFiltering: true,
 		defaultColumn: {
-			size: 200,
-			minSize: 0,
-			maxSize: 500,
+			size: config?.tables?.defaultColumn.size ?? 200,
+			minSize: config?.tables?.defaultColumn.minSize ?? 200,
+			maxSize: config?.tables?.defaultColumn.size ?? 500,
 		},
 	});
 
