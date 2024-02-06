@@ -12,7 +12,7 @@ import { useShellyContext } from "../Provider";
 type FilteredTableProps<T extends RowData = any> = PaginateTableProps<T> & PropsWithChildren
 
 const FilteredTable: React.FC<any> = <T,>({ children, table, ...props }: FilteredTableProps<T>) => {
-	return <div className="overflow-x-scroll">
+	return <div>
 		{children}
 		<PaginateTable table={table} {...props} />
 	</div>;
