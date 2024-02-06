@@ -7,9 +7,10 @@ import { swtc } from "../utils";
 import { InputProps } from "../Form";
 import FieldError from "../Common/FieldError";
 
+import { useTranslation } from "../i18n";
 
 export type SelectOption<T = any> = {
-    title: string
+    title: string | JSX.Element
     value: T
     disabled?: boolean
 }
@@ -24,6 +25,7 @@ type SelectProps<T = any> = {
 } & InputProps<string, string>
 
 const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChange, onValueChange, name, placeholder, inputSize, error, validators, showEmptyOption, ...props} ) => {
+	const {t} = useTranslation();
 	const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>( defaultOption );
 	const [selectedValue, setSelectedValue] = useState<any | undefined>( value );
 	const [options, setOptions] = useState<SelectOption[]>( props.options );
@@ -35,7 +37,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 			setOptions( [
 				{
 					value: null,
-					title: placeholder || 'Tutti'
+					title: placeholder || t('inputs:all_placeholder')
 				},
 				...props.options
 			] );
