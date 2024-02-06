@@ -3,6 +3,7 @@ import React from "react";
 import { TableButtonsOrientation } from "../Table";
 import { i18n as I18NType } from "i18next";
 import i18n from "../i18n";
+import { TooltipProps } from "../Tooltip/Tooltip";
 
 export type ShellyConfig = {
 	lang?: string
@@ -34,6 +35,8 @@ export type ShellyConfig = {
 		},
 
 		buttonsOrientation?: TableButtonsOrientation
+
+		buttonsTooltipOrientation?: TooltipProps['orientation']
 	}
 
 	i18n?: I18NType

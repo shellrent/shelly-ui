@@ -10,6 +10,7 @@ import { useShellyContext } from "../Provider";
 import { twMerge } from "tailwind-merge";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { useTranslation } from "../i18n";
+import { TooltipProps } from "../Tooltip/Tooltip";
 
 export type TableButtonsOrientation = 'left' | 'right' | 'center' | undefined
 
@@ -50,6 +51,7 @@ type TableButtonProviderProps = {
 
 type TableButtonProps = {
 	to?: string
+	tooltipOrientation?: TooltipProps['orientation']
 } & Omit<ButtonProps, "buttonType" | "outline" | "size">
 
 const ButtonProvider: React.FC<TableButtonProviderProps> = ({ children, onClick, to, ...props }: TableButtonProviderProps) => {
@@ -69,8 +71,14 @@ const ButtonProvider: React.FC<TableButtonProviderProps> = ({ children, onClick,
 	</Button>;
 };
 
-const Basic: React.FC<TableButtonProps & BasicTableButtonProps> = ({ tooltip, buttonType, icon, ...props }) => {
-	return <Tooltip title={tooltip}>
+const Basic: React.FC<TableButtonProps & BasicTableButtonProps> = ({ tooltip, buttonType, icon, tooltipOrientation, ...props }) => {
+	const config = useShellyContext();
+
+	if ( tooltipOrientation === undefined && config?.tables?.buttonsTooltipOrientation ) {
+		tooltipOrientation = config.tables.buttonsTooltipOrientation;
+	}
+
+	return <Tooltip title={tooltip} orientation={tooltipOrientation}>
 		<ButtonProvider {...props} buttonType={buttonType} size="sm" outline>
 			<FontAwesomeIcon icon={icon} />
 		</ButtonProvider>

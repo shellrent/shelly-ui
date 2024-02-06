@@ -117,12 +117,19 @@ export const Filter: Story = {
 				{
 					id: 'actions',
 					cell: () => <TableButtons>
-						<TableButtons.Edit/>
+						<TableButtons.Edit tooltipOrientation='left'/>
 					</TableButtons>
 				}
 			],
 			data: [
-				
+				{
+					id: 1,
+					name: 'test1'
+				},
+				{
+					id: 2,
+					name: 'test2'
+				},
 			]
 		}
 	},
