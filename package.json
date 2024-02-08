@@ -1,7 +1,7 @@
 {
   "name": "@shellrent/shelly-ui",
   "private": false,
-  "version": "1.0.35",
+  "version": "1.1.0",
   "type": "module",
   "module": "./dist/shelly-ui.es.js",
   "types": "./dist/index.d.ts",
@@ -11,9 +11,10 @@
       "import": "./dist/shelly-ui.es.js",
       "types": "./dist/index.d.ts"
     },
-    "./styles.css": {
-      "require": "./dist/styles.css",
-      "default": "./dist/styles.css"
+    "./style": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css",
+      "default": "./dist/style.css"
     }
   },
   "files": [
@@ -33,7 +34,8 @@
     "daisyui": "^3.x",
     "react": "^18.x",
     "react-dom": "^18.x",
-    "tailwindcss": "^3.x"
+    "tailwindcss": "^3.x",
+    "react-i18next": "^14.0.x"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.15",
