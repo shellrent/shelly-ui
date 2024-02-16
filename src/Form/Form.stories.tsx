@@ -20,8 +20,7 @@ export const Default: Story = {
 
 		const validateRepeatPassword: InputValidationHandler = ( value, formData ) => {
 			const repeat =form.state.formValues?.getFormValue( 'password' ); 
-			console.log( formData );
-
+			
 			if ( !repeat ) {
 				return null;
 			}

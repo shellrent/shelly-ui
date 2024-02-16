@@ -18,10 +18,6 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 		form.resetInputs();
 	}, [] );
 
-	useEffect( () => {
-		console.log(form.state?.formValues?.formValues);
-	}, [form.state?.formValues?.formValues] );
-
 	const onSubmit = ( event: FormEvent<HTMLFormElement> ) => {
 		form.resetErrors();
 		event.preventDefault();

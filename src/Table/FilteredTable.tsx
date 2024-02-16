@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import PaginateTable, { PaginateTableProps } from "./PaginateTable";
 import Form from '../Form';
 import Button from "../Button";
@@ -26,22 +26,28 @@ type FilterFormProps<T = any> = {
 	updateAsyncFilters?: (data: T) => Promise<any>
 } & PropsWithChildren
 
-const FilterForm: React.FC<FilterFormProps> = ({ children, id, form, updateAsyncFilters }) => {
+const FilterForm: React.FC<FilterFormProps> = ({ children, form, updateAsyncFilters }) => {
 	const [loading, setIsLoading] = useState(false);
 	const [queryParameters, setQueryParams] = useQueryParams();
 	const { i18n } = useShellyContext();
-	const prevQueryParameters = useRef(null);
 
 	useEffect(() => {
+		form.resetFormValues();
+	}, []);
+
+	useEffect(() => {
+		console.log(form.state.formValues);
+
 		if (!queryParameters || !queryParameters.get(queryFilterKey)) {
 			return;
 		}
 
-		if (_.isEqual(prevQueryParameters.current, queryParameters)) {
+		let formValues = {};
+		try {
+			formValues = JSON.parse( queryParameters.get(queryFilterKey) ?? '{}' );
+		} catch {
 			return;
 		}
-		
-		const formValues = JSON.parse( queryParameters.get(queryFilterKey) ?? '{}' );
 
 		if (_.isEqual( formValues, form.state.formValues.formValues )) {
 			return;
