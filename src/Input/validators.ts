@@ -1,3 +1,4 @@
+
 export type InputValidatorHandler<T = any> = (value: T | null | undefined) => string | null ; 
 
 export const isRequired = (errMessage: string): InputValidatorHandler<string> => {

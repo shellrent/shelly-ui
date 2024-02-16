@@ -18,6 +18,10 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 		form.resetInputs();
 	}, [] );
 
+	useEffect( () => {
+		console.log(form.state?.formValues?.formValues);
+	}, [form.state?.formValues?.formValues] );
+
 	const onSubmit = ( event: FormEvent<HTMLFormElement> ) => {
 		form.resetErrors();
 		event.preventDefault();
@@ -102,6 +106,7 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 				return true;
 			} );
 		} );
+		
 		if ( errors.length > 0 ) {
 			form.handleFormError( errors );
 			return;

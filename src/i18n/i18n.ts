@@ -5,7 +5,7 @@ import { useShellyContext } from '../Provider';
 export const useTranslation = () => {
 	const {i18n, lang} = useShellyContext();
 
-	if ( lang ) {
+	if ( lang && lang !== i18n.language ) {
 		i18n.changeLanguage( lang );
 	}
 
@@ -17,10 +17,7 @@ i18n
 	.init({
 		lng: 'en',
 		fallbackLng: 'en',
-		debug: true,
-		react: {
-			useSuspense: true,
-		},
+		debug: false,
 		resources: {
 			en: {
 				tables: {

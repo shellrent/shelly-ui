@@ -307,7 +307,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 	};
 
 	const handleOnSubmitted = (res: R) => {
-		if (!props.onSubmitted && res instanceof Promise) {
+		if (!props?.onSubmitted && res instanceof Promise) {
 			res
 				.then(() => handleOnSuccess)
 				.catch((err) => handleFormError(err.message()));
@@ -315,11 +315,11 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			return;
 		}
 
-		if (!props.onSubmitted) {
+		if (!props?.onSubmitted) {
 			res ? handleOnSuccess() : handleFormError('error');
 		}
 
-		if (props.onSubmitted) {
+		if (props?.onSubmitted) {
 			props.onSubmitted(res, handleOnSuccess, handleFormError, setSubmitting);
 		}
 	};

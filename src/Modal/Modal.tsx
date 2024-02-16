@@ -9,21 +9,39 @@ type ModalProps = {
 
 const Modal = memo<ModalProps>(({ modal, children }) => {
 	return <Transition appear show={modal.isOpen} as={Fragment}>
-		<Dialog as="dialog" className="modal modal-open text-base-content overflow-y-scroll" onClose={() => modal.close()}>
+		<Dialog 
+			onClose={() => null} 
+			as="div" 
+			className="modal modal-open text-base-content overflow-y-scroll" >
+			<Transition.Child
+				as={Fragment}
+				enter="ease-out duration-100"
+				enterFrom="opacity-0"
+				enterTo="opacity-100"
+				leave="ease-in duration-100"
+				leaveFrom="opacity-100"
+				leaveTo="opacity-0"
+			>
+				<div className="fixed inset-0 bg-black/25" onClick={() => modal.close()}/>
+			</Transition.Child>
+
 			<div className="modal-box w-5/6 max-w-2xl !max-h-none overflow-y-visible">
 				<Transition.Child
+					as={Fragment}
 					enter="ease-out duration-100"
-					enterFrom="opacity-0 scale-95"
-					enterTo="opacity-100 scale-100"
+					enterFrom="opacity-0"
+					enterTo="opacity-100"
 					leave="ease-in duration-100"
-					leaveFrom="opacity-100 scale-100"
-					leaveTo="opacity-0 scale-95"
+					leaveFrom="opacity-100"
+					leaveTo="opacity-0"
 				>
-					{children}
+					<div>
+						{children}
+					</div>
 				</Transition.Child>
 			</div>
 		</Dialog>
-	</Transition>;
+	</Transition >;
 });
 
 Modal.displayName = 'Modal';
