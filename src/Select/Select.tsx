@@ -8,6 +8,7 @@ import { InputProps } from "../Form";
 import FieldError from "../Common/FieldError";
 
 import { useTranslation } from "../i18n";
+import useSelectError from "./useSelectError";
 
 export type SelectOption<T = any> = {
     title: string | JSX.Element
@@ -29,7 +30,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 	const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>( defaultOption );
 	const [selectedValue, setSelectedValue] = useState<any | undefined>( value );
 	const [options, setOptions] = useState<SelectOption[]>( props.options );
-	const [err, setError] = useState<string | boolean>(false);
+	const {error: err, handleValidation} = useSelectError({err: error, validators});
 	const prevValue = useRef( value );
 
 	useEffect( () => {
@@ -37,6 +38,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 			setOptions( [
 				{
 					value: null,
+					disabled: true,
 					title: placeholder || t('inputs:all_placeholder')
 				},
 				...props.options
@@ -48,15 +50,6 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 		setOptions( props.options );
 	}, [props.options] );
 
-	useEffect( () => {
-		if ( typeof error == 'string' ) {
-			setError( error );
-		}
-
-		if ( error ) {
-			setError( true );
-		}
-	} , [error]);
 
 	useEffect( () => {
 		if ( !options.length ) {
@@ -64,23 +57,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 		}
 
 		if ( prevValue.current !== value ) {
-			if ( validators && validators.length ) {
-				validators.every( (validator) => {
-					if ( !validator ) {
-						return true;
-					}
-					
-					const validationError = validator( value );
-					
-					setError( validationError ?? false );
-					
-					if ( validationError ) {
-						return false;
-					}
-					
-					return true;
-				} );
-			}
+			handleValidation( value );
 		}
 
 		prevValue.current = value;
@@ -123,7 +100,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 						(placeholder && !selectedOption) && <span className="text-gray-400 font-normal h-full flex items-center truncate">{placeholder}</span>
 					}
 					{       
-						<span className={ ((showEmptyOption && selectedOption?.value == null) ? 'text-gray-400' : '') + ' mx-1'}>{ (displayFn && selectedOption) ? displayFn( selectedOption ) : selectedOption?.title } </span>
+						<span className={ ((showEmptyOption && ( selectedOption?.value == null || selectedOption.disabled ) ) ? '!text-gray-400' : '') + ' mx-1'}>{ (displayFn && selectedOption) ? displayFn( selectedOption ) : selectedOption?.title } </span>
 					} 
 				</span>
 			</Listbox.Button>
@@ -150,7 +127,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 									<span
 										className={`block truncate ${
 											selected ? 'ml-8 font-medium' : 'ml-2 font-normal'
-										} ${ option.value === null && 'text-base-content-400' }`}
+										} ${ option.value === null && 'text-base-content/40' }`}
 									>
 										{displayFn ? displayFn( option ) : option?.title}
 									</span>
