@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useState } from "react";
+import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import PaginateTable, { PaginateTableProps } from "./PaginateTable";
 import Form from '../Form';
 import Button from "../Button";
@@ -8,6 +8,8 @@ import _ from "lodash";
 import { RowData } from "@tanstack/react-table";
 import { useQueryParams } from "../hooks/useQueryParams";
 import { useShellyContext } from "../Provider";
+
+const queryFilterKey = 'filters';
 
 type FilteredTableProps<T extends RowData = any> = PaginateTableProps<T> & PropsWithChildren
 
@@ -28,25 +30,23 @@ const FilterForm: React.FC<FilterFormProps> = ({ children, id, form, updateAsync
 	const [loading, setIsLoading] = useState(false);
 	const [queryParameters, setQueryParams] = useQueryParams();
 	const { i18n } = useShellyContext();
+	const prevQueryParameters = useRef(null);
 
 	useEffect(() => {
-		if (!queryParameters) {
+		if (!queryParameters || !queryParameters.get(queryFilterKey)) {
 			return;
 		}
 
-		let formValues = {};
-		queryParameters.forEach((val, key) => {
-			formValues = {
-				...formValues,
-				[key]: val
-			};
-		});
-
-
-		if (formValues == form.state.formValues) {
+		if (_.isEqual(prevQueryParameters.current, queryParameters)) {
 			return;
 		}
+		
+		const formValues = JSON.parse( queryParameters.get(queryFilterKey) ?? '{}' );
 
+		if (_.isEqual( formValues, form.state.formValues.formValues )) {
+			return;
+		}
+		
 		form.setFormValues(formValues);
 
 		if (!_.isEmpty(formValues)) {
@@ -54,15 +54,13 @@ const FilterForm: React.FC<FilterFormProps> = ({ children, id, form, updateAsync
 		}
 	}, [queryParameters]);
 
-
 	const saveForm = (formData: any) => {
 		const qp = new URLSearchParams;
 
 		if (formData.length !== 0) {
-			Object.entries(formData).map(([k, v]) => {
-				qp.set(k, v as string);
-			});
+			qp.set( queryFilterKey, JSON.stringify( formData ) );
 		}
+
 		setQueryParams(qp);
 		if (updateAsyncFilters) {
 			setIsLoading(true);
