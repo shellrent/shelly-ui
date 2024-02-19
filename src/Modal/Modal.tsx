@@ -5,9 +5,10 @@ import { twMerge } from 'tailwind-merge';
 
 type ModalProps = {
 	modal: ModalHandler
+	size?: 'md' | 'xl'
 } & PropsWithChildren
 
-const Modal = memo<ModalProps>(({ modal, children }) => {
+const Modal = memo<ModalProps>(({ modal, children, size }) => {
 	return <Transition appear show={modal.isOpen} as={Fragment}>
 		<Dialog 
 			onClose={() => null} 
@@ -25,7 +26,7 @@ const Modal = memo<ModalProps>(({ modal, children }) => {
 				<div className="fixed inset-0 bg-black/25" onClick={() => modal.close()}/>
 			</Transition.Child>
 
-			<div className="modal-box w-5/6 max-w-2xl !max-h-none overflow-y-visible">
+			<div className={`modal-box !max-h-none overflow-y-visible max-w-2xl ${size === 'xl' && '!max-w-5xl' }`}>
 				<Transition.Child
 					as={Fragment}
 					enter="ease-out duration-100"

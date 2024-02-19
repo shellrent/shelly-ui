@@ -21,7 +21,7 @@ export const Default: Story = {
 
 		return <div>
 			<Button onClick={() => modal.open()}>Open</Button>
-			<Modal modal={modal}>
+			<Modal modal={modal} size="xl">
 				<Modal.Title>Test</Modal.Title>
 				<p>
 					Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
