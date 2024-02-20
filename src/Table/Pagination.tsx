@@ -18,7 +18,7 @@ const Pagination: React.FC<PaginationProps> = ( {table} ) => {
 		if ( ref.current ) {
 			ref.current.value = String( table.getState().pagination.pageIndex + 1 ) ;
 		}
-	}, [table.getState().pagination.pageIndex]);
+	}, [table.getState()]);
 
 	const onInputBlur = () => {
 		if ( ref.current ) {

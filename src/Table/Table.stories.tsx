@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import BasicTable from './BasicTable';
 import useTable from './useTable';
 import ShellyProvider from '../Provider';
-import React from 'react';
+import React, { useState } from 'react';
 import FilteredTable from './FilteredTable';
 import { useForm } from '../Form';
 import Input from '../Input';
@@ -137,14 +137,20 @@ export const Filter: Story = {
 		}
 	},
 	render: (args) => {
+		const [page, setPage] = useState(0);
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const { table } = useTable(args.tableData);
+		const { table } = useTable({ 
+			...args.tableData,
+			currentPage: page
+		});
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const form = useForm({
 			type: 'filter'
 		});
 
 		return <ShellyProvider config={args.config}>
+			<Input onValueChange={ setPage } />
+
 			<FilteredTable table={table} {...args}>
 				<FilteredTable.FilterForm form={form}>
 					<FilteredTable.FilterField>

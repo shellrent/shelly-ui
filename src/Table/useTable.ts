@@ -27,6 +27,13 @@ const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, 
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
+		setPagination({
+			pageIndex: (currentPage || 1) - 1,
+			pageSize: pageSize || 10,
+		});
+	}, [currentPage, pageSize]);
+
+	useEffect(() => {
 		if (onPaginationChange &&
 			(prevPagination.current.pageIndex !== pagination.pageIndex || prevPagination.current.pageSize !== pagination.pageSize)) {
 			setLoading(true);
