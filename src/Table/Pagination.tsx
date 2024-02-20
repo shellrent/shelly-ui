@@ -1,4 +1,4 @@
-import React, { createRef } from "react";
+import React, { createRef, useEffect } from "react";
 import Join from "../Join";
 import Button from "../Button";
 import Input from "../Input";
@@ -14,6 +14,12 @@ type PaginationProps<T = any> = {
 const Pagination: React.FC<PaginationProps> = ( {table} ) => {
 	const ref = createRef<HTMLInputElement>();
 	
+	useEffect(() => {
+		if ( ref.current ) {
+			ref.current.value = String( table.getState().pagination.pageIndex + 1 ) ;
+		}
+	}, [table.getState().pagination.pageIndex]);
+
 	const onInputBlur = () => {
 		if ( ref.current ) {
 			ref.current.value = String( table.getState().pagination.pageIndex + 1 ) ;

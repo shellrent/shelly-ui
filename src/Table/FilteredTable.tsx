@@ -36,8 +36,6 @@ const FilterForm: React.FC<FilterFormProps> = ({ children, form, updateAsyncFilt
 	}, []);
 
 	useEffect(() => {
-		console.log(form.state.formValues);
-
 		if (!queryParameters || !queryParameters.get(queryFilterKey)) {
 			return;
 		}
