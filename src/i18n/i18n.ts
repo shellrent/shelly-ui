@@ -27,7 +27,8 @@ i18n
 					delete_button_label: 'Delete',
 					details_button_label: 'Details',
 					edit_password_button_label: 'Edit password',
-					empty_body_label: 'No elements found'
+					empty_body_label: 'No elements found',
+					total_count_label: 'Pages: {{total}}'
 				},
 				inputs: {
 					all_placeholder: 'All'
@@ -41,7 +42,8 @@ i18n
 					delete_button_label: 'Cancella',
 					details_button_label: 'Dettagli',
 					edit_password_button_label: 'Modifica password',
-					empty_body_label: 'Nessun elemento da visualizzare'
+					empty_body_label: 'Nessun elemento da visualizzare',
+					total_count_label: 'Pagine totali: {{total}}'
 				},
 				inputs: {
 					all_placeholder: 'Tutti'

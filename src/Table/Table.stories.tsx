@@ -99,8 +99,8 @@ export const Filter: Story = {
 			}
 		},
 		tableData: {
-			pageSize: 1,
-			pageCount: 2,
+			pageSize: 10,
+			pageCount: 100,
 			currentPage: 0,
 			columns: [
 				{
