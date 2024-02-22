@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Form from './Form';
 import useForm from './useForm';
-import {Button, Input, InputValidationHandler} from '..';
+import { Button, Input, InputValidationHandler, TextEditor } from '..';
 import React from 'react';
 import { validators } from '..';
 
@@ -18,21 +18,21 @@ export const Default: Story = {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const form = useForm();
 
-		const validateRepeatPassword: InputValidationHandler = ( value, formData ) => {
-			const repeat =form.state.formValues?.getFormValue( 'password' ); 
-			
-			if ( !repeat ) {
+		const validateRepeatPassword: InputValidationHandler = (value, formData) => {
+			const repeat = form.state.formValues?.getFormValue('password');
+
+			if (!repeat) {
 				return null;
 			}
 
-			if ( repeat  && !value ) {
+			if (repeat && !value) {
 				return 'E\' necessario ripetere la password.';
 			}
-	
-			if ( value !== repeat ) {
+
+			if (value !== repeat) {
 				return 'Le due password non corrispondono';
 			}
-	
+
 			return null;
 		};
 
@@ -40,26 +40,34 @@ export const Default: Story = {
 			return null;
 
 			const err = validators.minCharacters(8, 'La Password deve contenere almeno 8 caratteri')(value);
-	
+
 			if (err) {
 				return err;
 			}
-	
+
 			return validators.isRequired('La password è richiesta')(value);
 		};
 
-		return <Form form={form} saveForm={() => true}>
+		return <Form form={form} saveForm={(data) => {
+			console.log(data);
+			return true;
+		}}>
 			<Input.FormControl>
 				<Input.Label>Password</Input.Label>
-				<Input {...form.registerInput( {name: 'password', validators: [validatePassword]} )} />
+				<Input {...form.registerInput({ name: 'password', validators: [validatePassword] })} />
 			</Input.FormControl>
 			<Input.FormControl>
 				<Input.Label>Test</Input.Label>
-				<Input {...form.registerInput( {name: 'test', validators: [validateRepeatPassword]} )} />
+				<Input {...form.registerInput({ name: 'test', validators: [validateRepeatPassword] })} />
+			</Input.FormControl>
+
+			<Input.FormControl>
+				<Input.Label>Text editor</Input.Label>
+				<TextEditor {...form.registerInput({ name: 'editor' })} />
 			</Input.FormControl>
 			<Button type="submit">
 				Save
 			</Button>
-		</Form>;
+		</Form >;
 	}
 };

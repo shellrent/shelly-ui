@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { InputProps } from '../Form';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import './style.css';
 import FieldError from '../Common/FieldError';
 
-type TextEditorProps = InputProps
+type TextEditorProps = {
+	placeholder?: string;
+} & InputProps
 
-const TextEditor: React.FC<TextEditorProps> = ( { value, onValueChange, error, validators, inputSize, ...props } ) => {
+const TextEditor: React.FC<TextEditorProps> = ( { value, onValueChange, placeholder, error, validators, inputSize, ...props } ) => {
 	const [err, setErr] = useState( error );
 	const [htmlValue, setHtmlValue] = useState<string | undefined>( '' );
 
-	const onEditorChange = ( val: string | undefined ) => {
-
+	const onEditorChange = useCallback( ( val: string | undefined ) => {
 		setHtmlValue( val );
-	};
+	}, [] );
 
 	useEffect( () => {		
 		if ( value === '' ) {
@@ -56,7 +57,7 @@ const TextEditor: React.FC<TextEditorProps> = ( { value, onValueChange, error, v
 	
 	return <div>
 		<input type='hidden' value={value} {...props}/> 
-		<ReactQuill className='!border-0 !rounded-box' theme="snow" value={htmlValue} onChange={onEditorChange} />
+		<ReactQuill className={`rounded-btn ${err ? '!border border-error' : '!border-0'}`} theme="snow" placeholder={placeholder} value={htmlValue} onChange={onEditorChange} />
 		<FieldError error={err}></FieldError>
 	</div>;
 };

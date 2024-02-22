@@ -1,0 +1,23 @@
+@import 'react-quill/dist/quill.snow.css';
+
+.ql-toolbar {
+    border-radius: var(--rounded-btn, 0.5rem) var(--rounded-btn, 0.5rem) 0px 0px !important;
+    border-color: var(--fallback-bc,oklch(var(--bc)/0.2)) !important;
+}
+ 
+.ql-container {
+    border-radius:  0px 0px var(--rounded-btn, 0.5rem) var(--rounded-btn, 0.5rem) !important;
+    border-color: var(--fallback-bc,oklch(var(--bc)/0.2)) !important;
+}
+
+.ql-editor {
+    min-height: 10rem;
+}
+
+.border-error > .ql-toolbar {
+    border-color: transparent transparent var(--fallback-bc,oklch(var(--bc)/0.2)) transparent  !important;
+}
+
+.border-error > .ql-container {
+    border-color: transparent !important;
+}
