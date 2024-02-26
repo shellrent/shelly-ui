@@ -79,7 +79,7 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 		let errors: string[] = [];
 
 		Object.entries( form.state.inputs.current ).map( ( [key, input] ) => {
-			const inputValue = formData.get( input.name )?.toString() as string;
+			const inputValue = formData.get( input.name );
 
 			input.validators.every( validator => {
 				if ( !validator ) {

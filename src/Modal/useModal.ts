@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export type ModalHandler = {
     open: () => void,
@@ -46,9 +46,5 @@ export const useModal = ( props?: UseModalProps ): ModalHandler => {
 		}
 	};
 
-	return { 
-		open, 
-		close, 
-		isOpen
-	};
+	return useMemo(() => ({ open, close, isOpen }), [isOpen]);
 };
