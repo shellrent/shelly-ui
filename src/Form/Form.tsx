@@ -83,7 +83,7 @@ const Form: React.FC<FormProps> = <T extends object>({ children, saveForm, form 
 
 			input.validators.every(validator => {
 				if (!validator) {
-					return true;
+					return true;	
 				}
 
 				const err = validator(inputValue);

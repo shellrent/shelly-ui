@@ -18,7 +18,7 @@ export const buttonTypes = [
 	'outline',
 	'active',
 	'disabled',
-] as const 
+] as const;
 
 type ButtonType = typeof buttonTypes[number];
 

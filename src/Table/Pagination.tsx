@@ -13,7 +13,7 @@ type PaginationProps<T = any> = {
 }
 
 const Pagination: React.FC<PaginationProps> = ({ table }) => {
-	const {t} = useTranslation(  );
+	const {t} = useTranslation();
 	const ref = createRef<HTMLInputElement>();
 
 	useEffect(() => {

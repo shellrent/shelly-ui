@@ -2,7 +2,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Combobox, Transition } from "@headlessui/react";
 import clsx from "clsx";
-import React, { Fragment, ReactNode, useEffect, useRef, useState } from "react";
+import React, { Fragment, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { swtc } from "../utils";
 import FieldError from "../Common/FieldError";
 
@@ -25,7 +25,6 @@ type AutocompleteProps<T = any> = {
 
 
 const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryChange, defaultOption, onChange, onValueChange, name, inputSize, error, validators, placeholder, ...props}) => {
-	const [selectedOption, setSelectedOption] = useState<AutocompleteOption | undefined>(defaultOption);
 	const [selectedValue, setSelectedValue] = useState<any | undefined>(value);
 	const [options, setOptions] = useState<AutocompleteOption[]>(props.options);
 	const { error: err, handleValidation } = useSelectError({ err: error, validators });
@@ -34,6 +33,10 @@ const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryCha
 	useEffect(() => {
 		setOptions(props.options);
 	}, [props.options]);
+
+	const findOption = useCallback( ( val ) => {
+		return options.find(opt => opt.value == val);
+	}, [options] );
 
 
 	useEffect(() => {
@@ -47,9 +50,6 @@ const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryCha
 
 		prevValue.current = value;
 		setSelectedValue(value);
-
-		const option = options.find(opt => opt.value == value);
-		setSelectedOption(option);
 	}, [value, options]);
 
 	const onSelectChange = (value: any) => {
@@ -82,7 +82,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryCha
 			<Combobox.Input
 				placeholder={placeholder}
 				className={classNames}
-				displayValue={() => selectedOption?.title ?? ''}
+				displayValue={(item) => findOption( item )?.title }
 				onChange={(event) => onQueryChange(event.target.value)}
 			/>
 			<Combobox.Button  className="absolute inset-y-0 right-0 flex items-center pr-2 h-full w-full" />
