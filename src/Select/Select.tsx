@@ -92,15 +92,15 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 		inputSize || 'text-base'
 	);
 
-	return  <Listbox value={selectedValue} onChange={onSelectChange} name={name} {...props}>
+	return  <Listbox value={selectedValue === undefined ? '' : selectedValue }  onChange={onSelectChange} name={name} {...props}>
 		<div className="relative">    
 			<Listbox.Button className={classNames}>
 				<span className="h-full flex items-center truncate overflow-hidden">
 					{
-						(placeholder && !selectedOption) && <span className="text-gray-400 font-normal h-full flex items-center truncate">{placeholder}</span>
+						(placeholder && selectedOption === undefined) && <span className="text-gray-400 font-normal h-full flex items-center truncate">{placeholder}</span>
 					}
 					{       
-						<span className={ ((showEmptyOption && ( selectedOption?.value == null || selectedOption.disabled ) ) ? '!text-gray-400' : '') + ' mx-1'}>{ (displayFn && selectedOption) ? displayFn( selectedOption ) : selectedOption?.title } </span>
+						<span className={ ((showEmptyOption && ( selectedOption?.value === null || selectedOption?.disabled ) ) ? '!text-gray-400' : '') + ' mx-1'}>{ (displayFn && selectedOption) ? displayFn( selectedOption ) : selectedOption?.title } </span>
 					} 
 				</span>
 			</Listbox.Button>

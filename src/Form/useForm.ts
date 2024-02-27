@@ -258,7 +258,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			_.isEqual(inputRef.current[name].validators, validators)) {
 			return {
 				name: name,
-				value: formValues[name] ?? "",
+				value: formValues[name],
 				onValueChange: onFieldChangeValue,
 				validators: validators,
 				inputSize: (props?.type == 'filter') ? 'sm' : undefined,
@@ -277,7 +277,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 
 			return {
 				name: name,
-				value: formValues[name] ?? "",
+				value: formValues[name],
 				validators: validators,
 				inputSize: (props?.type == 'filter') ? 'sm' : undefined,
 				disabled: true
@@ -298,7 +298,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 
 		return {
 			name: name,
-			value: formValues[name] ?? "",
+			value: formValues[name],
 			onValueChange: onFieldChangeValue,
 			validators: validators,
 			inputSize: (props?.type == 'filter') ? 'sm' : undefined,

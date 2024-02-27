@@ -6,36 +6,36 @@ import { swtc } from "../utils";
 import { FormHandler } from "./useForm";
 
 type FormProps<T extends object = any> = {
-	saveForm: ( data: T ) => Promise<any> | boolean
+	saveForm: (data: T) => Promise<any> | boolean
 	onSuccess?: () => void
 	form: FormHandler
-} & PropsWithChildren; 
+} & PropsWithChildren;
 
-const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, form}: FormProps<T> ) => {	
-	useEffect( () => {
+const Form: React.FC<FormProps> = <T extends object>({ children, saveForm, form }: FormProps<T>) => {
+	useEffect(() => {
 		form.resetErrors();
 		form.resetFormValues();
 		form.resetInputs();
-	}, [] );
+	}, []);
 
-	const onSubmit = ( event: FormEvent<HTMLFormElement> ) => {
+	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		form.resetErrors();
 		event.preventDefault();
-		
-		const formData = new FormData( event.currentTarget );
+
+		const formData = new FormData(event.currentTarget);
 		const data: { [key: string]: any } = {} as T;
 
 		for (const pair of formData.entries()) {
 			const key = pair[0];
 			const value = pair[1];
 
-			if ( !value ) {
+			if (!value) {
 				continue;
 			}
 
-			if (  typeof value == 'string'  && !value.length ) {
+			if (typeof value == 'string' && !value.length) {
 				continue;
-			} 
+			}
 
 			if (key.includes('[') && key.includes(']')) {
 				const fieldName = key.substring(0, key.indexOf('['));
@@ -58,8 +58,8 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 
 				data[objFieldName][objKey] = value;
 			} else {
-				if ( data[key] ) {
-					if ( data[key] instanceof Array ) {
+				if (data[key]) {
+					if (data[key] instanceof Array) {
 						data[key] = [
 							...data[key],
 							value
@@ -78,18 +78,18 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 
 		let errors: string[] = [];
 
-		Object.entries( form.state.inputs.current ).map( ( [key, input] ) => {
-			const inputValue = formData.get( input.name );
+		Object.entries(form.state.inputs.current).map(([key, input]) => {
+			const inputValue = formData.get(input.name);
 
-			input.validators.every( validator => {
-				if ( !validator ) {
+			input.validators.every(validator => {
+				if (!validator) {
 					return true;
 				}
 
-				const err = validator( inputValue );
+				const err = validator(inputValue);
 
-				if ( err ) {
-					form.triggerInputError( key );
+				if (err) {
+					form.triggerInputError(key);
 
 					errors = [
 						...errors,
@@ -100,59 +100,59 @@ const Form: React.FC<FormProps> = < T extends object >( {children, saveForm, for
 				}
 
 				return true;
-			} );
-		} );
-		
-		if ( errors.length > 0 ) {
-			form.handleFormError( errors );
+			});
+		});
+
+		if (errors.length > 0) {
+			form.handleFormError(errors);
 			return;
 		}
-		
-		const res = saveForm( data as T );
 
-		form.handleOnSubmitted( res );
+		const res = saveForm(data as T);
+
+		form.handleOnSubmitted(res);
 	};
 
-	return <form 
+	return <form
 		ref={form.ref}
 		onSubmit={onSubmit}
 		className="flex flex-col gap-4"
-	>	
+	>
 		{form.state.formErrors.hasErrors() &&
-		<Alert type="error" className="" showCloseButton={true}>
-			<div>
-				<Alert.Title>
-					Error
-				</Alert.Title>
-				<ul>
-					{
-						form.state.formErrors.getErrors().map( ( error, key ) => {
-							return <li key={key}> {error} </li>;
-						})
-					}
-				</ul>
-			</div>
-		</Alert>
+			<Alert type="error" className="" showCloseButton={true}>
+				<div>
+					<Alert.Title>
+						Error
+					</Alert.Title>
+					<ul>
+						{
+							form.state.formErrors.getErrors().map((error, key) => {
+								return <li key={key}> {error} </li>;
+							})
+						}
+					</ul>
+				</div>
+			</Alert>
 		}
 		{children}
 	</form>;
 };
 
-type GridLayoutProps = PropsWithChildren; 
+type GridLayoutProps = PropsWithChildren;
 
-const GridLayout: React.FC<GridLayoutProps> = ({children}) => {
+const GridLayout: React.FC<GridLayoutProps> = ({ children }) => {
 	return <div className="grid grid-cols-4 lg:grid-cols-12 my-4 gap-4">{children}</div>;
 };
 
 
 type FormButtonsAlign = 'left' | 'center' | 'right';
 
-type FormButtonsProps  = {
-    align?: FormButtonsAlign | undefined
+type FormButtonsProps = {
+	align?: FormButtonsAlign | undefined
 } & PropsWithChildren
 
-const FormButtons: React.FC<FormButtonsProps> = ({children, align}) => {
-	if( !align ) {
+const FormButtons: React.FC<FormButtonsProps> = ({ children, align }) => {
+	if (!align) {
 		align = 'right';
 	}
 
@@ -161,11 +161,11 @@ const FormButtons: React.FC<FormButtonsProps> = ({children, align}) => {
 		'max-w-fit',
 		'grid grid-flow-col gap-2',
 		clsx(
-			align && swtc( align, {
+			align && swtc(align, {
 				left: 'text-left',
 				center: 'text-center',
 				right: 'text-right',
-			} ),
+			}),
 		)
 	);
 

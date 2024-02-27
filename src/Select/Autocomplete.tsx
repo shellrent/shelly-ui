@@ -77,7 +77,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryCha
 		inputSize || 'text-base'
 	);
 
-	return <Combobox value={selectedValue} onChange={onSelectChange} refName={name} {...props}>
+	return <Combobox value={selectedValue === undefined ? '' : undefined} onChange={onSelectChange} refName={name} {...props}>
 		<div className="relative">
 			<Combobox.Input
 				placeholder={placeholder}

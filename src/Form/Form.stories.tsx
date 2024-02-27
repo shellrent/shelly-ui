@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Form from './Form';
 import useForm from './useForm';
-import { Button, Input, InputValidationHandler, TextEditor } from '..';
-import React from 'react';
+import { Button, Input, InputValidationHandler, Select, ShellyProvider, TextEditor } from '..';
+import React, { useEffect } from 'react';
 import { validators } from '..';
 
 const meta: Meta<typeof Form> = {
@@ -48,26 +48,42 @@ export const Default: Story = {
 			return validators.isRequired('La password è richiesta')(value);
 		};
 
-		return <Form form={form} saveForm={(data) => {
-			console.log(data);
-			return true;
-		}}>
-			<Input.FormControl>
-				<Input.Label>Password</Input.Label>
-				<Input {...form.registerInput({ name: 'password', validators: [validatePassword] })} />
-			</Input.FormControl>
-			<Input.FormControl>
-				<Input.Label>Test</Input.Label>
-				<Input {...form.registerInput({ name: 'test', validators: [validateRepeatPassword] })} />
-			</Input.FormControl>
+		useEffect( () => {
+			form.setFormValues({
+				select: false
+			});
+		}, [] );
 
-			<Input.FormControl>
-				<Input.Label>Text editor</Input.Label>
-				<TextEditor {...form.registerInput({ name: 'editor' })} />
-			</Input.FormControl>
-			<Button type="submit">
-				Save
-			</Button>
-		</Form >;
+		return <ShellyProvider config={{}}>
+			<Form form={form} saveForm={(data) => {
+				console.log(data);
+				return true;
+			}}>
+				<Input.FormControl>
+					<Input.Label>Password</Input.Label>
+					<Input {...form.registerInput({ name: 'password', validators: [validatePassword] })} />
+				</Input.FormControl>
+				<Input.FormControl>
+					<Input.Label>Test</Input.Label>
+					<Input {...form.registerInput({ name: 'test', validators: [validateRepeatPassword] })} />
+				</Input.FormControl>
+
+				<Input.FormControl>
+					<Input.Label>Text editor</Input.Label>
+					<TextEditor {...form.registerInput({ name: 'editor' })} />
+				</Input.FormControl>
+
+				<Input.FormControl>
+					<Input.Label>Text editor</Input.Label>
+					<Select showEmptyOption options={ [{value: true, title: 'true'}, {value: false, title: 'false'}] } {...form.registerInput({ name: 'select' })} />
+				</Input.FormControl>
+				<Button onClick={ () => form.resetFormValues()}>
+					Reset
+				</Button>
+				<Button type="submit">
+					Save
+				</Button>
+			</Form >
+		</ShellyProvider >;
 	}
 };

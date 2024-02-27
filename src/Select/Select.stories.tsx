@@ -16,16 +16,12 @@ export const Default: Story = {
 		showEmptyOption: true,
 		options: [
 			{
-				value: '1',
-				title: 'Option 1'
+				value: true,
+				title: 'true'
 			},
 			{
-				value: '2',
-				title: 'Option 2'
-			},
-			{
-				value: '3',
-				title: 'Option 3'
+				value: false,
+				title: 'false'
 			}
 		]
 	},

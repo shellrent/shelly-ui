@@ -113,7 +113,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ displayFn, defaultOption, sho
 		})
 	);
 
-	return <Listbox value={selectedValues} onChange={onSelectChange} name={name} multiple>
+	return <Listbox value={selectedValues === undefined ? '' : selectedValues} onChange={onSelectChange} name={name} multiple>
 		<div className="relative">
 			<Listbox.Button className={classNames}>
 				<span className="overflow-hidden h-full flex items-center">
