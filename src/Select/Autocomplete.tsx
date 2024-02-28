@@ -24,20 +24,14 @@ type AutocompleteProps<T = any> = {
 } & InputProps<string, string>
 
 
-const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryChange, defaultOption, onChange, onValueChange, name, inputSize, error, validators, placeholder, ...props}) => {
+const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryChange, defaultOption, onChange, onValueChange, name, inputSize, error, validators, placeholder, options, ...props}) => {
 	const [selectedValue, setSelectedValue] = useState<any | undefined>(value);
-	const [options, setOptions] = useState<AutocompleteOption[]>(props.options);
 	const { error: err, handleValidation } = useSelectError({ err: error, validators });
 	const prevValue = useRef(value);
 
-	useEffect(() => {
-		setOptions(props.options);
-	}, [props.options]);
-
-	const findOption = useCallback( ( val ) => {
-		return options.find(opt => opt.value == val);
-	}, [options] );
-
+	const findOption = useCallback( () => {
+		return options.find(opt => opt.value == selectedValue);
+	}, [options, selectedValue] );
 
 	useEffect(() => {
 		if (!options.length) {
@@ -47,7 +41,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryCha
 		if (prevValue.current !== value) {
 			handleValidation(value);
 		}
-
+ 
 		prevValue.current = value;
 		setSelectedValue(value);
 	}, [value, options]);
@@ -77,12 +71,12 @@ const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryCha
 		inputSize || 'text-base'
 	);
 
-	return <Combobox value={selectedValue === undefined ? '' : undefined} onChange={onSelectChange} refName={name} {...props}>
+	return <Combobox value={selectedValue === undefined ? '' : selectedValue} onChange={onSelectChange} refName={name} {...props}>
 		<div className="relative">
 			<Combobox.Input
 				placeholder={placeholder}
 				className={classNames}
-				displayValue={(item) => findOption( item )?.title }
+				displayValue={ () => findOption()?.title || '' }
 				onChange={(event) => onQueryChange(event.target.value)}
 			/>
 			<Combobox.Button  className="absolute inset-y-0 right-0 flex items-center pr-2 h-full w-full" />
