@@ -50,7 +50,8 @@ export const Default: Story = {
 
 		useEffect( () => {
 			form.setFormValues({
-				select: false
+				select: false,
+				editor: 'editor content'
 			});
 		}, [] );
 

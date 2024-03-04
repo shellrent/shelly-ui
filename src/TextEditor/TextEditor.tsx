@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { InputProps } from '../Form';
 import ReactQuill from 'react-quill';
 import './style.css';
@@ -10,23 +10,18 @@ type TextEditorProps = {
 
 const TextEditor: React.FC<TextEditorProps> = ( { value, onValueChange, placeholder, error, validators, inputSize, ...props } ) => {
 	const [err, setErr] = useState( error );
-	const [htmlValue, setHtmlValue] = useState<string | undefined>( '' );
+	const prevValue = useRef<string | undefined>();
+	const [htmlValue, setHtmlValue] = useState<string | undefined>( value );
 
 	const onEditorChange = useCallback( ( val: string | undefined ) => {
-		setHtmlValue( val );
-	}, [] );
-
-	useEffect( () => {		
-		if ( value === '' ) {
+		if ( prevValue.current === val ) {
 			return;
 		}
+		prevValue.current = val;
+		setHtmlValue( val );
 
-		setHtmlValue( value );
-	}, [value] );
-
-	useEffect( () => {
 		if ( onValueChange ) {
-			onValueChange( htmlValue );
+			onValueChange( val );
 		}
 
 		if ( !validators?.length ) {
@@ -48,8 +43,11 @@ const TextEditor: React.FC<TextEditorProps> = ( { value, onValueChange, placehol
 
 			return true;
 		} );
-
 	}, [htmlValue] );
+
+	useEffect( () => {		
+		setHtmlValue( value );
+	}, [value] );
 
 	useEffect( () => {
 		setErr( error );
