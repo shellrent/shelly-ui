@@ -46,7 +46,13 @@ const TextEditor: React.FC<TextEditorProps> = ( { value, onValueChange, placehol
 	}, [htmlValue] );
 
 	useEffect( () => {		
-		setHtmlValue( value );
+		if ( value === undefined ) {
+			setHtmlValue('');
+		}
+
+		if ( prevValue.current !== value ) {
+			setHtmlValue( value );
+		}
 	}, [value] );
 
 	useEffect( () => {
@@ -54,7 +60,7 @@ const TextEditor: React.FC<TextEditorProps> = ( { value, onValueChange, placehol
 	} ,[error]); 
 	
 	return <div>
-		<input type='hidden' value={value === undefined ? '' : value} {...props}/> 
+		<input type='hidden' value={htmlValue === undefined ? '' : htmlValue} {...props}/> 
 		<ReactQuill className={`rounded-btn ${err ? '!border border-error' : '!border-0'}`} theme="snow" placeholder={placeholder} value={htmlValue} onChange={onEditorChange} />
 		<FieldError error={err}></FieldError>
 	</div>;

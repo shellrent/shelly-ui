@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Form from './Form';
 import useForm from './useForm';
-import { Button, Input, InputValidationHandler, Select, ShellyProvider, TextEditor } from '..';
+import { Button, Checkbox, Input, InputValidationHandler, Select, ShellyProvider, TextEditor } from '..';
 import React, { useEffect } from 'react';
 import { validators } from '..';
 
@@ -78,6 +78,8 @@ export const Default: Story = {
 					<Input.Label>Text editor</Input.Label>
 					<Select showEmptyOption options={ [{value: true, title: 'true'}, {value: false, title: 'false'}] } {...form.registerInput({ name: 'select' })} />
 				</Input.FormControl>
+
+				<Checkbox {...form.registerInput( {name: 'check'} )} />
 				<Button onClick={ () => form.resetFormValues()}>
 					Reset
 				</Button>
