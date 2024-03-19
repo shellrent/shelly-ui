@@ -12,7 +12,7 @@ export type InputValidationHandler<V = unknown> = Validator<V>;
 
 import Form, { FormHandler as FH, UseFormProps as UFP } from './Form';
 import { InputProps as IP } from './Form';
-export type InputProps = IP;
+export type InputProps<TValue = string, V = unknown> = IP<TValue, V>;
 
 export { useForm } from './Form';
 export { Form };
