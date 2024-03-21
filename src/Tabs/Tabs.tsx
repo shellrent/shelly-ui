@@ -1,20 +1,22 @@
 import _ from "lodash";
 import React, { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
 import './style.scss';
+import useLocationHash from "../hooks/useLocationHash";
 
 export type TabConfig = {
-    title: string,
-    content: ReactNode,
-    id?: string
+	title: string,
+	content: ReactNode,
+	id?: string
 }
 
 type TabProps = {
-    tabs: TabConfig[]
+	tabs: TabConfig[]
 }
 
 const Tabs: React.FC<TabProps> = ({ tabs }) => {
 	const [computedTabs, setComputedTabs] = useState<TabConfig[]>([]);
 	const [currentKey, setCurrentKey] = useState<string | undefined>();
+	const { setHash, isCurrentHash } = useLocationHash();
 
 	useEffect(() => {
 		setComputedTabs(tabs.map(t => ({
@@ -23,28 +25,37 @@ const Tabs: React.FC<TabProps> = ({ tabs }) => {
 		})));
 	}, [tabs]);
 
-	const transformToLowerCase = (input: string | undefined) => {
-		const res = input?.toLowerCase().replace(/\s+/g, '-');
-		return res;
-	};
+	const currentComputedTab = useCallback(() => {
+		let current = computedTabs.find(tab => isCurrentHash(tab.title));
+
+		if ( current ) {
+			return current;
+		}
+
+		current = computedTabs.find(tab => tab.id === currentKey);
+
+		if ( current ) {
+			return current;
+		}
+		
+		return computedTabs.length > 0 ? computedTabs[0] : undefined;
+	}, [computedTabs, isCurrentHash, currentKey]);
 
 	useEffect(() => {
-		const currentHash = window.location.hash.substring(1);
-		const selectedTab = computedTabs.find(tab => transformToLowerCase(tab.title) === transformToLowerCase(currentHash));		
+		const selectedTab = currentComputedTab();
 
-		setCurrentKey(selectedTab?.id || computedTabs[0]?.id || undefined);
+		setCurrentKey(selectedTab?.id);
 	}, [computedTabs]);
 
 	const isActive = useCallback((tabId: string | undefined) => {
-		const currentHash = window.location.hash.substring(1);
-		return currentKey === tabId || computedTabs.find(tab => transformToLowerCase(tab.title) === transformToLowerCase(currentHash))?.id === tabId;
+		return currentComputedTab()?.id === tabId;
 	}, [currentKey, computedTabs]);
 
 	const handleTabClick = (tabId: string | undefined) => {
 		setCurrentKey(tabId);
 
 		if (tabId) {
-			window.history.pushState({}, "", `#${transformToLowerCase(computedTabs.find(tab => tab.id === tabId)?.title)}`);
+			setHash(computedTabs.find(tab => tab.id === tabId)?.title);
 		}
 	};
 
