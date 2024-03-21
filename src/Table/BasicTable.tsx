@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { TableObject } from "./useTable";
 import { useShellyContext } from "../Provider";
+import { useTranslation } from "../i18n";
 
 type BasicTableProps<T extends RowData = any> = {
     table: TableObject<T>
@@ -12,6 +13,7 @@ type BasicTableProps<T extends RowData = any> = {
 
 const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProps<T> ) => {
 	const config = useShellyContext();
+	const {t} = useTranslation();
 
 	const classNames = twMerge( 
 		'table',
@@ -32,8 +34,8 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProp
 								colSpan={header.colSpan}
 								className={ 
 									header.getLeafHeaders().length > 1 ? 
-									config.tables?.headerGroups?.additionalClasses :
-									config.tables?.headers?.additionalClasses 
+										config.tables?.headerGroups?.additionalClasses :
+										config.tables?.headers?.additionalClasses 
 								}
 								style={{
 									width: header.getSize()
@@ -55,7 +57,7 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProp
 			))}
 		</thead>
 		<tbody>
-			{table.getRowModel().rows.map(row => {
+			{table.getRowModel().rows.length ? table.getRowModel().rows.map(row => {
 				return (
 					<tr key={row.id}>
 						{row.getVisibleCells().map(cell => {
@@ -76,11 +78,15 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProp
 						})}
 					</tr>
 				);
-			})}
+			}) : <tr>
+				<td colSpan={table.getAllLeafColumns().length} className="text-center font-semibold text-base-content/70">
+					{t( 'tables:empty_body_label' ) }
+				</td>
+			</tr> }
 		</tbody>
 	</table>, [table.getRowModel(), table.getAllColumns(), table.loading] );
 	
-	return <div className="">
+	return <div className="overflow-x-auto">
 		<div className="inline-block min-w-full ">
 			{tb}
 		</div>

@@ -18,7 +18,7 @@ export const buttonTypes = [
 	'outline',
 	'active',
 	'disabled',
-] as const 
+] as const;
 
 type ButtonType = typeof buttonTypes[number];
 
@@ -62,6 +62,7 @@ const Button: React.FC<ButtonProps> = ({ children, buttonType, wide, outline, si
 
 	return <button
 		className={classNames}
+		disabled={loading}
 		{...props}
 	>
 		{loading && <span className="loading loading-spinner" />}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export type ModalHandler = {
     open: () => void,
@@ -14,6 +14,26 @@ type UseModalProps = {
 export const useModal = ( props?: UseModalProps ): ModalHandler => {
 	const [isOpen, setIsOpen] = useState<boolean>(Boolean( props?.defaultOpen ));
 	
+	useEffect(() => {
+		if ( isOpen ) {
+			document.addEventListener("keydown", (e) => {
+				if ( e.key === "Escape" ) {
+					close();
+				}
+			}, false);
+		}
+
+		return () => {
+			if ( isOpen === false ) {
+				document.removeEventListener("keydown", (e) => {
+					if ( e.key === "Escape" ) {
+						close();
+					}
+				}, false);
+			}
+		};
+	}, [isOpen]);
+
 	const open = () => {
 		setIsOpen( true );
 	};
@@ -26,5 +46,5 @@ export const useModal = ( props?: UseModalProps ): ModalHandler => {
 		}
 	};
 
-	return { open, close, isOpen };
+	return useMemo(() => ({ open, close, isOpen }), [isOpen]);
 };

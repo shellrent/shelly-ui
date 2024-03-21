@@ -242,7 +242,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 		];
 	};
 
-	const registerInput = <TValue = string>({ name, validators, disable }: RegisterHandlerProps): InputProps<TValue> => {
+	const registerInput = <TValue = string, V = unknown>({ name, validators, disable }: RegisterHandlerProps<V>): InputProps<TValue, V> => {
 		const onFieldChangeValue = (value: string | null) => {
 			if (formValues[name] !== value) {
 				setValues({
@@ -258,7 +258,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			_.isEqual(inputRef.current[name].validators, validators)) {
 			return {
 				name: name,
-				value: formValues[name] ?? "",
+				value: formValues[name],
 				onValueChange: onFieldChangeValue,
 				validators: validators,
 				inputSize: (props?.type == 'filter') ? 'sm' : undefined,
@@ -277,7 +277,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 
 			return {
 				name: name,
-				value: formValues[name] ?? "",
+				value: formValues[name],
 				validators: validators,
 				inputSize: (props?.type == 'filter') ? 'sm' : undefined,
 				disabled: true
@@ -298,7 +298,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 
 		return {
 			name: name,
-			value: formValues[name] ?? "",
+			value: formValues[name],
 			onValueChange: onFieldChangeValue,
 			validators: validators,
 			inputSize: (props?.type == 'filter') ? 'sm' : undefined,
@@ -307,7 +307,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 	};
 
 	const handleOnSubmitted = (res: R) => {
-		if (!props.onSubmitted && res instanceof Promise) {
+		if (!props?.onSubmitted && res instanceof Promise) {
 			res
 				.then(() => handleOnSuccess)
 				.catch((err) => handleFormError(err.message()));
@@ -315,11 +315,11 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			return;
 		}
 
-		if (!props.onSubmitted) {
+		if (!props?.onSubmitted) {
 			res ? handleOnSuccess() : handleFormError('error');
 		}
 
-		if (props.onSubmitted) {
+		if (props?.onSubmitted) {
 			props.onSubmitted(res, handleOnSuccess, handleFormError, setSubmitting);
 		}
 	};

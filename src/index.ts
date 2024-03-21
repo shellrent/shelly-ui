@@ -11,8 +11,12 @@ export { Input };
 export type InputValidationHandler<V = unknown> = Validator<V>;
 
 import Form, { FormHandler as FH, UseFormProps as UFP } from './Form';
+import { InputProps as IP } from './Form';
+export type InputProps<TValue = string, V = unknown> = IP<TValue, V>;
+
 export { useForm } from './Form';
 export { Form };
+
 
 export type FormHandler = FH;
 export type  UseFormProps<R extends boolean | Promise<any>, T = any> = UFP<R, T>
@@ -20,7 +24,8 @@ export type  UseFormProps<R extends boolean | Promise<any>, T = any> = UFP<R, T>
 import Button from './Button';
 export { Button };
 
-import Alert from './Alert';
+import Alert, {AlertType as AT} from './Alert';
+export type AlertType = AT;
 export { Alert };
 
 import Menu from './Menu';

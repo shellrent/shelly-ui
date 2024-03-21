@@ -2,7 +2,7 @@ import React, { ChangeEventHandler, TextareaHTMLAttributes, useEffect, useState}
 import {twMerge} from "tailwind-merge";
 import {InputProps} from "../Form";
 
-type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & InputProps
+type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & InputProps<string, string>;
 const Textarea: React.FC<TextareaProps> = ( {className, value, onValueChange, inputSize, error, ...props} ) => {
 	const [curretValue, setCurrentValue] = useState( value );
 
@@ -25,7 +25,12 @@ const Textarea: React.FC<TextareaProps> = ( {className, value, onValueChange, in
 		setCurrentValue(val);
 	};
 
-	return <textarea {...props} className={classNames} value={curretValue} onChange={ onChange }></textarea>;
+	return <textarea 
+		{...props} 
+		className={classNames} 
+		value={curretValue === undefined ? '' : curretValue} 
+		onChange={ onChange }
+	></textarea>;
 };
 
 export default Textarea;

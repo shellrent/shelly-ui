@@ -8,9 +8,9 @@ import FieldError from "../Common/FieldError";
 
 type InputComponentProps = {
     bordered?: boolean,
-} & InputProps & InputHTMLAttributes<HTMLInputElement>
+} & InputProps<string, string> & InputHTMLAttributes<HTMLInputElement>
 
-const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {className, validators, bordered, inputSize, error, onValueChange, ...props}: InputComponentProps, ref ) => {	
+const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {value, className, validators, bordered, inputSize, error, onValueChange, ...props}: InputComponentProps, ref ) => {	
 	const [err, setError] = useState<string | boolean>( false );
 
 	useEffect( () => {
@@ -69,6 +69,7 @@ const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {className, v
 			className={classNames}
 			onChange={onChange}
 			ref={ref}
+			value={value === undefined ? '' : value}
 			{...props}
 		/>
 		<FieldError error={err}></FieldError>

@@ -8,6 +8,9 @@ import { useNavigate } from "../hooks/useNavigate";
 import clsx from 'clsx';
 import { useShellyContext } from "../Provider";
 import { twMerge } from "tailwind-merge";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { useTranslation } from "../i18n";
+import { TooltipProps } from "../Tooltip/Tooltip";
 
 export type TableButtonsOrientation = 'left' | 'right' | 'center' | undefined
 
@@ -15,10 +18,16 @@ type TableButtonsProps = {
 	orientation?: TableButtonsOrientation
 } & PropsWithChildren
 
-const TableButtons: React.FC<TableButtonsProps> = ({children, orientation}) => {
+type BasicTableButtonProps = {
+	tooltip: string,
+	icon: IconDefinition,
+	buttonType: ButtonProps['buttonType']
+}
+
+const TableButtons: React.FC<TableButtonsProps> = ({ children, orientation }) => {
 	const config = useShellyContext();
-	
-	if ( orientation === undefined ) {
+
+	if (orientation === undefined) {
 		orientation = config?.tables?.buttonsOrientation;
 	}
 
@@ -37,65 +46,93 @@ const TableButtons: React.FC<TableButtonsProps> = ({children, orientation}) => {
 };
 
 type TableButtonProviderProps = {
-	to?: string 
+	to?: string
 } & ButtonProps;
 
 type TableButtonProps = {
 	to?: string
+	tooltipOrientation?: TooltipProps['orientation']
 } & Omit<ButtonProps, "buttonType" | "outline" | "size">
 
-const ButtonProvider: React.FC<TableButtonProviderProps> = ( {children, onClick, to, ...props}: TableButtonProviderProps ) => {
+const ButtonProvider: React.FC<TableButtonProviderProps> = ({ children, onClick, to, ...props }: TableButtonProviderProps) => {
 	const navigate = useNavigate();
 
-	return <Button {...props} onClick={  (e) =>{
-		if ( to ) {
-			navigate( to );
+	return <Button {...props} onClick={(e) => {
+		if (to) {
+			navigate(to);
 			return;
 		}
 
-		if ( onClick ) {
+		if (onClick) {
 			onClick(e);
 		}
-	} } >
+	}} >
 		{children}
 	</Button>;
 };
 
-const Edit: React.FC<TableButtonProps> = ( {...props} ) => {
-	return <Tooltip title="Modifica">
-		<ButtonProvider {...props} buttonType="primary" size="sm" outline>
-			<FontAwesomeIcon icon={faPencil}/>
+const Basic: React.FC<TableButtonProps & BasicTableButtonProps> = ({ tooltip, buttonType, icon, tooltipOrientation, ...props }) => {
+	const config = useShellyContext();
+
+	if ( tooltipOrientation === undefined && config?.tables?.buttonsTooltipOrientation ) {
+		tooltipOrientation = config.tables.buttonsTooltipOrientation;
+	}
+
+	return <Tooltip title={tooltip} orientation={tooltipOrientation}>
+		<ButtonProvider {...props} buttonType={buttonType} size="sm" outline>
+			<FontAwesomeIcon icon={icon} />
 		</ButtonProvider>
 	</Tooltip>;
 };
 
-const Delete: React.FC<TableButtonProps> = ( {...props} ) => {
-	return <Tooltip title="Elimina">
-		<ButtonProvider {...props} buttonType="error" size="sm" outline>
-			<FontAwesomeIcon icon={faTimes}/>
-		</ButtonProvider>
-	</Tooltip>;
+const Edit: React.FC<TableButtonProps> = ({ ...props }) => {
+	const {t} = useTranslation();
+
+	return <Basic 
+		tooltip={t("tables:edit_button_label")}
+		buttonType="primary"
+		icon={faPencil}
+		{...props}
+	/>;
 };
 
-const Info: React.FC<TableButtonProps> = ( {...props} ) => {
-	return <Tooltip title="Dettagli">
-		<ButtonProvider {...props} buttonType="info" size="sm" outline>
-			<FontAwesomeIcon icon={faMagnifyingGlassPlus}/>
-		</ButtonProvider>
-	</Tooltip>;
+const Delete: React.FC<TableButtonProps> = ({ ...props }) => {
+	const {t} = useTranslation();
+
+	return <Basic
+		tooltip={t("tables:delete_button_label")}
+		buttonType="error"
+		icon={faTimes}
+		{...props}
+	/>;
 };
 
-const EditPassword: React.FC<TableButtonProps> = ( {...props} ) => {
-	return <Tooltip title="Modifica Password">
-		<ButtonProvider {...props} buttonType="warning" size="sm" outline>
-			<FontAwesomeIcon icon={faLock}/>
-		</ButtonProvider>
-	</Tooltip>;
+const Info: React.FC<TableButtonProps> = ({ ...props }) => {
+	const {t} = useTranslation();
+
+	return <Basic
+		tooltip={t("tables:details_button_label")}
+		buttonType="info"
+		icon={faMagnifyingGlassPlus}
+		{...props}
+	/>;
 };
 
-export default Object.assign( TableButtons,  {
+const EditPassword: React.FC<TableButtonProps> = ({ ...props }) => {
+	const {t} = useTranslation();
+
+	return <Basic
+		tooltip={t("tables:edit_password_button_label")}
+		buttonType="warning"
+		icon={faLock}
+		{...props}
+	/>;	
+};
+
+export default Object.assign(TableButtons, {
+	Basic,
 	Edit,
 	Delete,
 	Info,
 	EditPassword
-} );
+});
