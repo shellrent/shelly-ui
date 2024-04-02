@@ -24,6 +24,7 @@ export const Default: Story = {
 			},
 			{
 				title: 'Tab 3',
+				titleElement: <span className="text-error">Tab 3 element</span>,
 				content: 'Tab 3 content'
 			}
 		], []);

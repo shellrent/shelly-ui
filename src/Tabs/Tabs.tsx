@@ -6,6 +6,7 @@ import useLocationHash from "../hooks/useLocationHash";
 export type TabConfig = {
 	title: string,
 	content: ReactNode,
+	titleElement?: ReactNode,
 	id?: string
 }
 
@@ -68,7 +69,7 @@ const Tabs: React.FC<TabProps> = ({ tabs }) => {
 						onClick={() => handleTabClick(tab.id)}
 						className={`tab ${isActive(tab.id) ? 'tab-active font-semibold transition' : ''}`}
 					>
-						{tab.title}
+						{tab?.titleElement ?? tab.title}
 					</button>
 				))}
 			</ul>
