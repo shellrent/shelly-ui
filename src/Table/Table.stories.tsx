@@ -60,6 +60,7 @@ export const Basic: Story = {
 				{
 					id: 1,
 					name: 'test',
+					
 					count: 3
 				},
 				{
@@ -110,7 +111,14 @@ export const Filter: Story = {
 							accessorKey: 'id'
 						},
 						{
-							accessorKey: 'name'
+							accessorKey: 'name',
+							meta: {
+								getStyle: (context) => {
+									return {
+										backgroundColor: context.row.original.color
+									};
+								}
+							}
 						}
 					]
 				},
@@ -127,11 +135,13 @@ export const Filter: Story = {
 			data: [
 				{
 					id: 1,
-					name: 'test1'
+					name: 'test1',
+					color: '#fcba03',
 				},
 				{
 					id: 2,
-					name: 'test2'
+					name: 'test2',
+					color: '#0398fc',
 				},
 			]
 		}

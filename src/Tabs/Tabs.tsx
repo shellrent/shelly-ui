@@ -2,6 +2,7 @@ import _ from "lodash";
 import React, { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
 import './style.scss';
 import useLocationHash from "../hooks/useLocationHash";
+import { twMerge } from "tailwind-merge";
 
 export type TabConfig = {
 	title: string,
@@ -11,10 +12,16 @@ export type TabConfig = {
 }
 
 type TabProps = {
-	tabs: TabConfig[]
+	tabs: TabConfig[],
+	className?: string
 }
 
-const Tabs: React.FC<TabProps> = ({ tabs }) => {
+const Tabs: React.FC<TabProps> = ({ tabs, className }) => {
+	const classNames = twMerge(
+		'my-2 mb-8 bg-base-100 rounded-box shadow p-2',
+		className
+	);
+
 	const [computedTabs, setComputedTabs] = useState<TabConfig[]>([]);
 	const [currentKey, setCurrentKey] = useState<string | undefined>();
 	const { setHash, isCurrentHash } = useLocationHash();
@@ -61,7 +68,7 @@ const Tabs: React.FC<TabProps> = ({ tabs }) => {
 	};
 
 	return <>
-		<div className="my-2 mb-8 bg-base-100 rounded-box shadow p-2 ">
+		<div className={classNames}>
 			<ul className="tabs tabs-boxed text-center">
 				{computedTabs.map((tab, key) => (
 					<button

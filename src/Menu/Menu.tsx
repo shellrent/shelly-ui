@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, LiHTMLAttributes, PropsWithChildren, ReactNode } from "react";
+import React, { HTMLAttributes, LiHTMLAttributes, PropsWithChildren, ReactNode, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 type MenuProps = HTMLAttributes<HTMLUListElement> & PropsWithChildren
@@ -29,12 +29,22 @@ const Item: React.FC<ItemProps> = ( {children, className, ...props} ) => {
 
 type CollapsibleItemProps = {
 	title: ReactNode
-	open?: boolean
+	open?: boolean,
+	onToggle?: ( isOpen: boolean ) => void
 } & PropsWithChildren;
 
-const CollapsibleItem: React.FC<CollapsibleItemProps> = ( {children, title, open} ) => {
+const CollapsibleItem: React.FC<CollapsibleItemProps> = ( {children, title, open, onToggle} ) => {
+	const isOpen = useRef( open );
+
 	return <Item>
-		<details open={open} className="active:!bg-transparent active:!text-content transition">
+		<details open={open} onToggle={ () => {
+			isOpen.current = !isOpen.current;	
+
+			if ( onToggle ) {
+				onToggle( isOpen.current );
+			}
+
+		} } className="active:!bg-transparent active:!text-content transition">
 			<summary>{title}</summary>
 			<ul className="transition">
 				{children}

@@ -1,21 +1,29 @@
-import React, { useMemo } from "react";
-import { RowData, flexRender } from "@tanstack/react-table";
+import React, { CSSProperties, useMemo } from "react";
+import { CellContext, RowData, flexRender } from "@tanstack/react-table";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { TableObject } from "./useTable";
 import { useShellyContext } from "../Provider";
 import { useTranslation } from "../i18n";
 
+declare module '@tanstack/react-table' {
+    interface ColumnMeta<TData, TValue> {
+        getStyle: (context: CellContext<TData, TValue>) => CSSProperties | void
+    }
+}
+
 type BasicTableProps<T extends RowData = any> = {
     table: TableObject<T>
 	zebra?: boolean
+	className?: string
 }
 
-const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProps<T> ) => {
+const BasicTable: React.FC<any> = <T,>( {table, zebra, className, ...props}: BasicTableProps<T> ) => {
 	const config = useShellyContext();
 	const {t} = useTranslation();
 
 	const classNames = twMerge( 
+		className,
 		'table',
 		clsx(
 			zebra === false ? '' : 'table-zebra'
@@ -58,15 +66,21 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, ...props}: BasicTableProp
 		</thead>
 		<tbody>
 			{table.getRowModel().rows.length ? table.getRowModel().rows.map(row => {
+				
 				return (
 					<tr key={row.id}>
 						{row.getVisibleCells().map(cell => {
+							const meta = cell.getContext().cell.column.columnDef.meta;
+
+							const style = {
+								...meta?.getStyle(cell.getContext()),
+								width: cell.column.getSize()
+							};
+
 							return (
 								<td 
 									key={cell.id}
-									style={{
-										width: cell.column.getSize()
-									}}
+									style={style}
 									className={config.tables?.cells?.additionalClasses}
 								>
 									{flexRender(
