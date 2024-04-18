@@ -9,9 +9,10 @@ import { RowData } from "@tanstack/react-table";
 export type PaginateTableProps<T extends RowData = any> = {
     table: TableObject<T>
     paginatePosition?: "center" | "left" | "right" | undefined
+	className?: string
 }
 
-const PaginateTable: React.FC<any> = <T,>( {table, paginatePosition}: PaginateTableProps<T> ) => {
+const PaginateTable: React.FC<any> = <T,>( {table, paginatePosition, className}: PaginateTableProps<T> ) => {	
 	const paginateClassNames = clsx( 
 		paginatePosition && swtc( paginatePosition, {
 			center: "justify-center",
@@ -24,7 +25,7 @@ const PaginateTable: React.FC<any> = <T,>( {table, paginatePosition}: PaginateTa
 
 	return <div className="relative">
 		{ table.loading && <Spinner/>  }
-		<BasicTable table={table}/>
+		<BasicTable table={table} className={className}/>
 		<div className={paginateClassNames}>
 			{<Pagination table={table}/>}
 		</div>

@@ -5,16 +5,18 @@ import clsx from "clsx";
 
 export type TooltipProps = {
     title: string
-	orientation?: 'bottom' | 'right' | 'left' | 'top'
+	orientation?: 'bottom' | 'right' | 'left' | 'top',
+	forceOpen?: boolean
 } & PropsWithChildren
 
-const Tooltip: React.FC<TooltipProps> = ({children, title, orientation}) => {
+const Tooltip: React.FC<TooltipProps> = ({children, title, orientation, forceOpen}) => {
 	const classNames = twMerge(
 		'tooltip',
-		clsx( 
+		clsx(
+			forceOpen && 'tooltip-open',
 			orientation && swtc( orientation, {
 				bottom: 'tooltip-bottom',
-				top: 'tooltip-right',
+				top: 'tooltip-top',
 				left: 'tooltip-left',
 				right: 'tooltip-right',
 			} )

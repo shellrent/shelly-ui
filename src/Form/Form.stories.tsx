@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Form from './Form';
 import useForm from './useForm';
-import { Button, Checkbox, Input, InputValidationHandler, Select, ShellyProvider, TextEditor } from '..';
+import { Button, Checkbox, Input, InputValidationHandler, Select, ShellyProvider, TextEditor, Toggle } from '..';
 import React, { useEffect } from 'react';
 import { validators } from '..';
 
@@ -51,7 +51,8 @@ export const Default: Story = {
 		useEffect( () => {
 			form.setFormValues({
 				select: false,
-				editor: 'editor content'
+				editor: 'editor content',
+				toggle: true,
 			});
 		}, [] );
 
@@ -72,6 +73,16 @@ export const Default: Story = {
 				<Input.FormControl>
 					<Input.Label>Text editor</Input.Label>
 					<TextEditor {...form.registerInput({ name: 'editor' })} />
+				</Input.FormControl>
+
+				<Input.FormControl>
+					<Input.Label>Toggle</Input.Label>
+					<Toggle {...form.registerInput({ name: 'toggle' })} />
+				</Input.FormControl>
+
+				<Input.FormControl>
+					<Input.Label>Toggle 1</Input.Label>
+					<Toggle {...form.registerInput({ name: 'toggle1' })} />
 				</Input.FormControl>
 
 				<Input.FormControl>

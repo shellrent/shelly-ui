@@ -1,4 +1,4 @@
-import React, { ChangeEvent, InputHTMLAttributes, useState } from "react";
+import React, { ChangeEvent, InputHTMLAttributes, useEffect, useState } from "react";
 import { InputProps } from "../Form";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
@@ -16,6 +16,10 @@ const Toggle: React.FC<ToggleProps> = ( { value, className, onValueChange, ...pr
 		),
 		className 
 	);
+
+	useEffect( () => {
+		setChecked( value ?? false );
+	}, [value] );
     
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {  
 		const val = event.target.checked;
