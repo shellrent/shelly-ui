@@ -74,6 +74,22 @@ class FormValues<T extends { [key: string]: any } = any> {
 		return this.formValues[name];
 	}
 
+	public getFormStringValue(name: string): string | undefined {
+		if ( !this.formValues ) {
+			return;
+		}
+ 
+		return this.formValues[name] === undefined ? undefined : String( this.formValues[name] );
+	}
+
+	public getFormIntValue(name: string): number | undefined {
+		if ( !this.formValues ) {
+			return;
+		}
+ 
+		return this.formValues[name] === undefined ? undefined : Number( this.formValues[name] );
+	}
+
 	public isEqual(values: T): boolean {
 		if (!values) {
 			return false;
