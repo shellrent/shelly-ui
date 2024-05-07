@@ -90,6 +90,14 @@ class FormValues<T extends { [key: string]: any } = any> {
 		return this.formValues[name] === undefined ? undefined : Number( this.formValues[name] );
 	}
 
+	public getFormBoolValue(name: string): boolean | undefined {
+		if ( !this.formValues ) {
+			return;
+		}
+ 
+		return this.formValues[name] === undefined ? undefined : Boolean( this.formValues[name] );
+	}
+
 	public isEqual(values: T): boolean {
 		if (!values) {
 			return false;
