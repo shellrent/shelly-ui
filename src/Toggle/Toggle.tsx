@@ -3,9 +3,7 @@ import { InputProps } from "../Form";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 
-type ToggleProps = {
-    value?: boolean
-} & Omit<InputProps, 'value'>  & InputHTMLAttributes<HTMLInputElement>
+type ToggleProps = InputProps<boolean, boolean> & InputHTMLAttributes<HTMLInputElement>
 
 const Toggle: React.FC<ToggleProps> = ( { value, className, onValueChange, ...props} ) => {
 	const [checked, setChecked] = useState<boolean>( value ?? false );
