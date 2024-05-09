@@ -2,40 +2,57 @@ import React, { ChangeEvent, InputHTMLAttributes, useEffect, useState } from "re
 import { InputProps } from "../Form";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
+import FieldError from "../Common/FieldError";
 
 type ToggleProps = InputProps<boolean, boolean> & InputHTMLAttributes<HTMLInputElement>
 
-const Toggle: React.FC<ToggleProps> = ( { value, className, onValueChange, ...props} ) => {
-	const [checked, setChecked] = useState<boolean>( value ?? false );
-	const classNames = twMerge( 
-		'toggle', 
-		clsx(
-			checked && 'toggle-accent'
-		),
-		className 
-	);
+const Toggle: React.FC<ToggleProps> = ({ value, className, onValueChange, error, ...props }) => {
+	const [checked, setChecked] = useState<boolean>(value ?? false);
+	const [err, setError] = useState<string | boolean | undefined>(false);
 
-	useEffect( () => {
-		setChecked( value ?? false );
-	}, [value] );
-    
-	const onChange = (event: ChangeEvent<HTMLInputElement>) => {  
-		const val = event.target.checked;
-        
-		if( onValueChange ) {
-			onValueChange( val );
+	useEffect(() => {
+		if (typeof error == 'string') {
+			setError(error);
+
+			return;
 		}
 
-		setChecked( val );
+		setError(Boolean(error));
+	}, [error]);
+
+	const classNames = twMerge(
+		'toggle',
+		clsx(
+			checked && 'toggle-accent',
+			err && 'toggle-error',
+		),
+		className
+	);
+
+	useEffect(() => {
+		setChecked(value ?? false);
+	}, [value]);
+
+	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+		const val = event.target.checked;
+
+		if (onValueChange) {
+			onValueChange(val);
+		}
+
+		setChecked(val);
 	};
 
-	return <input 
-		{...props}
-		type="checkbox" 
-		className={classNames} 
-		onChange={onChange} 
-		checked={checked}
-	/>;
+	return <>
+		<input
+			{...props}
+			type="checkbox"
+			className={classNames}
+			onChange={onChange}
+			checked={checked}
+		/>
+		<FieldError error={err}></FieldError>
+	</>;
 };
 
 export default Toggle;

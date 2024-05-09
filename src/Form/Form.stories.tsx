@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Form from './Form';
 import useForm from './useForm';
-import { Button, Checkbox, Input, InputValidationHandler, Select, ShellyProvider, TextEditor, Toggle } from '..';
+import { Button, Checkbox, Input, InputValidationHandler, Select, ShellyProvider, TextEditor, Textarea, Toggle } from '..';
 import React, { useEffect } from 'react';
 import { validators } from '..';
 
@@ -49,6 +49,16 @@ export const Default: Story = {
 		};
 
 		useEffect( () => {
+			console.log( form.state.formValues );
+
+			form.resetInputs();
+			if ( form.state.formValues.getFormStringValue( 'password' ) !== form.state.formValues.getFormStringValue( 'test' ) ) {
+				form.triggerInputError( 'select', 'Le due password non corrispondono' );
+			} 
+
+		}, [form.state.formValues.formValues, form.state.formErrors] );
+
+		useEffect( () => {
 			form.setFormValues({
 				select: false,
 				editor: 'editor content',
@@ -63,11 +73,16 @@ export const Default: Story = {
 			}}>
 				<Input.FormControl>
 					<Input.Label>Password</Input.Label>
-					<Input {...form.registerInput({ name: 'password', validators: [validatePassword] })} />
+					<Input {...form.registerInput({ name: 'password' })} />
 				</Input.FormControl>
 				<Input.FormControl>
-					<Input.Label>Test</Input.Label>
-					<Input {...form.registerInput({ name: 'test', validators: [validateRepeatPassword] })} />
+					<Input.Label>textarea</Input.Label>
+					<Input {...form.registerInput({ name: 'test' })} />
+				</Input.FormControl>
+
+				<Input.FormControl>
+					<Input.Label>Text editor</Input.Label>
+					<Textarea {...form.registerInput({ name: 'textarea', validators: [ validators.isRequired( 'è richiesto' ) ] })} />
 				</Input.FormControl>
 
 				<Input.FormControl>
