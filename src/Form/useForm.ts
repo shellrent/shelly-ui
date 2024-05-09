@@ -165,10 +165,9 @@ type InputDefinition<V = unknown> = {
 
 const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): FormHandler => {
 	const [formErrors, setFormErrors] = useState<string[]>([]);
-	const inputRef = useRef<{ [key: string]: InputDefinition }>({});
-	const [inputs, setInputs] = useState({});
+	const [inputs, setInputs] = useState<{ [key: string]: InputDefinition }>({});
 
-	const [state, setForm] = useState<FormState>({ inputs: inputRef, formValues: new FormValues(props?.values), formErrors: new FormErrors(formErrors) });
+	const [state, setForm] = useState<FormState>({ inputs: inputs, formValues: new FormValues(props?.values), formErrors: new FormErrors(formErrors) });
 	const [formValues, setValues] = useState(props?.values ?? {});
 	const [submitting, setSubmitting] = useState(false);
 
