@@ -1,7 +1,8 @@
-import React, { ChangeEvent, InputHTMLAttributes, useState } from "react";
+import React, { ChangeEvent, InputHTMLAttributes, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { swtc } from "../utils";
 import { InputProps } from "../Form";
+import FieldError from "../Common/FieldError";
 
 type CheckboxProps = {
     checkboxType?: 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | undefined
@@ -31,6 +32,16 @@ const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, childr
 		err && 'checkbox-error',
 		className,
 	);
+
+	useEffect( () => {
+		if ( typeof error == 'string' ) {
+			setError( error );
+
+			return;
+		}
+
+		setError( Boolean( error ) );
+	} , [error]);
 
 	const onChange = ( e: ChangeEvent<HTMLInputElement> ) => {
 		const value = e.target.checked;
@@ -65,11 +76,7 @@ const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, childr
 		<input type="checkbox" onChange={ onChange } className={classNames} {...props} checked={Boolean( value )}>
 			{children}
 		</input>
-		{
-			(err && typeof err == 'string') && <label className="label">
-				<span className="label-text-alt">{err}</span>
-			</label>
-		}
+		<FieldError error={err}></FieldError>
 	</>;
 };
 

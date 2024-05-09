@@ -16,11 +16,10 @@ const useSelectError = <V = unknown>({err, validators}: UseErrorProps<V>): Error
 	useEffect(() => {
 		if (typeof err == 'string') {
 			setError(err);
+			return;
 		}
 
-		if (err) {
-			setError(true);
-		}
+		setError(err);
 	}, [err]);
 
 	const handleValidation = (value: V) => {
