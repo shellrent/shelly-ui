@@ -17,14 +17,14 @@ export type AutocompleteOption<T = any> = {
 type AutocompleteProps<T = any> = {
     displayFn?: ( option: T ) => ReactNode
     options: AutocompleteOption<T>[]
-    defaultOption?: AutocompleteOption<T>
+    defaultValue?: T
 	placeholder?: string
     onChange?: ( value: T ) => void 
     onQueryChange?: ( query: string ) => void
 } & InputProps<string, string>
 
 
-const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryChange, defaultOption, onChange, onValueChange, name, inputSize, error, validators, placeholder, options, ...props}) => {
+const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryChange, defaultValue, onChange, onValueChange, name, inputSize, error, validators, placeholder, options, ...props}) => {
 	const [selectedValue, setSelectedValue] = useState<any | undefined>(value);
 	const { error: err, handleValidation } = useSelectError({ err: error, validators });
 	const prevValue = useRef(value);
@@ -39,13 +39,15 @@ const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryCha
 			return;	
 		}
 
-		if (prevValue.current !== value) {
-			handleValidation(value);
+		const val = value === undefined ? defaultValue : value;
+
+		if (prevValue.current !== val) {
+			handleValidation(val);
 		}
  
-		prevValue.current = value;
-		setSelectedValue(value);
-	}, [value, options]);
+		prevValue.current = val;
+		setSelectedValue(val);
+	}, [value, options, defaultValue]);
 
 	const onSelectChange = (value: any) => {
 		setSelectedValue(value);

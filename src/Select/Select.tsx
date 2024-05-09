@@ -19,16 +19,16 @@ export type SelectOption<T = any> = {
 type SelectProps<T = any> = {
     displayFn?: ( option: T ) => ReactNode
     options: SelectOption<T>[]
-    defaultOption?: SelectOption<T>
+    defaultValue?: T
 	placeholder?: string
     onChange?: ( value: T ) => void 
 	showEmptyOption?: boolean
 } & InputProps<string, string>
 
-const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChange, onValueChange, name, placeholder, inputSize, error, validators, showEmptyOption, ...props} ) => {
+const Select: React.FC<SelectProps> = ( {displayFn, value, defaultValue, onChange, onValueChange, name, placeholder, inputSize, error, validators, showEmptyOption, ...props} ) => {
 	const {t} = useTranslation();
-	const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>( defaultOption );
-	const [selectedValue, setSelectedValue] = useState<any | undefined>( value );
+	const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>();
+	const [selectedValue, setSelectedValue] = useState<any | undefined>( value || defaultValue );
 	const [options, setOptions] = useState<SelectOption[]>( props.options );
 	const {error: err, handleValidation} = useSelectError({err: error, validators});
 	const prevValue = useRef( value );
@@ -46,10 +46,9 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 
 			return;
 		} 
-
+			
 		setOptions( props.options );
 	}, [props.options] );
-
 
 	useEffect( () => {
 		if ( !options.length ) {
@@ -58,18 +57,21 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 			return;
 		}
 
-		if ( prevValue.current !== value ) {
-			handleValidation( value );
+		const val = value === undefined ? defaultValue : value;
+
+		if ( prevValue.current !== val ) {
+			handleValidation( val );
 		}
+		
+		prevValue.current = val;
 
-		prevValue.current = value;
-		setSelectedValue( value  );
+		setSelectedValue( val );
 	
-		const option = options.find( opt => opt.value == value );  
+		const option = options.find( opt => opt.value == val );  
 		setSelectedOption( option );
-	}, [value, options] );
+	}, [value, options, defaultValue] );
 
-	const onSelectChange = ( value: any ) => {
+	const onSelectChange = ( value: any ) => {	
 		setSelectedValue( value );
 
 		if ( onChange ) {

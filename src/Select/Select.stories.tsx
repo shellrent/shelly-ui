@@ -13,6 +13,7 @@ type Story = StoryObj<typeof Select>;
 
 export const Default: Story = {
 	args: {
+		defaultValue: true,
 		showEmptyOption: true,
 		options: [
 			{

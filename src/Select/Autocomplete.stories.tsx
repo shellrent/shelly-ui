@@ -14,7 +14,7 @@ type Story = StoryObj<typeof Autocomplete>;
 
 export const Default: Story = {
 	args: {
-		value: "BS",
+		defaultValue: "BS",
 	},
 	render: (args) => {
 		const [value, setValue] = useState<string>(args.value);
