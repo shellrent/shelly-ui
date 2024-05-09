@@ -35,7 +35,8 @@ const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryCha
 
 	useEffect(() => {
 		if (!options.length) {
-			return;
+			setSelectedValue(undefined);
+			return;	
 		}
 
 		if (prevValue.current !== value) {

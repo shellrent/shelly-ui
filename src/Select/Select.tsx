@@ -53,6 +53,8 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultOption, onChan
 
 	useEffect( () => {
 		if ( !options.length ) {
+			setSelectedValue( undefined );
+			setSelectedOption( undefined );
 			return;
 		}
 
