@@ -1,4 +1,4 @@
-import { ColumnDef, PaginationState, RowData, Table, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, PaginationState, Row, RowData, Table, getCoreRowModel, getExpandedRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useShellyContext } from "../Provider";
 
@@ -11,11 +11,15 @@ type UseTableProps<T = any> = {
 	pageSize?: number
 	pageCount?: number
 	currentPage?: number
+	renderExpandedRow?: (row: Row<T>) => JSX.Element | null
 }
 
-export type TableObject<T = any> = Table<T> & { loading: boolean }
+export type TableObject<T = any> = Table<T> & { 
+	loading: boolean,
+	renderExpandedRow?: (row: Row<T>) => JSX.Element | null
+}
 
-const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, pageSize, pageCount, currentPage }: UseTableProps<T>): { table: TableObject<T> } => {
+const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, pageSize, pageCount, currentPage, renderExpandedRow }: UseTableProps<T>): { table: TableObject<T> } => {
 	const config = useShellyContext();
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: (currentPage || 1) - 1,
@@ -49,10 +53,12 @@ const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, 
 	const table = useReactTable({
 		data,
 		columns: cols(),
+		getRowCanExpand: ( row: Row<T> ) => renderExpandedRow ? renderExpandedRow( row ) !== null : false,
 		getCoreRowModel: getCoreRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
-		debugTable: true,
+		getExpandedRowModel: getExpandedRowModel(),
+		debugTable: false,
 		onPaginationChange: setPagination,
 		pageCount: pageCount,
 		state: {
@@ -67,7 +73,7 @@ const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, 
 		},
 	});
 
-	return { table: Object.assign(table, { loading: loading }) } as { table: TableObject<T> };
+	return { table: Object.assign(table, { loading: loading, renderExpandedRow: renderExpandedRow }) } as { table: TableObject<T> };
 };
 
 
