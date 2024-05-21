@@ -7,6 +7,7 @@ import FilteredTable from './FilteredTable';
 import { useForm } from '../Form';
 import Input from '../Input';
 import TableButtons from './TableButtons';
+import { ExpandRowColumn } from './Columns';
 
 
 const meta: Meta<typeof BasicTable> = {
@@ -40,10 +41,12 @@ export const Basic: Story = {
 			}
 		},
 		tableData: {
+			renderExpandedRow: () => <p> Expanded </p>,
 			columns: [
 				{
 					header: 'ciao',
 					columns: [
+						ExpandRowColumn,
 						{
 							accessorKey: 'id'
 						},

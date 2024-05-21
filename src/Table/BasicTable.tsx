@@ -1,4 +1,4 @@
-import React, { CSSProperties, useMemo } from "react";
+import React, { CSSProperties, Fragment, useMemo } from "react";
 import { CellContext, RowData, flexRender } from "@tanstack/react-table";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -66,31 +66,38 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, className, ...props}: Bas
 		</thead>
 		<tbody>
 			{table.getRowModel().rows.length ? table.getRowModel().rows.map(row => {
-				
 				return (
-					<tr key={row.id}>
-						{row.getVisibleCells().map(cell => {
-							const meta = cell.getContext().cell.column.columnDef.meta;
+					<Fragment key={row.id}>
+						<tr >
+							{row.getVisibleCells().map(cell => {
+								const meta = cell.getContext().cell.column.columnDef.meta;
 
-							const style = {
-								...meta?.getStyle(cell.getContext()),
-								width: cell.column.getSize()
-							};
+								const style = {
+									...meta?.getStyle(cell.getContext()),
+									width: cell.column.getSize()
+								};
 
-							return (
-								<td 
-									key={cell.id}
-									style={style}
-									className={config.tables?.cells?.additionalClasses}
-								>
-									{flexRender(
-										cell.column.columnDef.cell,
-										cell.getContext()
-									)}
-								</td>
-							);
-						})}
-					</tr>
+								return (
+									<td 
+										key={cell.id}
+										style={style}
+										className={config.tables?.cells?.additionalClasses}
+									>
+										{flexRender(
+											cell.column.columnDef.cell,
+											cell.getContext()
+										)}
+									</td>
+								);
+							})}
+						</tr>
+						{row.getIsExpanded() && <tr>
+							<td colSpan={row.getVisibleCells().length}>
+								{table.renderExpandedRow( row )}
+							</td>
+						</tr>
+						}
+					</Fragment>
 				);
 			}) : <tr>
 				<td colSpan={table.getAllLeafColumns().length} className="text-center font-semibold text-base-content/70">
