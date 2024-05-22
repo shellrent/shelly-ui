@@ -38,6 +38,14 @@ export const Basic: Story = {
 				cells: {
 					additionalClasses: 'border-2 border-base-100'
 				},
+
+				footerCells: {
+					additionalClasses: 'bg-red-800 border-base-100 border-2 bg-base-200'
+				},
+
+				footers: {
+					additionalClasses: 'border-base-100 border-2 bg-base-200 bg-black'
+				}
 			}
 		},
 		tableData: {
@@ -51,7 +59,6 @@ export const Basic: Story = {
 						ExpandRowColumn,
 						{
 							accessorKey: 'id',
-							footer: 'test footer'
 						},
 						{
 							accessorKey: 'name'
