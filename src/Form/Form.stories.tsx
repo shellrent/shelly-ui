@@ -76,12 +76,12 @@ export const Default: Story = {
 					<Input {...form.registerInput({ name: 'password' })} />
 				</Input.FormControl>
 				<Input.FormControl>
-					<Input.Label>textarea</Input.Label>
-					<Input {...form.registerInput({ name: 'test' })} />
+					<Input.Label>Test Input</Input.Label>
+					<Input {...form.registerInput({ name: 'test' })} defaultValue="Default Value!"/>
 				</Input.FormControl>
 
 				<Input.FormControl>
-					<Input.Label>Text editor</Input.Label>
+					<Input.Label>Textarea</Input.Label>
 					<Textarea {...form.registerInput({ name: 'textarea', validators: [ validators.isRequired( 'è richiesto' ) ] })} />
 				</Input.FormControl>
 

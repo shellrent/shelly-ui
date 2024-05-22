@@ -10,7 +10,7 @@ type InputComponentProps = {
     bordered?: boolean,
 } & InputProps<string, string> & InputHTMLAttributes<HTMLInputElement>
 
-const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {value, className, validators, bordered, inputSize, error, onValueChange, ...props}: InputComponentProps, ref ) => {	
+const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {value, className, validators, bordered, inputSize, error, onValueChange, defaultValue, ...props}: InputComponentProps, ref ) => {	
 	const [err, setError] = useState<string | boolean>( false );
 
 	useEffect( () => {
@@ -71,7 +71,7 @@ const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {value, class
 			className={classNames}
 			onChange={onChange}
 			ref={ref}
-			value={value === undefined ? '' : value}
+			value={value === undefined ? (defaultValue ?? '') : value}
 			{...props}
 		/>
 		<FieldError error={err}></FieldError>

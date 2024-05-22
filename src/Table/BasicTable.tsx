@@ -105,6 +105,22 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, className, ...props}: Bas
 				</td>
 			</tr> }
 		</tbody>
+		<tfoot>
+			{table.getFooterGroups().map(footerGroup => (
+				<tr key={footerGroup.id}>
+					{footerGroup.headers.map(header => (
+						<th className="border" key={header.id} colSpan={header.colSpan}>
+							{header.isPlaceholder
+								? null
+								: flexRender(
+									header.column.columnDef.footer,
+									header.getContext()
+								)}
+						</th>
+					))}
+				</tr>
+			))}
+		</tfoot>
 	</table>, [table.getRowModel(), table.getAllColumns(), table.loading] );
 	
 	return <div className="overflow-x-auto">

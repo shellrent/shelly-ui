@@ -44,11 +44,14 @@ export const Basic: Story = {
 			renderExpandedRow: () => <p> Expanded </p>,
 			columns: [
 				{
-					header: 'ciao',
-					columns: [
+					header: null,
+					id: 'akjdbna',
+					footer: 'total',
+					columns: [						
 						ExpandRowColumn,
 						{
-							accessorKey: 'id'
+							accessorKey: 'id',
+							footer: 'test footer'
 						},
 						{
 							accessorKey: 'name'
