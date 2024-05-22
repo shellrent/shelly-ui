@@ -9,12 +9,12 @@ export type ShellyConfig = {
 	lang?: string
 
 	// spinner element used on loading of various component
-    spinnerElement?: ReactElement
+	spinnerElement?: ReactElement
 
 	// callback used to navigate between pages
-	navigateCallback?: () => ( path: string ) => void
-	
-	
+	navigateCallback?: () => (path: string) => void
+
+
 	tables?: {
 		headerGroups?: {
 			additionalClasses?: string
@@ -24,7 +24,12 @@ export type ShellyConfig = {
 			additionalClasses?: string
 		}
 
-		cells?: {	
+		footerCells?: {
+			additionalClasses?: string
+
+		}
+
+		cells?: {
 			additionalClasses?: string
 		}
 
@@ -43,25 +48,25 @@ export type ShellyConfig = {
 }
 
 type ShellyProviderProps = {
-    config: ShellyConfig,
+	config: ShellyConfig,
 } & PropsWithChildren
 
-export const ShellyContext = createContext<ShellyConfig | null>( null );
+export const ShellyContext = createContext<ShellyConfig | null>(null);
 
-const ShellyProvider: React.FC<ShellyProviderProps> = ( {config, children} ) => {
-	if ( config && !config.i18n ) {
+const ShellyProvider: React.FC<ShellyProviderProps> = ({ config, children }) => {
+	if (config && !config.i18n) {
 		config.i18n = i18n;
 	}
 
-	if ( config && !config.lang ) {
+	if (config && !config.lang) {
 		config.lang = 'en';
 	}
-	
-	const [value, setValue] = useState( config );
 
-	useEffect( () => {
-		setValue( config );
-	}, [config] );
+	const [value, setValue] = useState(config);
+
+	useEffect(() => {
+		setValue(config);
+	}, [config]);
 
 	return <ShellyContext.Provider value={value}>
 		{children}

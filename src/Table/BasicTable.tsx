@@ -106,20 +106,31 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, className, ...props}: Bas
 			</tr> }
 		</tbody>
 		<tfoot>
-			{table.getFooterGroups().map(footerGroup => (
-				<tr key={footerGroup.id}>
-					{footerGroup.headers.map(header => (
-						<th className="border" key={header.id} colSpan={header.colSpan}>
-							{header.isPlaceholder
-								? null
-								: flexRender(
-									header.column.columnDef.footer,
-									header.getContext()
-								)}
-						</th>
-					))}
-				</tr>
-			))}
+			{table.getFooterGroups()
+				.filter( ( footerGroup ) => footerGroup.headers
+					.filter( h  => {
+						return Boolean( h.column.columnDef.footer );
+					} ).length > 0 )
+				.map(footerGroup => (
+					<tr key={footerGroup.id}>
+						{footerGroup.headers
+							.map(header => (
+								<th key={header.id} 
+									colSpan={header.colSpan}
+									className={
+										config.tables?.footerCells?.additionalClasses 
+									}
+								>
+									{header.isPlaceholder
+										? null
+										: flexRender(
+											header.column.columnDef.footer,
+											header.getContext()
+										)}
+								</th>
+							))}
+					</tr>
+				))}
 		</tfoot>
 	</table>, [table.getRowModel(), table.getAllColumns(), table.loading] );
 	
