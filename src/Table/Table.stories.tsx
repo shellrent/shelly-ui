@@ -52,12 +52,12 @@ export const Basic: Story = {
 			renderExpandedRow: () => <p> Expanded </p>,
 			columns: [
 				{
-					header: null,
 					id: 'akjdbna',
 					footer: 'total',
 					columns: [						
 						ExpandRowColumn,
 						{
+							header: 'Id',
 							accessorKey: 'id',
 						},
 						{
@@ -66,6 +66,7 @@ export const Basic: Story = {
 					]
 				},
 				{
+					header: '',
 					accessorKey: 'count'
 				}
 			],

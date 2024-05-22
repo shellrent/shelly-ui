@@ -1,6 +1,7 @@
 import React, { CSSProperties, Fragment, useMemo } from "react";
 import { CellContext, RowData, flexRender } from "@tanstack/react-table";
 import clsx from "clsx";
+import _ from "lodash";
 import { twMerge } from "tailwind-merge";
 import { TableObject } from "./useTable";
 import { useShellyContext } from "../Provider";
@@ -32,37 +33,42 @@ const BasicTable: React.FC<any> = <T,>( {table, zebra, className, ...props}: Bas
 
 	const tb = useMemo( () => <table className={classNames}>
 		<thead>
-			{table.getHeaderGroups().map(headerGroup => (
-				<tr 
-					key={headerGroup.id}>
-					{headerGroup.headers.map(header => {
-						return (
-							<th 
-								key={header.id} 
-								colSpan={header.colSpan}
-								className={ 
-									header.getLeafHeaders().length > 1 ? 
-										config.tables?.headerGroups?.additionalClasses :
-										config.tables?.headers?.additionalClasses 
-								}
-								style={{
-									width: header.getSize()
-								}}
-							>
-								{header.isPlaceholder ? null : (
-									<div>
+			{table.getHeaderGroups()
+				.filter( ( headerGroup ) => headerGroup.headers
+					.filter( h  => {
+						return !_.isEmpty( h.column.columnDef.header );
+					} ).length > 0 )
+				.map(headerGroup => (
+					<tr 
+						key={headerGroup.id}>
+						{headerGroup.headers.map(header => {
+							return (
+								<th 
+									key={header.id} 
+									colSpan={header.colSpan}
+									className={ 
+										header.getLeafHeaders().length > 1 ? 
+											config.tables?.headerGroups?.additionalClasses :
+											config.tables?.headers?.additionalClasses 
+									}
+									style={{
+										width: header.getSize()
+									}}
+								>
+									{header.isPlaceholder ? null : (
+										<div>
 
-										{flexRender(
-											header.column.columnDef.header,
-											header.getContext()
-										)}
-									</div>
-								)}
-							</th>
-						);
-					})}
-				</tr>
-			))}
+											{flexRender(
+												header.column.columnDef.header,
+												header.getContext()
+											)}
+										</div>
+									)}
+								</th>
+							);
+						})}
+					</tr>
+				))}
 		</thead>
 		<tbody>
 			{table.getRowModel().rows.length ? table.getRowModel().rows.map(row => {
