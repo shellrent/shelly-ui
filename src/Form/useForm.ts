@@ -207,7 +207,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 		if (props?.onSubmitted) {
 			props.onSubmitted(res, handleOnSuccess, handleFormError, setSubmitting);
 		}
-	}, [ props.onSubmitted ] );
+	}, [ props?.onSubmitted ] );
 
 	return {
 		state: { 
