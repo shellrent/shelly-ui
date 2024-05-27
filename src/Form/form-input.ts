@@ -2,7 +2,7 @@ import { InputValidationHandler } from "..";
 
 export type InputSize = 'xs' | 'sm' | 'lg' | 'md';
 
-export type InputProps<TValue = string, V = unknown> = { 
+export type InputProps<TValue, V = unknown> = { 
 	name?: string, 
 	value?: TValue, 
 	onValueChange?: ( value: any ) => void, 

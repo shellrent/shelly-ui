@@ -2,122 +2,8 @@ import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { InputValidationHandler } from "..";
 import { InputProps } from "./form-input";
 import _ from "lodash";
-
-export class FormErrors {
-	public formErrors: string[] = [];
-
-	constructor(errors: string[]) {
-		this.formErrors = errors;
-	}
-
-	public setFormErrors(formErrors: string[]): FormErrors {
-		this.formErrors = formErrors;
-		return this;
-	}
-
-	public addError(error: string): this {
-		this.formErrors = [
-			...this.formErrors,
-			error
-		];
-
-		return this;
-	}
-
-	public reset(): this {
-		this.formErrors = [];
-
-		return this;
-	}
-
-	public hasErrors(): boolean {
-		return Boolean(this.formErrors.length);
-	}
-
-	public getErrors(): string[] {
-		return this.formErrors;
-	}
-
-	public isEqual(errors: string[]): boolean {
-		if (errors.length !== this.formErrors.length) {
-			return false;
-		}
-
-		for (let i = 0; i < errors.length; i++) {
-			if (errors[i] !== this.formErrors[i]) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-}
-
-class FormValues<T extends { [key: string]: any } = any> {
-	public formValues: T = {} as T;
-
-	constructor(formValues: T) {
-		this.formValues = formValues;
-	}
-
-	public setFormValues(formValues: T): FormValues {
-		this.formValues = formValues;
-
-		return this;
-	}
-
-	public getFormValue(name: string): unknown | undefined {
-		if ( !this.formValues ) {
-			return;
-		}
-
-		return this.formValues[name];
-	}
-
-	public getFormStringValue(name: string): string | undefined {
-		if ( !this.formValues ) {
-			return;
-		}
- 
-		return this.formValues[name] === undefined ? undefined : String( this.formValues[name] );
-	}
-
-	public getFormIntValue(name: string): number | undefined {
-		if ( !this.formValues ) {
-			return;
-		}
- 
-		return this.formValues[name] === undefined ? undefined : Number( this.formValues[name] );
-	}
-
-	public getFormBoolValue(name: string): boolean {
-		if ( !this.formValues ) {
-			return;
-		}
- 
-		return this.formValues[name] === undefined ? false : Boolean( this.formValues[name] );
-	}
-
-	public isEqual(values: T): boolean {
-		if (!values) {
-			return false;
-		}
-
-		if (Object.entries(values).length !== Object.entries(this.formValues).length) {
-			return false;
-		}
-
-		let isEqual = true;
-
-		Object.entries(values).forEach(([key, value]) => {
-			if (this.formValues[key] !== value) {
-				isEqual = false;
-			}
-		});
-
-		return isEqual;
-	}
-}
+import FormErrors from './FormErrors';
+import FormValues from "./FormValues";
 
 type FormState<T extends { [key: string]: any } = any> = {
 	inputs: { [key: string]: InputDefinition }
@@ -192,7 +78,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 		}
 		);
 
-	}, [formErrors, formValues]);
+	}, [formErrors, formValues, inputs]);
 
 	useEffect(() => {
 		setState();
