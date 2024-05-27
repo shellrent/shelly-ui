@@ -3,7 +3,6 @@ import Form from './Form';
 import useForm from './useForm';
 import { Button, Checkbox, Input, InputValidationHandler, Select, ShellyProvider, TextEditor, Textarea, Toggle } from '..';
 import React, { useEffect } from 'react';
-import { validators } from '..';
 
 const meta: Meta<typeof Form> = {
 	tags: ['autodocs'],
@@ -70,7 +69,7 @@ export const Default: Story = {
 
 		return <ShellyProvider config={{}}>
 			<Form form={form} saveForm={(data) => {
-				console.log(data);
+				console.log( form.state );
 				return true;
 			}}>
 				<Input.FormControl>
@@ -84,7 +83,7 @@ export const Default: Story = {
 
 				<Input.FormControl>
 					<Input.Label>Textarea</Input.Label>
-					<Textarea {...form.registerInput({ name: 'textarea', validators: [ validators.isRequired( 'è richiesto' ) ] })} />
+					<Textarea {...form.registerInput({ name: 'textarea' })} />
 				</Input.FormControl>
 
 				<Input.FormControl>

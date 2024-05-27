@@ -89,7 +89,7 @@ const Form: React.FC<FormProps> = <T extends object>({ children, saveForm, form 
 				const err = validator(inputValue);
 
 				if (err) {
-					form.triggerInputError(key);
+					form.triggerInputError(key, err);
 
 					errors = [
 						...errors,

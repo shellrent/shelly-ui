@@ -51,21 +51,25 @@ type InputDefinition<V = unknown> = {
 
 const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): FormHandler => {
 	const [formErrors, setFormErrors] = useState<string[]>([]);
-	const [inputs, setInputs] = useState<{ [key: string]: InputDefinition }>({});
+	const inputRef = useRef<{ [key: string]: InputDefinition }>({});
 	const [formValues, setValues] = useState(props?.values ?? {});
 	const [submitting, setSubmitting] = useState(false);
+
+	const setInputs = useCallback( (inputs: { [key: string]: InputDefinition }) => {
+		inputRef.current = inputs;
+	}, [] );
 
 	const successCallbacks = useRef([props?.onSuccess]);
 
 	const ref = useRef<HTMLFormElement>(null);
 
-	const handleFormError = (error: string | string[]) => {
+	const handleFormError = useCallback( (error: string | string[]) => {
 		if (!(error instanceof Array)) {
 			error = [error];
 		}
 
 		setFormErrors(error);
-	};
+	}, [] );
 
 	const setFormValues = useCallback( <T = any>(values: T) => {
 		setValues(values);
@@ -90,20 +94,20 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 	}, [] );
 
 	const triggerInputError = useCallback( (name: string, message?: string): void => {
-		if (!inputs[name]) {
+		if (!inputRef.current[name]) {
 			return;
 		}
 
 		setInputs( {
-			...inputs ?? {},
+			...inputRef.current ?? {},
 			[name]: {
-				name: inputs[name].name,
-				validators: inputs[name].validators,
+				name: inputRef.current[name].name,
+				validators: inputRef.current[name].validators,
 				error: message ? message : true
 			}
 		} );
 		return;
-	}, [inputs]	);
+	}, [inputRef.current]	);
 
 	const handleOnSuccess = useCallback( () => {
 		if ( !successCallbacks.current.length ) {
@@ -137,22 +141,22 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 
 		};
 
-		if (inputs[name] &&
-			inputs[name].disable == disable &&
-			_.isEqual(inputs[name].validators, validators)) {
+		if (inputRef.current[name] &&
+			inputRef.current[name].disable == disable &&
+			_.isEqual(inputRef.current[name].validators, validators)) {
 			return {
 				name: name,
 				value: formValues[name],
 				onValueChange: onFieldChangeValue,
 				validators: validators,
 				inputSize: (props?.type == 'filter') ? 'sm' : undefined,
-				error: inputs[name]?.error
+				error: inputRef.current[name]?.error
 			};
 		}
 
 		if (disable) {
-			if (inputs[name]) {
-				const inps = inputs;
+			if (inputRef.current[name]) {
+				const inps = inputRef.current;
 
 				delete inps[name];
 
@@ -168,9 +172,9 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			};
 		}
 
-		if (!inputs[name]) {
+		if (!inputRef.current[name]) {
 			setInputs( {
-				...inputs ?? {},
+				...inputRef.current ?? {},
 				[name]: {
 					name: name,
 					disable: disable,
@@ -186,7 +190,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			onValueChange: onFieldChangeValue,
 			validators: validators,
 			inputSize: (props?.type == 'filter') ? 'sm' : undefined,
-			error: inputs[name]?.error
+			error: inputRef.current[name]?.error
 		};
 	};
 
@@ -211,7 +215,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 
 	return {
 		state: { 
-			inputs, 
+			inputs: inputRef.current, 
 			formValues: new FormValues(formValues), 
 			formErrors: new FormErrors(formErrors) 
 		},
