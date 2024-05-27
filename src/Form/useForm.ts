@@ -1,8 +1,8 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from "react";
+import { RefObject, useCallback, useRef, useState } from "react";
 import { InputValidationHandler } from "..";
 import { InputProps } from "./form-input";
 import _ from "lodash";
-import FormErrors from './FormErrors';
+import FormErrors from "./FormErrors";
 import FormValues from "./FormValues";
 
 type FormState<T extends { [key: string]: any } = any> = {
@@ -52,37 +52,12 @@ type InputDefinition<V = unknown> = {
 const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): FormHandler => {
 	const [formErrors, setFormErrors] = useState<string[]>([]);
 	const [inputs, setInputs] = useState<{ [key: string]: InputDefinition }>({});
-
-	const [state, setForm] = useState<FormState>({ inputs: inputs, formValues: new FormValues(props?.values), formErrors: new FormErrors(formErrors) });
 	const [formValues, setValues] = useState(props?.values ?? {});
 	const [submitting, setSubmitting] = useState(false);
 
 	const successCallbacks = useRef([props?.onSuccess]);
 
 	const ref = useRef<HTMLFormElement>(null);
-
-	const setState = useCallback(() => {
-		setForm((prev) => {
-			return ({
-				...prev,
-				inputs: inputs,
-				formErrors:
-					(prev.formErrors?.formErrors && prev.formErrors.isEqual(formErrors))
-						? prev.formErrors
-						: new FormErrors(formErrors),
-				formValues:
-					(prev.formValues?.formValues && prev.formValues.isEqual(formValues))
-						? prev.formValues
-						: new FormValues(formValues),
-			});
-		}
-		);
-
-	}, [formErrors, formValues, inputs]);
-
-	useEffect(() => {
-		setState();
-	}, [setState]);
 
 	const handleFormError = (error: string | string[]) => {
 		if (!(error instanceof Array)) {
@@ -92,29 +67,29 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 		setFormErrors(error);
 	};
 
-	const setFormValues = <T = any>(values: T) => {
+	const setFormValues = useCallback( <T = any>(values: T) => {
 		setValues(values);
-	};
+	}, [] );
 
-	const resetFormValues = () => {
+	const resetFormValues = useCallback( () => {
 		setValues({ ...{} });
-	};
+	}, [] );
 
-	const resetErrors = (): void => {
+	const resetErrors = useCallback( (): void => {
 		setFormErrors([]);
-	};
+	}, [] );
 
-	const resetInputs = (): void => {
+	const resetInputs = useCallback( (): void => {
 		setInputs({});
-	};
+	}, [] );
 
-	const submitForm = (): void => {
+	const submitForm = useCallback( (): void => {
 		if (ref.current) {
 			ref.current.requestSubmit();
 		}
-	};
+	}, [] );
 
-	const triggerInputError = (name: string, message?: string): void => {
+	const triggerInputError = useCallback( (name: string, message?: string): void => {
 		if (!inputs[name]) {
 			return;
 		}
@@ -128,9 +103,9 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			}
 		} );
 		return;
-	};
+	}, [inputs]	);
 
-	const handleOnSuccess = () => {
+	const handleOnSuccess = useCallback( () => {
 		if ( !successCallbacks.current.length ) {
 			return;
 		}
@@ -142,14 +117,14 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 
 			callback();
 		}
-	};
+	}, [] );
  
-	const registerOnSuccessCallback = (callback: () => void) => {
+	const registerOnSuccessCallback = useCallback( (callback: () => void) => {
 		successCallbacks.current = [
 			...successCallbacks.current,
 			callback,
 		];
-	};
+	}, [] );
 
 	const registerInput = <TValue = string, V = unknown>({ name, validators, disable }: RegisterHandlerProps<V>): InputProps<TValue, V> => {
 		const onFieldChangeValue = (value: string | null) => {
@@ -215,7 +190,8 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 		};
 	};
 
-	const handleOnSubmitted = (res: R) => {
+
+	const handleOnSubmitted = useCallback( (res: R) => {
 		if (!props?.onSubmitted && res instanceof Promise) {
 			res
 				.then(() => handleOnSuccess)
@@ -225,16 +201,20 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 		}
 
 		if (!props?.onSubmitted) {
-			res ? handleOnSuccess() : handleFormError('error');
+			res ? handleOnSuccess() : handleFormError('Error');
 		}
 
 		if (props?.onSubmitted) {
 			props.onSubmitted(res, handleOnSuccess, handleFormError, setSubmitting);
 		}
-	};
+	}, [ props.onSubmitted ] );
 
 	return {
-		state,
+		state: { 
+			inputs, 
+			formValues: new FormValues(formValues), 
+			formErrors: new FormErrors(formErrors) 
+		},
 		submitForm,
 		setFormValues,
 		resetFormValues,

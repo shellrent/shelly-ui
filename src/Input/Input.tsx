@@ -15,7 +15,7 @@ const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {value, class
 
 	useEffect( () => {
 		if ( typeof error == 'string' ) {
-			setError( error );
+			setError( error ); 
 
 			return;
 		}

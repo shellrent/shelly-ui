@@ -18,12 +18,14 @@ export const Default: Story = {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const form = useForm();
 
-		const validateRepeatPassword: InputValidationHandler = (value, formData) => {
+		const validateRepeatPassword: InputValidationHandler = (value) => {
 			const repeat = form.state.formValues?.getFormValue('password');
+			console.log('repeat', repeat);
 
 			if (!repeat) {
 				return null;
 			}
+
 
 			if (repeat && !value) {
 				return 'E\' necessario ripetere la password.';
@@ -37,28 +39,28 @@ export const Default: Story = {
 		};
 
 		const validatePassword: InputValidationHandler = (value: any) => {
-			return null;
+			const repeat = form.state.formValues?.getFormValue('test');
+			console.log('test', repeat);
 
-			const err = validators.minCharacters(8, 'La Password deve contenere almeno 8 caratteri')(value);
-
-			if (err) {
-				return err;
+			if (!repeat) {
+				return null;
 			}
 
-			return validators.isRequired('La password è richiesta')(value);
+
+			if (repeat && !value) {
+				return 'E\' necessario ripetere la password.';
+			}
+
+			if (value !== repeat) {
+				return 'Le due password non corrispondono';
+			}
+
+			return null;
 		};
 
 		useEffect( () => {
-			console.log( form.state.formValues );
+			form.triggerInputError( 'test', 'Trigger input' );
 
-			form.resetInputs();
-			if ( form.state.formValues.getFormStringValue( 'password' ) !== form.state.formValues.getFormStringValue( 'test' ) ) {
-				form.triggerInputError( 'select', 'Le due password non corrispondono' );
-			} 
-
-		}, [form.state.formValues.formValues, form.state.formErrors] );
-
-		useEffect( () => {
 			form.setFormValues({
 				select: false,
 				editor: 'editor content',
@@ -73,11 +75,11 @@ export const Default: Story = {
 			}}>
 				<Input.FormControl>
 					<Input.Label>Password</Input.Label>
-					<Input {...form.registerInput({ name: 'password' })} />
+					<Input {...form.registerInput({ name: 'password', validators: [validatePassword] })} />
 				</Input.FormControl>
 				<Input.FormControl>
 					<Input.Label>Test Input</Input.Label>
-					<Input {...form.registerInput({ name: 'test' })} defaultValue="Default Value!"/>
+					<Input {...form.registerInput({ name: 'test', validators: [validateRepeatPassword] })} defaultValue="Default Value!"/>
 				</Input.FormControl>
 
 				<Input.FormControl>
