@@ -6,8 +6,7 @@ import FieldError from "../Common/FieldError";
 
 type CheckboxProps = {
     checkboxType?: 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | undefined
-	value?: boolean,
-} & Omit<InputProps, "value"> & Omit<InputHTMLAttributes<HTMLInputElement>, "value">
+} & InputProps<boolean, boolean> & Omit<InputHTMLAttributes<HTMLInputElement>, "value">
 
 const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, children, className, error, validators, value, inputSize,  ...props} ) => {
 	const [err, setError] = useState<string | boolean | undefined>(false);
