@@ -6,7 +6,7 @@ import FieldError from '../Common/FieldError';
 
 type TextEditorProps = {
 	placeholder?: string;
-} & InputProps
+} & InputProps<string, string>
 
 const TextEditor: React.FC<TextEditorProps> = ({ value, onValueChange, placeholder, error, validators, inputSize, ...props }) => {
 	const [err, setError] = useState(error);
