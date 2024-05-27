@@ -12,6 +12,7 @@ type UseTableProps<T = any> = {
 	pageCount?: number
 	currentPage?: number
 	renderExpandedRow?: (row: Row<T>) => JSX.Element | null
+	loading?: boolean
 }
 
 export type TableObject<T = any> = Table<T> & { 
@@ -19,7 +20,7 @@ export type TableObject<T = any> = Table<T> & {
 	renderExpandedRow?: (row: Row<T>) => JSX.Element | null
 }
 
-const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, pageSize, pageCount, currentPage, renderExpandedRow }: UseTableProps<T>): { table: TableObject<T> } => {
+const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, pageSize, pageCount, currentPage, renderExpandedRow, loading }: UseTableProps<T>): { table: TableObject<T> } => {
 	const config = useShellyContext();
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: (currentPage || 1) - 1,
@@ -28,7 +29,11 @@ const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, 
 
 	const prevPagination = useRef<PaginationState>(pagination);
 
-	const [loading, setLoading] = useState(false);
+	const [isLoading, setLoading] = useState(loading);
+
+	useEffect(() => {
+		setLoading(loading);
+	}, [loading] );
 
 	useEffect(() => {
 		setPagination({
@@ -73,7 +78,7 @@ const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, 
 		},
 	});
 
-	return { table: Object.assign(table, { loading: loading, renderExpandedRow: renderExpandedRow }) } as { table: TableObject<T> };
+	return { table: Object.assign(table, { loading: isLoading, renderExpandedRow: renderExpandedRow }) } as { table: TableObject<T> };
 };
 
 
