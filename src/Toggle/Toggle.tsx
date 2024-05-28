@@ -6,7 +6,7 @@ import FieldError from "../Common/FieldError";
 
 type ToggleProps = InputProps<boolean, boolean> & InputHTMLAttributes<HTMLInputElement>
 
-const Toggle = forwardRef<HTMLInputElement, ToggleProps>(({ value, className, onValueChange, error, ...props }, ref) => {
+const Toggle = forwardRef<HTMLInputElement, ToggleProps>(({ value, className, onValueChange, inputSize, error, ...props }, ref) => {
 	const [checked, setChecked] = useState<boolean>(value ?? false);
 	const [err, setError] = useState<string | boolean | undefined>(false);
 
