@@ -20,12 +20,16 @@ class FormValues<T extends { [key: string]: any } = any> {
 		return this.formValues[name];
 	}
 
-	public getFormStringValue(name: string): string | undefined {
+	public getFormStringValue(name: string, allowEmpty = false): string | undefined {
 		if ( !this.formValues ) {
 			return;
 		}
+
+		if ( allowEmpty ) {
+			return this.formValues[name] === undefined ? undefined : String( this.formValues[name] );
+		}
  
-		return this.formValues[name] === undefined ? undefined : String( this.formValues[name] );
+		return this.formValues[name] === undefined || this.formValues[name] === '' ? undefined : String( this.formValues[name] );
 	}
 
 	public getFormIntValue(name: string): number | undefined {
@@ -39,8 +43,8 @@ class FormValues<T extends { [key: string]: any } = any> {
 	public getFormBoolValue(name: string): boolean {
 		if ( !this.formValues ) {
 			return;
+		
 		}
- 
 		return this.formValues[name] === undefined ? false : Boolean( this.formValues[name] );
 	}
 
