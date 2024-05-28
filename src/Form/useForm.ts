@@ -221,7 +221,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 		}
 	}, [ props?.onSubmitted ] );
 
-	const buildFormValues = useCallback( () => {
+	const buildFormValues = () => {
 		return Object.keys(inputRef.current).reduce( (acc, key) => {
 			if ( inputRef.current[key].ref.current?.type == 'checkbox' ) {
 				const checkboxRef = inputRef.current[key].ref as RefObject<HTMLInputElement>;
@@ -232,7 +232,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			acc[key] = formValues[key] ?? inputRef.current[key]?.ref.current?.value;
 			return acc;
 		}, {} );
-	}, [formValues] );
+	};
 
 	return {
 		state: { 
