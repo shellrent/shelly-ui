@@ -155,7 +155,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 				validators: validators,
 				inputSize: (props?.type == 'filter') ? 'sm' : undefined,
 				error: inputRef.current[name]?.error,
-				ref: ref
+				ref: inputRef.current[name]?.ref ?? ref
 			};
 		}
 
@@ -174,7 +174,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 				validators: validators,
 				inputSize: (props?.type == 'filter') ? 'sm' : undefined,
 				disabled: true,
-				ref: ref
+				ref: inputRef.current[name]?.ref ?? ref,
 			};
 		}
 
@@ -198,7 +198,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			validators: validators,
 			inputSize: (props?.type == 'filter') ? 'sm' : undefined,
 			error: inputRef.current[name]?.error,
-			ref: ref
+			ref: inputRef.current[name]?.ref ?? ref,
 		};
 	};
 
