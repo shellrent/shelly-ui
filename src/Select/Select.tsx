@@ -2,7 +2,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox, Transition } from "@headlessui/react";
 import clsx from "clsx";
-import React, { Fragment, ReactNode, useEffect, useRef, useState } from "react";
+import React, { Fragment, ReactNode, forwardRef, useEffect, useRef, useState } from "react";
 import { swtc } from "../utils";
 import { InputProps } from "../Form";
 import FieldError from "../Common/FieldError";
@@ -25,7 +25,7 @@ type SelectProps<T = any> = {
 	showEmptyOption?: boolean
 } & InputProps<string, string>
 
-const Select: React.FC<SelectProps> = ( {displayFn, value, defaultValue, onChange, onValueChange, name, placeholder, inputSize, error, validators, showEmptyOption, ...props} ) => {
+const Select = forwardRef<HTMLInputElement, SelectProps>( ( {displayFn, value, defaultValue, onChange, onValueChange, name, placeholder, inputSize, error, validators, showEmptyOption, ...props}, ref ) => {
 	const {t} = useTranslation();
 	const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>();
 	const [selectedValue, setSelectedValue] = useState<any | undefined>( value || defaultValue );
@@ -96,7 +96,7 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultValue, onChang
 		inputSize || 'text-base'
 	);
 
-	return  <Listbox value={selectedValue === undefined ? '' : selectedValue }  onChange={onSelectChange} name={name} {...props}>
+	return  <Listbox ref={ref} value={selectedValue === undefined ? '' : selectedValue }  onChange={onSelectChange} name={name} {...props}>
 		<div className="relative">    
 			<Listbox.Button className={classNames}>
 				<span className="h-full flex items-center truncate overflow-hidden">
@@ -148,6 +148,8 @@ const Select: React.FC<SelectProps> = ( {displayFn, value, defaultValue, onChang
 			</Transition>
 		</div>
 	</Listbox>;  
-};
+} );
+
+Select.displayName = 'Select';
 
 export default Select;

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, InputHTMLAttributes, useEffect, useState } from "react";
+import React, { ChangeEvent, InputHTMLAttributes, forwardRef, useEffect, useState } from "react";
 import { InputProps } from "../Form";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -10,7 +10,7 @@ type FileUploadProps = {
     className?: string
 } & InputProps<File | File[], File> & InputHTMLAttributes<HTMLInputElement>
 
-const FileUpload: React.FC<FileUploadProps> = ( { className, value, validators, bordered, inputSize, error, onValueChange, ...prop } ) => {
+const FileUpload= forwardRef<HTMLInputElement, FileUploadProps>( ( { className, value, validators, bordered, inputSize, error, onValueChange, ...prop }, ref ) => {
 	const [ err, setError ] = useState<string | boolean>( null );
 
 	const classNames = twMerge( 
@@ -76,10 +76,18 @@ const FileUpload: React.FC<FileUploadProps> = ( { className, value, validators, 
 	};
 
 	return <>
-		<input type="file" className={classNames} onChange={onChange} {...prop}/>
+		<input 
+			type="file" 
+			className={classNames} 
+			onChange={onChange} 
+			{...prop}
+			ref={ref} 
+		/>
 		<FieldError error={err}/>
 	</>;
-};
+} );
+
+FileUpload.displayName = 'FileUpload';
 
 export default FileUpload;
 

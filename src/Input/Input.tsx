@@ -70,9 +70,9 @@ const Input = forwardRef<HTMLInputElement, InputComponentProps>( ( {value, class
 		<input 
 			className={classNames}
 			onChange={onChange}
-			ref={ref}
 			value={value === undefined ? (defaultValue ?? '') : value}
 			{...props}
+			ref={ref}
 		/>
 		<FieldError error={err}></FieldError>
 	</>;

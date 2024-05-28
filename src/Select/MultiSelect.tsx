@@ -1,5 +1,5 @@
 import { Listbox, Transition } from "@headlessui/react";
-import React, { Fragment, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import React, { Fragment, ReactNode, forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { SelectOption } from "./Select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
@@ -20,7 +20,7 @@ export type MultiSelectProps<T = any> = {
 	showEmptyOption?: boolean
 } & InputProps<string | string[], string[]>
 
-const MultiSelect: React.FC<MultiSelectProps> = ({ displayFn, defaultOption, showEmptyOption, validators, name, onChange, onValueChange, placeholder, inputSize, error, ...props }) => {
+const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(({ displayFn, defaultOption, showEmptyOption, validators, name, onChange, onValueChange, placeholder, inputSize, error, ...props }, ref) => {
 	const { t } = useTranslation();
 	const [selectedValues, setSelectedValues] = useState<any | undefined>(props.value || []);
 	const [selectedOptions, setSelectedOptions] = useState<SelectOption[] | undefined>(defaultOption && [defaultOption]);
@@ -113,7 +113,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ displayFn, defaultOption, sho
 		})
 	);
 
-	return <Listbox value={selectedValues === undefined ? '' : selectedValues} onChange={onSelectChange} name={name} multiple>
+	return <Listbox ref={ref} value={selectedValues === undefined ? '' : selectedValues} onChange={onSelectChange} name={name} multiple>
 		<div className="relative">
 			<Listbox.Button className={classNames}>
 				<span className="overflow-hidden h-full flex items-center">
@@ -162,6 +162,8 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ displayFn, defaultOption, sho
 			</Transition>
 		</div>
 	</Listbox>;
-};
+} );
+
+MultiSelect.displayName = 'MultiSelect';
 
 export default MultiSelect;
