@@ -63,8 +63,8 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({ className, va
 
 	return <>
 		<textarea
-			ref={ref}
 			{...props}
+			ref={ref}
 			className={classNames}
 			value={curretValue === undefined ? '' : curretValue}
 			onChange={onChange}

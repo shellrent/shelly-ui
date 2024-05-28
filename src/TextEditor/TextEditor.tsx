@@ -67,7 +67,12 @@ const TextEditor = forwardRef<HTMLInputElement, TextEditorProps>( ({ value, onVa
 
 
 	return <div>
-		<input ref={ref} type='hidden' value={htmlValue === undefined ? '' : htmlValue} {...props} />
+		<input 
+			type='hidden' 
+			value={htmlValue === undefined ? '' : htmlValue} 
+			{...props} 
+			ref={ref} 
+		/>
 		<ReactQuill className={`rounded-btn ${err ? '!border border-error' : '!border-0'}`} theme="snow" placeholder={placeholder} value={htmlValue} onChange={onEditorChange} />
 		<FieldError error={err}></FieldError>
 	</div>;

@@ -76,7 +76,13 @@ const FileUpload= forwardRef<HTMLInputElement, FileUploadProps>( ( { className, 
 	};
 
 	return <>
-		<input ref={ref} type="file" className={classNames} onChange={onChange} {...prop}/>
+		<input 
+			type="file" 
+			className={classNames} 
+			onChange={onChange} 
+			{...prop}
+			ref={ref} 
+		/>
 		<FieldError error={err}/>
 	</>;
 } );

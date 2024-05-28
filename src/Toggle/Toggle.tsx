@@ -45,8 +45,8 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>(({ value, className, on
 
 	return <>
 		<input
-			ref={ref}
 			{...props}
+			ref={ref}
 			type="checkbox"
 			className={classNames}
 			onChange={onChange}

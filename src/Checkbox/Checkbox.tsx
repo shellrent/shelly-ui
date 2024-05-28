@@ -72,7 +72,13 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>( ( {checkboxType, o
 
 
 	return <>
-		<input ref={ref} type="checkbox" onChange={ onChange } className={classNames} {...props} checked={Boolean( value )}>
+		<input 
+			type="checkbox" 
+			onChange={ onChange } 
+			className={classNames} 
+			{...props} 
+			ref={ref} 
+			checked={Boolean( value )}>
 			{children}
 		</input>
 		<FieldError error={err}></FieldError>

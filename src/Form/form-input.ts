@@ -1,4 +1,4 @@
-import { RefObject } from "react";
+import { ForwardedRef } from "react";
 import { InputValidationHandler } from "..";
 
 export type InputSize = 'xs' | 'sm' | 'lg' | 'md';
@@ -11,5 +11,5 @@ export type InputProps<TValue, V = unknown> = {
 	error?: string | boolean | undefined | null,
 	validators?: (InputValidationHandler<V> | undefined)[] | undefined,
 	inputSize?: InputSize | undefined,
-	ref: RefObject<HTMLInputElement|HTMLTextAreaElement>
-}
+	ref: ForwardedRef<HTMLInputElement | HTMLTextAreaElement>
+} 
