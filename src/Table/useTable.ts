@@ -82,4 +82,4 @@ const useTable = <T extends RowData = any>({ data, columns, onPaginationChange, 
 };
 
 
-export default useTable;
+export default useTable

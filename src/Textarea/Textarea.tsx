@@ -1,11 +1,11 @@
-import React, { ChangeEventHandler, TextareaHTMLAttributes, useEffect, useState } from "react";
+import React, { ChangeEventHandler, TextareaHTMLAttributes, forwardRef, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { InputProps } from "../Form";
 import FieldError from "../Common/FieldError";
 import clsx from "clsx";
 
 type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & InputProps<string, string>;
-const Textarea: React.FC<TextareaProps> = ({ className, value, onValueChange, validators, inputSize, error, ...props }) => {
+const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({ className, value, onValueChange, validators, inputSize, error, ...props }, ref) => {
 	const [curretValue, setCurrentValue] = useState(value);
 	const [err, setError] = useState<string | boolean>(error);
 
@@ -37,32 +37,33 @@ const Textarea: React.FC<TextareaProps> = ({ className, value, onValueChange, va
 		if (onValueChange) {
 			onValueChange(val);
 		}
-		
+
 		setCurrentValue(val);
 
-		if ( !validators?.length ) {
+		if (!validators?.length) {
 			return;
-		} 
+		}
 
-		validators.every( (validator) => {
-			if ( !validator ) {
+		validators.every((validator) => {
+			if (!validator) {
 				return true;
 			}
-			
-			const validationError = validator( val );
 
-			setError( validationError ?? false );
+			const validationError = validator(val);
 
-			if ( validationError ) {
+			setError(validationError ?? false);
+
+			if (validationError) {
 				return false;
 			}
 
 			return true;
-		} );
+		});
 	};
 
 	return <>
 		<textarea
+			ref={ref}
 			{...props}
 			className={classNames}
 			value={curretValue === undefined ? '' : curretValue}
@@ -70,6 +71,8 @@ const Textarea: React.FC<TextareaProps> = ({ className, value, onValueChange, va
 		></textarea>
 		<FieldError error={err}></FieldError>
 	</>;
-};
+});
+
+Textarea.displayName = 'Textarea';
 
 export default Textarea;

@@ -1,4 +1,4 @@
-import { RefObject, useCallback, useRef, useState } from "react";
+import { RefObject, createRef, useCallback, useRef, useState } from "react";
 import { InputValidationHandler } from "..";
 import { InputProps } from "./form-input";
 import _ from "lodash";
@@ -46,6 +46,7 @@ type InputDefinition<V = unknown> = {
 	error?: boolean | string
 	disable?: boolean
 	validators: InputValidationHandler<V>[]
+	ref: RefObject<HTMLInputElement | HTMLTextAreaElement>
 }
 
 
@@ -103,7 +104,8 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			[name]: {
 				name: inputRef.current[name].name,
 				validators: inputRef.current[name].validators,
-				error: message ? message : true
+				error: message ? message : true,
+				ref: inputRef.current[name].ref
 			}
 		} );
 		return;
@@ -141,6 +143,8 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 
 		};
 
+		const ref = createRef<HTMLInputElement|HTMLTextAreaElement>();
+
 		if (inputRef.current[name] &&
 			inputRef.current[name].disable == disable &&
 			_.isEqual(inputRef.current[name].validators, validators)) {
@@ -150,7 +154,8 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 				onValueChange: onFieldChangeValue,
 				validators: validators,
 				inputSize: (props?.type == 'filter') ? 'sm' : undefined,
-				error: inputRef.current[name]?.error
+				error: inputRef.current[name]?.error,
+				ref: ref
 			};
 		}
 
@@ -168,7 +173,8 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 				value: formValues[name],
 				validators: validators,
 				inputSize: (props?.type == 'filter') ? 'sm' : undefined,
-				disabled: true
+				disabled: true,
+				ref: ref
 			};
 		}
 
@@ -179,7 +185,8 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 					name: name,
 					disable: disable,
 					validators: validators ?? [],
-					error: false
+					error: false,
+					ref: ref
 				}
 			} );
 		}
@@ -190,7 +197,8 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			onValueChange: onFieldChangeValue,
 			validators: validators,
 			inputSize: (props?.type == 'filter') ? 'sm' : undefined,
-			error: inputRef.current[name]?.error
+			error: inputRef.current[name]?.error,
+			ref: ref
 		};
 	};
 
@@ -213,10 +221,17 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 		}
 	}, [ props?.onSubmitted ] );
 
+	const buildFormValues = useCallback( () => {
+		return Object.keys(inputRef.current).reduce( (acc, key) => {
+			acc[key] = formValues[key] ?? inputRef.current[key]?.ref.current?.value;
+			return acc;
+		}, {} );
+	}, [formValues] );
+
 	return {
 		state: { 
 			inputs: inputRef.current, 
-			formValues: new FormValues(formValues), 
+			formValues: new FormValues(buildFormValues()), 
 			formErrors: new FormErrors(formErrors) 
 		},
 		submitForm,

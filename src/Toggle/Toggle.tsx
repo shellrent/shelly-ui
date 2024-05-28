@@ -1,4 +1,4 @@
-import React, { ChangeEvent, InputHTMLAttributes, useEffect, useState } from "react";
+import React, { ChangeEvent, InputHTMLAttributes, forwardRef, useEffect, useState } from "react";
 import { InputProps } from "../Form";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
@@ -6,7 +6,7 @@ import FieldError from "../Common/FieldError";
 
 type ToggleProps = InputProps<boolean, boolean> & InputHTMLAttributes<HTMLInputElement>
 
-const Toggle: React.FC<ToggleProps> = ({ value, className, onValueChange, error, ...props }) => {
+const Toggle = forwardRef<HTMLInputElement, ToggleProps>(({ value, className, onValueChange, error, ...props }, ref) => {
 	const [checked, setChecked] = useState<boolean>(value ?? false);
 	const [err, setError] = useState<string | boolean | undefined>(false);
 
@@ -45,6 +45,7 @@ const Toggle: React.FC<ToggleProps> = ({ value, className, onValueChange, error,
 
 	return <>
 		<input
+			ref={ref}
 			{...props}
 			type="checkbox"
 			className={classNames}
@@ -53,6 +54,8 @@ const Toggle: React.FC<ToggleProps> = ({ value, className, onValueChange, error,
 		/>
 		<FieldError error={err}></FieldError>
 	</>;
-};
+} );
+
+Toggle.displayName = 'Toggle';
 
 export default Toggle;

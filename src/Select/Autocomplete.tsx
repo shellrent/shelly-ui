@@ -2,7 +2,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Combobox, Transition } from "@headlessui/react";
 import clsx from "clsx";
-import React, { Fragment, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import React, { Fragment, ReactNode, forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { swtc } from "../utils";
 import FieldError from "../Common/FieldError";
 
@@ -15,28 +15,28 @@ export type AutocompleteOption<T = any> = {
 }
 
 type AutocompleteProps<T = any> = {
-    displayFn?: ( option: T ) => ReactNode
-    options: AutocompleteOption<T>[]
-    defaultValue?: T
+	displayFn?: (option: T) => ReactNode
+	options: AutocompleteOption<T>[]
+	defaultValue?: T
 	placeholder?: string
-    onChange?: ( value: T ) => void 
-    onQueryChange?: ( query: string ) => void
+	onChange?: (value: T) => void
+	onQueryChange?: (query: string) => void
 } & InputProps<string, string>
 
 
-const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryChange, defaultValue, onChange, onValueChange, name, inputSize, error, validators, placeholder, options, ...props}) => {
+const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(({ displayFn, value, onQueryChange, defaultValue, onChange, onValueChange, name, inputSize, error, validators, placeholder, options, ...props }, ref) => {
 	const [selectedValue, setSelectedValue] = useState<any | undefined>(value);
 	const { error: err, handleValidation } = useSelectError({ err: error, validators });
 	const prevValue = useRef(value);
 
-	const findOption = useCallback( () => {
+	const findOption = useCallback(() => {
 		return options.find(opt => opt.value == selectedValue);
-	}, [options, selectedValue] );
+	}, [options, selectedValue]);
 
 	useEffect(() => {
 		if (!options.length) {
 			setSelectedValue(undefined);
-			return;	
+			return;
 		}
 
 		const val = value === undefined ? defaultValue : value;
@@ -44,7 +44,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryCha
 		if (prevValue.current !== val) {
 			handleValidation(val);
 		}
- 
+
 		prevValue.current = val;
 		setSelectedValue(val);
 	}, [value, options, defaultValue]);
@@ -74,15 +74,15 @@ const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryCha
 		inputSize || 'text-base'
 	);
 
-	return <Combobox value={selectedValue === undefined ? '' : selectedValue} onChange={onSelectChange} refName={name} {...props}>
+	return <Combobox ref={ref} value={selectedValue === undefined ? '' : selectedValue} onChange={onSelectChange} refName={name} {...props}>
 		<div className="relative">
 			<Combobox.Input
 				placeholder={placeholder}
 				className={classNames}
-				displayValue={ () => findOption()?.title || '' }
+				displayValue={() => findOption()?.title || ''}
 				onChange={(event) => onQueryChange(event.target.value)}
 			/>
-			<Combobox.Button  className="absolute inset-y-0 right-0 flex items-center pr-2 h-full w-full" />
+			<Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2 h-full w-full" />
 			<FieldError error={err}></FieldError>
 			<Transition
 				as={Fragment}
@@ -121,6 +121,8 @@ const Autocomplete: React.FC<AutocompleteProps> = ({displayFn, value, onQueryCha
 			</Transition>
 		</div>
 	</Combobox>;
-};
+});
+
+Autocomplete.displayName = 'Autocomplete';
 
 export default Autocomplete;

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, InputHTMLAttributes, useEffect, useState } from "react";
+import React, { ChangeEvent, InputHTMLAttributes, forwardRef, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { swtc } from "../utils";
 import { InputProps } from "../Form";
@@ -8,7 +8,7 @@ type CheckboxProps = {
     checkboxType?: 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | undefined
 } & InputProps<boolean, boolean> & Omit<InputHTMLAttributes<HTMLInputElement>, "value">
 
-const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, children, className, error, validators, value, inputSize,  ...props} ) => {
+const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>( ( {checkboxType, onValueChange, children, className, error, validators, value, inputSize,  ...props}, ref ) => {
 	const [err, setError] = useState<string | boolean | undefined>(false);
 
 	const classNames = twMerge( 
@@ -72,11 +72,13 @@ const Checkbox: React.FC<CheckboxProps> = ( {checkboxType, onValueChange, childr
 
 
 	return <>
-		<input type="checkbox" onChange={ onChange } className={classNames} {...props} checked={Boolean( value )}>
+		<input ref={ref} type="checkbox" onChange={ onChange } className={classNames} {...props} checked={Boolean( value )}>
 			{children}
 		</input>
 		<FieldError error={err}></FieldError>
 	</>;
-};
+} );
+
+Checkbox.displayName = 'Checkbox';
 
 export default Checkbox;
