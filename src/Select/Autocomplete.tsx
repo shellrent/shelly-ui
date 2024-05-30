@@ -74,7 +74,7 @@ const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(({ displayF
 		inputSize || 'text-base'
 	);
 
-	return <Combobox ref={ref} value={selectedValue === undefined ? '' : selectedValue} onChange={onSelectChange} refName={name} {...props}>
+	return <Combobox ref={ref} value={selectedValue === undefined ? '' : selectedValue} onChange={onSelectChange} name={name} refName={name} {...props}>
 		<div className="relative">
 			<Combobox.Input
 				placeholder={placeholder}
