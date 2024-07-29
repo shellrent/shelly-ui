@@ -73,3 +73,10 @@ const MyComponent = () => {
   );
 };
 ```
+
+## Storybook
+
+- `yarn`
+    - `npm install`
+- `yarn storybook`
+- accedi a storybook da http://192.168.56.99:6007, dove l'ip è quello della VM (o in alternativa localhost)
