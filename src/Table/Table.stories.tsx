@@ -16,6 +16,9 @@ const meta: Meta<typeof BasicTable> = {
 	argTypes: {
 		zebra: {
 			type: 'boolean'
+		},
+		hidePagination: {
+			type: 'boolean'
 		}
 	}
 };
