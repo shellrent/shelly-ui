@@ -18,9 +18,10 @@ export type MultiSelectProps<T = any> = {
 	placeholder?: string
 	onChange?: (value: T) => void
 	showEmptyOption?: boolean
+	showSearchBar?: boolean
 } & InputProps<string | string[], string[]>
 
-const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(({ displayFn, defaultOption, showEmptyOption, validators, name, onChange, onValueChange, placeholder, inputSize, error, ...props }, ref) => {
+const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(({ displayFn, defaultOption, showEmptyOption, validators, name, onChange, onValueChange, placeholder, inputSize, error, showSearchBar, ...props }, ref) => {
 	const { t } = useTranslation();
 	const [selectedValues, setSelectedValues] = useState<any | undefined>(props.value || []);
 	const [selectedOptions, setSelectedOptions] = useState<SelectOption[] | undefined>(defaultOption && [defaultOption]);
@@ -50,9 +51,11 @@ const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(({ displayFn,
 		setSearchQuery(event.target.value);
 	};
 
-	const filteredOptions = options.filter((option) => {
-		return option.title.toLowerCase().includes(searchQuery.toLowerCase());
-	});
+	const filteredOptions =searchQuery
+		? options.filter(option =>
+			typeof option.title === 'string' && option.title.toLowerCase().includes(searchQuery.toLowerCase())
+		)
+		: options;
 
 	const filterOption = useCallback((value: any) => {
 		return options.flatMap((opt) => {
@@ -142,15 +145,17 @@ const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(({ displayFn,
 					leaveTo="opacity-0"
 				>
 					<Listbox.Options className="absolute z-30 mt-1 pl-0 max-h-60 w-full overflow-auto rounded-btn bg-base-100 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-						<div className="px-2 py-1">
-							<input
-								type="text"
-								className="input input-bordered w-full"
-								placeholder="Search..."
-								value={searchQuery}
-								onChange={handleSearchChange}
-							/>
-						</div>
+						{showSearchBar && (
+							<div className="px-2 py-1">
+								<input
+									type="text"
+									className="input input-bordered w-full"
+									placeholder="Search..."
+									value={searchQuery}
+									onChange={handleSearchChange}
+								/>
+							</div>
+						) }
 						{filteredOptions.map((option, key) => (
 							<Listbox.Option
 								key={key}

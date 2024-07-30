@@ -23,9 +23,10 @@ type SelectProps<T = any> = {
 	placeholder?: string
     onChange?: ( value: T ) => void 
 	showEmptyOption?: boolean
+	showSearchBar?: boolean
 } & InputProps<string, string>
 
-const Select = forwardRef<HTMLInputElement, SelectProps>( ( {displayFn, value, defaultValue, onChange, onValueChange, name, placeholder, inputSize, error, validators, showEmptyOption, ...props}, ref ) => {
+const Select = forwardRef<HTMLInputElement, SelectProps>( ( {displayFn, value, defaultValue, onChange, onValueChange, name, placeholder, inputSize, error, validators, showEmptyOption, showSearchBar, ...props}, ref ) => {
 	const {t} = useTranslation();
 	const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>();
 	const [selectedValue, setSelectedValue] = useState<any | undefined>( value || defaultValue );
@@ -90,7 +91,9 @@ const Select = forwardRef<HTMLInputElement, SelectProps>( ( {displayFn, value, d
 	};
 
 	const filteredOptions = searchQuery
-		? options.filter(option => option.title.toLowerCase().includes(searchQuery.toLowerCase()))
+		? options.filter(option =>
+			typeof option.title === 'string' && option.title.toLowerCase().includes(searchQuery.toLowerCase())
+		)
 		: options;
 
 	const classNames = clsx(
@@ -124,15 +127,17 @@ const Select = forwardRef<HTMLInputElement, SelectProps>( ( {displayFn, value, d
 					leaveTo="opacity-0"
 				>
 					<Listbox.Options className="absolute z-30 mt-1 pl-0 max-h-60 w-full overflow-auto rounded-md bg-base-100 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-						<div className="p-2">
-							<input
-								type="text"
-								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value)}
-								placeholder="Search..."
-								className="input input-bordered w-full"
-							/>
-						</div>
+						{showSearchBar && (
+							<div className="p-2">
+								<input
+									type="text"
+									value={searchQuery}
+									onChange={(e) => setSearchQuery(e.target.value)}
+									placeholder="Search..."
+									className="input input-bordered w-full"
+								/>
+							</div>
+						) }
 						{filteredOptions.map((option, key) => (
 							<Listbox.Option
 								key={key}
