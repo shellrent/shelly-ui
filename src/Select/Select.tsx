@@ -5,7 +5,6 @@ import clsx from "clsx";
 import React, { Fragment, ReactNode, forwardRef, useEffect, useRef, useState } from "react";
 import { swtc } from "../utils";
 import { InputProps } from "../Form";
-import FieldError from "../Common/FieldError";
 
 import { useTranslation } from "../i18n";
 import useSelectError from "./useSelectError";

@@ -51,7 +51,7 @@ const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(({ displayFn,
 		setSearchQuery(event.target.value);
 	};
 
-	const filteredOptions =searchQuery
+	const filteredOptions = searchQuery
 		? options.filter(option =>
 			typeof option.title === 'string' && option.title.toLowerCase().includes(searchQuery.toLowerCase())
 		)
