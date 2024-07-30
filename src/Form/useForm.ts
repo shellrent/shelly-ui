@@ -1,4 +1,4 @@
-import { RefObject, createRef, useCallback, useRef, useState } from "react";
+import { RefObject, useCallback, useRef, useState } from "react";
 import { InputValidationHandler } from "..";
 import { InputProps } from "./form-input";
 import _ from "lodash";
@@ -41,12 +41,11 @@ export type UseFormProps<R extends Promise<any> | boolean, T = any> = {
 	onSubmitted?: (res: R, success: () => void, error: (error: string | string[]) => void, setSubmitting: (value: boolean) => void) => void;
 }
 
-type InputDefinition<V = unknown> = {
+export type InputDefinition<V = unknown> = {
 	name: string
 	error?: boolean | string
 	disable?: boolean
 	validators: InputValidationHandler<V>[]
-	ref: RefObject<HTMLInputElement | HTMLTextAreaElement>
 }
 
 
@@ -55,7 +54,6 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 	const inputRef = useRef<{ [key: string]: InputDefinition }>({});
 	const [formValues, setValues] = useState(props?.values ?? {});
 	const [submitting, setSubmitting] = useState(false);
-
 	const setInputs = useCallback( (inputs: { [key: string]: InputDefinition }) => {
 		inputRef.current = inputs;
 	}, [] );
@@ -105,7 +103,6 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 				name: inputRef.current[name].name,
 				validators: inputRef.current[name].validators,
 				error: message ? message : true,
-				ref: inputRef.current[name].ref
 			}
 		} );
 		return;
@@ -143,7 +140,6 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 
 		};
 
-		const ref = createRef<HTMLInputElement|HTMLTextAreaElement>();
 
 		if (inputRef.current[name] &&
 			inputRef.current[name].disable == disable &&
@@ -155,7 +151,6 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 				validators: validators,
 				inputSize: (props?.type == 'filter') ? 'sm' : undefined,
 				error: inputRef.current[name]?.error,
-				ref: ref
 			};
 		}
 
@@ -174,7 +169,6 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 				validators: validators,
 				inputSize: (props?.type == 'filter') ? 'sm' : undefined,
 				disabled: true,
-				ref: ref
 			};
 		}
 
@@ -186,7 +180,6 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 					disable: disable,
 					validators: validators ?? [],
 					error: false,
-					ref: ref
 				}
 			} );
 		}
@@ -198,10 +191,8 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 			validators: validators,
 			inputSize: (props?.type == 'filter') ? 'sm' : undefined,
 			error: inputRef.current[name]?.error,
-			ref: ref
 		};
 	};
-
 
 	const handleOnSubmitted = useCallback( (res: R) => {
 		if (!props?.onSubmitted && res instanceof Promise) {
@@ -223,13 +214,7 @@ const useForm = <R extends Promise<any> | boolean>(props?: UseFormProps<R>): For
 
 	const buildFormValues = () => {
 		return Object.keys(inputRef.current).reduce( (acc, key) => {
-			if ( inputRef.current[key].ref.current?.type == 'checkbox' ) {
-				const checkboxRef = inputRef.current[key].ref as RefObject<HTMLInputElement>;
-				acc[key] = formValues[key] ?? checkboxRef.current?.checked;
-				return acc;
-			}	
-
-			acc[key] = formValues[key] ?? inputRef.current[key]?.ref.current?.value;
+			acc[key] = formValues[key];
 			return acc;
 		}, {} );
 	};
