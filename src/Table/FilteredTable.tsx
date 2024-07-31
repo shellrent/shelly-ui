@@ -13,10 +13,10 @@ const queryFilterKey = 'filters';
 
 type FilteredTableProps<T extends RowData = any> = PaginateTableProps<T> & PropsWithChildren
 
-const FilteredTable: React.FC<any> = <T,>({ children, table, className, ...props }: FilteredTableProps<T>) => {
+const FilteredTable: React.FC<any> = <T,>({ children, table, className, hidePagination, ...props }: FilteredTableProps<T>) => {
 	return <div>
 		{children}
-		<PaginateTable table={table} {...props} className={className}/>
+		<PaginateTable table={table} {...props} className={className} hidePagination={hidePagination}/>
 	</div>;
 };
 
