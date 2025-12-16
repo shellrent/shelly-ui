@@ -2,7 +2,7 @@
 ![Logo Shelly UI](https://github.com/shellrent/shelly-ui/assets/55100464/6e704b64-b959-4e8e-8f2f-bbd8d75a8d5a)
 
 
-Shelly-UI is a lightweight and flexible component library developed by Shellret. This library is built entirely in TypeScript and leverages modern web development technologies such as Tailwind CSS, DaisyUI, and Headless UI to provide a powerful and easy-to-use solution for building user interfaces.
+Shelly-UI is a lightweight and flexible component library developed by Shellrent. This library is built entirely in TypeScript and leverages modern web development technologies such as Tailwind CSS, DaisyUI, and Headless UI to provide a powerful and easy-to-use solution for building user interfaces.
 
 ## Installation
 
